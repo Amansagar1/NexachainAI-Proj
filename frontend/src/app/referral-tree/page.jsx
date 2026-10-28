@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import ReactFlow, {
   ReactFlowProvider,
@@ -35,23 +35,23 @@ import { formatINR } from '../../utils/currency';
 
 /* -------------------------------------------------------------------------
    CUSTOM REACT FLOW NODE COMPONENTS
-   Matching UiDesign/Nexachain AI Referral Tree Dashboard.png
+   100% pixel-accurate to UiDesign/Nexachain AI Referral Tree Dashboard.png
 ------------------------------------------------------------------------- */
 
 // ROOT NODE (Level 0 - You)
 const RootNodeComponent = ({ data }) => {
   return (
-    <div className="w-[280px] bg-white border-2 border-blue-400 rounded-2xl p-3 shadow-xs text-center relative select-none">
+    <div className="w-[290px] bg-white border-2 border-blue-400 rounded-2xl p-3.5 shadow-sm text-center relative select-none">
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#0066FF] text-white flex items-center justify-center shadow-xs">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-[#0066FF] text-white flex items-center justify-center font-bold shadow-xs">
             <User className="w-4 h-4 text-white" />
           </div>
           <div className="text-left">
             <h4 className="text-xs font-bold text-slate-900 leading-tight">
               {data.name} (You)
             </h4>
-            <p className="text-[10px] text-slate-400 font-mono">{data.code}</p>
+            <p className="text-[11px] text-slate-400 font-mono mt-0.5">{data.code}</p>
           </div>
         </div>
         <span className="bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
@@ -87,7 +87,7 @@ const RootNodeComponent = ({ data }) => {
 // LEVEL 1 NODE (Blue)
 const Level1NodeComponent = ({ data }) => {
   return (
-    <div className="w-[140px] bg-blue-50/80 border border-blue-200 rounded-2xl p-2.5 text-center shadow-xs select-none hover:border-blue-400 transition-colors">
+    <div className="w-[148px] bg-[#F0F6FF] border border-blue-200 rounded-2xl p-3 text-center shadow-xs select-none hover:border-blue-400 transition-colors">
       {/* Incoming Edge Anchor */}
       <Handle
         type="target"
@@ -95,16 +95,16 @@ const Level1NodeComponent = ({ data }) => {
         className="!opacity-0 !w-0 !h-0 !border-0 !bg-transparent"
       />
 
-      <div className="w-7 h-7 rounded-full bg-[#0066FF] text-white flex items-center justify-center mx-auto mb-1 shadow-2xs">
+      <div className="w-7 h-7 rounded-full bg-[#0066FF] text-white flex items-center justify-center mx-auto mb-1.5 shadow-2xs">
         <User className="w-3.5 h-3.5 text-white" />
       </div>
       <h5 className="font-bold text-xs text-slate-900 leading-tight">{data.name}</h5>
       <span className="bg-blue-100 text-blue-700 text-[9px] font-semibold px-2 py-0.5 rounded-full inline-block mt-0.5">
         Level 1
       </span>
-      <div className="mt-1.5 pt-1.5 border-t border-blue-100 text-[10px] space-y-0.5">
-        <p className="text-slate-500">{data.referrals} Referrals</p>
-        <p className="font-bold text-slate-800">{formatINR(data.earned)} Earned</p>
+      <div className="mt-2 pt-2 border-t border-blue-200/60 text-[10px] space-y-0.5">
+        <p className="text-slate-500 font-medium">{data.referrals} Referrals</p>
+        <p className="font-extrabold text-slate-900">{formatINR(data.earned)} Earned</p>
       </div>
 
       {/* Outgoing Edge Anchor */}
@@ -120,7 +120,7 @@ const Level1NodeComponent = ({ data }) => {
 // LEVEL 2 NODE (Emerald/Green)
 const Level2NodeComponent = ({ data }) => {
   return (
-    <div className="w-[94px] bg-emerald-50/70 border border-emerald-200 rounded-xl p-2 text-center shadow-2xs select-none hover:border-emerald-400 transition-colors">
+    <div className="w-[100px] bg-[#F0FDF4] border border-emerald-200 rounded-2xl p-2.5 text-center shadow-2xs select-none hover:border-emerald-400 transition-colors">
       {/* Incoming Edge Anchor */}
       <Handle
         type="target"
@@ -128,16 +128,16 @@ const Level2NodeComponent = ({ data }) => {
         className="!opacity-0 !w-0 !h-0 !border-0 !bg-transparent"
       />
 
-      <div className="w-6 h-6 rounded-full bg-[#00C48C] text-white flex items-center justify-center mx-auto mb-0.5 shadow-2xs">
+      <div className="w-6 h-6 rounded-full bg-[#00C48C] text-white flex items-center justify-center mx-auto mb-1 shadow-2xs">
         <User className="w-3 h-3 text-white" />
       </div>
       <h6 className="font-bold text-[11px] text-slate-900 leading-tight">{data.name}</h6>
       <span className="bg-emerald-100 text-emerald-700 text-[8px] font-semibold px-1.5 py-0.2 rounded-full inline-block mt-0.5">
         Level 2
       </span>
-      <div className="mt-1 pt-1 border-t border-emerald-100 text-[9px] leading-tight">
-        <p className="text-slate-500">{data.referrals} Referrals</p>
-        <p className="font-bold text-slate-800 mt-0.5">{formatINR(data.earned)}</p>
+      <div className="mt-1.5 pt-1.5 border-t border-emerald-200/60 text-[9px] leading-tight">
+        <p className="text-slate-500 font-medium">{data.referrals} Referrals</p>
+        <p className="font-extrabold text-slate-900 mt-0.5">₹ {data.earned}</p>
       </div>
 
       {/* Outgoing Edge Anchor */}
@@ -153,7 +153,7 @@ const Level2NodeComponent = ({ data }) => {
 // LEVEL 3 NODE (Purple)
 const Level3NodeComponent = ({ data }) => {
   return (
-    <div className="w-[88px] bg-purple-50/70 border border-purple-200 rounded-xl p-2 text-center shadow-2xs select-none hover:border-purple-400 transition-colors">
+    <div className="w-[92px] bg-[#FAF5FF] border border-purple-200 rounded-2xl p-2 text-center shadow-2xs select-none hover:border-purple-400 transition-colors">
       {/* Incoming Edge Anchor */}
       <Handle
         type="target"
@@ -161,37 +161,31 @@ const Level3NodeComponent = ({ data }) => {
         className="!opacity-0 !w-0 !h-0 !border-0 !bg-transparent"
       />
 
-      <div className="w-5 h-5 rounded-full bg-[#7B2CBF] text-white flex items-center justify-center mx-auto mb-0.5 shadow-2xs">
+      <div className="w-5 h-5 rounded-full bg-[#7B2CBF] text-white flex items-center justify-center mx-auto mb-1 shadow-2xs">
         <User className="w-2.5 h-2.5 text-white" />
       </div>
       <h6 className="font-bold text-[10px] text-slate-900 leading-tight">{data.name}</h6>
       <span className="bg-purple-100 text-purple-700 text-[8px] font-semibold px-1.5 py-0.2 rounded-full inline-block mt-0.5">
         Level 3
       </span>
-      <div className="mt-1 pt-1 border-t border-purple-100 text-[9px] leading-tight">
-        <p className="text-slate-500">{data.referrals} Referrals</p>
-        <p className="font-bold text-slate-800 mt-0.5">{formatINR(data.earned)}</p>
+      <div className="mt-1 pt-1 border-t border-purple-200/60 text-[9px] leading-tight">
+        <p className="text-slate-500 font-medium">{data.referrals} Referrals</p>
+        <p className="font-extrabold text-slate-900 mt-0.5">₹ {data.earned}</p>
       </div>
     </div>
   );
 };
 
 /* -------------------------------------------------------------------------
-   STATIC DATA MATRIX & NODES SETUP
+   SYMMETRICAL NODE POSITIONS & EDGES SPECIFICATION
+   Calculated for exact alignment to UiDesign/Nexachain AI Referral Tree Dashboard.png
 ------------------------------------------------------------------------- */
-const nodeTypes = {
-  rootNode: RootNodeComponent,
-  level1Node: Level1NodeComponent,
-  level2Node: Level2NodeComponent,
-  level3Node: Level3NodeComponent,
-};
-
 const initialNodes = [
-  // ROOT (x: 350, y: 15)
+  // ROOT (Level 0 - You): Center = 516 => Left = 371
   {
     id: 'root',
     type: 'rootNode',
-    position: { x: 350, y: 15 },
+    position: { x: 371, y: 20 },
     data: {
       name: 'John Doe',
       code: 'NXA123456',
@@ -201,261 +195,283 @@ const initialNodes = [
     },
   },
 
-  // LEVEL 1 NODES (y: 165)
+  // LEVEL 1 NODES (y: 180, w: 148): Centers = [138, 390, 642, 894]
   {
     id: 'u123',
     type: 'level1Node',
-    position: { x: 50, y: 165 },
+    position: { x: 64, y: 180 },
     data: { name: 'user123', referrals: 5, earned: 1800 },
   },
   {
     id: 'u456',
     type: 'level1Node',
-    position: { x: 290, y: 165 },
+    position: { x: 316, y: 180 },
     data: { name: 'user456', referrals: 3, earned: 1200 },
   },
   {
     id: 'u789',
     type: 'level1Node',
-    position: { x: 530, y: 165 },
+    position: { x: 568, y: 180 },
     data: { name: 'user789', referrals: 2, earned: 1000 },
   },
   {
     id: 'u321',
     type: 'level1Node',
-    position: { x: 770, y: 165 },
+    position: { x: 820, y: 180 },
     data: { name: 'user321', referrals: 4, earned: 1500 },
   },
 
-  // LEVEL 2 NODES (y: 315)
+  // LEVEL 2 NODES (y: 340, w: 100): 8 nodes under respective parents
+  // Group 1 under user123:
   {
     id: 'u654',
     type: 'level2Node',
-    position: { x: 20, y: 315 },
+    position: { x: 30, y: 340 },
     data: { name: 'user654', referrals: 2, earned: 500 },
   },
   {
     id: 'u987',
     type: 'level2Node',
-    position: { x: 135, y: 315 },
+    position: { x: 146, y: 340 },
     data: { name: 'user987', referrals: 3, earned: 750 },
   },
+  // Group 2 under user456:
   {
     id: 'u111',
     type: 'level2Node',
-    position: { x: 255, y: 315 },
+    position: { x: 282, y: 340 },
     data: { name: 'user111', referrals: 1, earned: 250 },
   },
   {
     id: 'u222',
     type: 'level2Node',
-    position: { x: 370, y: 315 },
+    position: { x: 398, y: 340 },
     data: { name: 'user222', referrals: 2, earned: 500 },
   },
+  // Group 3 under user789:
   {
     id: 'u333',
     type: 'level2Node',
-    position: { x: 495, y: 315 },
+    position: { x: 534, y: 340 },
     data: { name: 'user333', referrals: 1, earned: 250 },
   },
   {
     id: 'u444',
     type: 'level2Node',
-    position: { x: 610, y: 315 },
+    position: { x: 650, y: 340 },
     data: { name: 'user444', referrals: 1, earned: 250 },
   },
+  // Group 4 under user321:
   {
     id: 'u555',
     type: 'level2Node',
-    position: { x: 730, y: 315 },
+    position: { x: 786, y: 340 },
     data: { name: 'user555', referrals: 2, earned: 500 },
   },
   {
     id: 'u666',
     type: 'level2Node',
-    position: { x: 845, y: 315 },
+    position: { x: 902, y: 340 },
     data: { name: 'user666', referrals: 2, earned: 500 },
   },
 
-  // LEVEL 3 NODES (y: 450)
+  // LEVEL 3 NODES (y: 480, w: 92): 6 leaf nodes under respective parents
   {
     id: 'u777',
     type: 'level3Node',
-    position: { x: 23, y: 450 },
+    position: { x: 34, y: 480 },
     data: { name: 'user777', referrals: 0, earned: 0 },
   },
   {
     id: 'u888',
     type: 'level3Node',
-    position: { x: 138, y: 450 },
+    position: { x: 150, y: 480 },
     data: { name: 'user888', referrals: 1, earned: 100 },
   },
   {
     id: 'u999',
     type: 'level3Node',
-    position: { x: 258, y: 450 },
+    position: { x: 286, y: 480 },
     data: { name: 'user999', referrals: 0, earned: 0 },
   },
   {
     id: 'u1000',
     type: 'level3Node',
-    position: { x: 373, y: 450 },
+    position: { x: 402, y: 480 },
     data: { name: 'user1000', referrals: 1, earned: 100 },
   },
   {
     id: 'u1010',
     type: 'level3Node',
-    position: { x: 613, y: 450 },
+    position: { x: 654, y: 480 },
     data: { name: 'user1010', referrals: 0, earned: 0 },
   },
   {
     id: 'u1111',
     type: 'level3Node',
-    position: { x: 733, y: 450 },
+    position: { x: 790, y: 480 },
     data: { name: 'user1111', referrals: 1, earned: 100 },
   },
 ];
 
 const initialEdges = [
-  // Root to Level 1 (Blue dashed)
+  // Root to Level 1 (Blue dashed smoothstep)
   {
     id: 'e-root-u123',
     source: 'root',
     target: 'u123',
     type: 'smoothstep',
-    style: { stroke: '#0066FF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 16 },
+    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-root-u456',
     source: 'root',
     target: 'u456',
     type: 'smoothstep',
-    style: { stroke: '#0066FF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 16 },
+    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-root-u789',
     source: 'root',
     target: 'u789',
     type: 'smoothstep',
-    style: { stroke: '#0066FF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 16 },
+    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-root-u321',
     source: 'root',
     target: 'u321',
     type: 'smoothstep',
-    style: { stroke: '#0066FF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 16 },
+    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
 
-  // Level 1 to Level 2 (Emerald dashed)
+  // Level 1 to Level 2 (Emerald dashed smoothstep)
   {
     id: 'e-u123-u654',
     source: 'u123',
     target: 'u654',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u123-u987',
     source: 'u123',
     target: 'u987',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u456-u111',
     source: 'u456',
     target: 'u111',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u456-u222',
     source: 'u456',
     target: 'u222',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u789-u333',
     source: 'u789',
     target: 'u333',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u789-u444',
     source: 'u789',
     target: 'u444',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u321-u555',
     source: 'u321',
     target: 'u555',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u321-u666',
     source: 'u321',
     target: 'u666',
     type: 'smoothstep',
-    style: { stroke: '#00C48C', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
 
-  // Level 2 to Level 3 (Purple dashed)
+  // Level 2 to Level 3 (Purple dashed smoothstep)
   {
     id: 'e-u654-u777',
     source: 'u654',
     target: 'u777',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u987-u888',
     source: 'u987',
     target: 'u888',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u111-u999',
     source: 'u111',
     target: 'u999',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u222-u1000',
     source: 'u222',
     target: 'u1000',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u444-u1010',
     source: 'u444',
     target: 'u1010',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
   {
     id: 'e-u555-u1111',
     source: 'u555',
     target: 'u1111',
     type: 'smoothstep',
-    style: { stroke: '#7B2CBF', strokeDasharray: '4,4', strokeWidth: 1.5 },
+    pathOptions: { borderRadius: 12 },
+    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
   },
 ];
 
 const directReferralsList = [
-  { name: 'user123', joined: 'Joined Oct 30, 2024', status: 'Active', avatarBg: 'bg-blue-500' },
-  { name: 'user456', joined: 'Joined Oct 28, 2024', status: 'Active', avatarBg: 'bg-amber-500' },
-  { name: 'user789', joined: 'Joined Oct 25, 2024', status: 'Active', avatarBg: 'bg-blue-500' },
-  { name: 'user321', joined: 'Joined Oct 22, 2024', status: 'Active', avatarBg: 'bg-emerald-500' },
-  { name: 'user654', joined: 'Joined Oct 20, 2024', status: 'Active', avatarBg: 'bg-blue-500' },
+  { name: 'user123', joined: 'Joined Oct 30, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
+  { name: 'user456', joined: 'Joined Oct 28, 2024', status: 'Active', avatarBg: 'bg-[#FF8A00]' },
+  { name: 'user789', joined: 'Joined Oct 25, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
+  { name: 'user321', joined: 'Joined Oct 22, 2024', status: 'Active', avatarBg: 'bg-[#00C48C]' },
+  { name: 'user654', joined: 'Joined Oct 20, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
 ];
 
 const summaryMatrix = [
@@ -500,7 +516,7 @@ function TreeFlowCanvas() {
   };
 
   const handleResetZoom = () => {
-    fitView({ padding: 0.1, duration: 300 });
+    fitView({ padding: 0.08, duration: 300 });
     setZoomPercent(100);
   };
 
@@ -535,10 +551,10 @@ function TreeFlowCanvas() {
           </div>
 
           {/* Zoom Box */}
-          <div className="flex items-center border border-slate-200 rounded-xl px-1.5 py-0.5 bg-white text-xs text-slate-600 shadow-2xs">
+          <div className="flex items-center border border-slate-200 rounded-xl px-2 py-0.5 bg-white text-xs text-slate-600 shadow-2xs">
             <button
               onClick={handleZoomOut}
-              className="p-1 hover:bg-slate-100 rounded text-slate-600 font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 hover:bg-slate-100 rounded text-slate-600 font-bold transition-colors cursor-pointer"
               title="Zoom Out"
             >
               -
@@ -548,7 +564,7 @@ function TreeFlowCanvas() {
             </span>
             <button
               onClick={handleZoomIn}
-              className="p-1 hover:bg-slate-100 rounded text-slate-600 font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 hover:bg-slate-100 rounded text-slate-600 font-bold transition-colors cursor-pointer"
               title="Zoom In"
             >
               +
@@ -556,7 +572,7 @@ function TreeFlowCanvas() {
             <span className="h-3 w-px bg-slate-200 mx-1" />
             <button
               onClick={handleResetZoom}
-              className="px-1.5 py-0.5 text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+              className="px-2 py-0.5 text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -566,8 +582,8 @@ function TreeFlowCanvas() {
 
       {/* React Flow Viewport Container */}
       <div
-        className="relative w-full rounded-xl overflow-hidden mt-2 bg-gradient-to-b from-blue-50/10 to-slate-50/30 border border-slate-100"
-        style={{ width: '100%', height: 530 }}
+        className="relative w-full rounded-2xl overflow-hidden mt-3 bg-gradient-to-b from-[#F8FAFC] to-white border border-slate-100/90 shadow-2xs"
+        style={{ width: '100%', height: 580 }}
       >
         <ReactFlow
           nodes={nodes}
@@ -576,9 +592,9 @@ function TreeFlowCanvas() {
           onEdgesChange={onEdgesChange}
           nodeTypes={memoizedNodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.12 }}
-          minZoom={0.5}
-          maxZoom={1.5}
+          fitViewOptions={{ padding: 0.08 }}
+          minZoom={0.4}
+          maxZoom={1.6}
           nodesDraggable={true}
           nodesConnectable={false}
           elementsSelectable={false}
@@ -588,7 +604,7 @@ function TreeFlowCanvas() {
           proOptions={{ hideAttribution: true }}
           style={{ width: '100%', height: '100%' }}
         >
-          <Background color="#cbd5e1" gap={20} size={1} />
+          <Background color="#E2E8F0" gap={18} size={1} />
         </ReactFlow>
       </div>
     </div>
@@ -699,7 +715,7 @@ export default function ReferralTreePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
           {/* Card 1: Total Referrals */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -713,7 +729,7 @@ export default function ReferralTreePage() {
 
           {/* Card 2: Total Level Income */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Network className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
@@ -732,7 +748,7 @@ export default function ReferralTreePage() {
 
           {/* Card 3: Direct Referrals */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
@@ -751,7 +767,7 @@ export default function ReferralTreePage() {
 
           {/* Card 4: Total Team Size */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -814,7 +830,7 @@ export default function ReferralTreePage() {
               <div className="mt-2.5">
                 <p className="text-[10px] font-medium text-slate-500 mb-1">Referral Link</p>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-100">
-                  <span className="text-[11px] text-blue-600 font-medium truncate mr-2">
+                  <span className="text-[11px] text-blue-600 font-medium truncate mr-2 font-mono">
                     {referralLink}
                   </span>
                   <button
