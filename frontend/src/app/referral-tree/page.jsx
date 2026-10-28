@@ -583,7 +583,7 @@ function TreeFlowCanvas() {
       {/* React Flow Viewport Container */}
       <div
         className="relative w-full rounded-2xl overflow-hidden mt-3 bg-gradient-to-b from-[#F8FAFC] to-white border border-slate-100/90 shadow-2xs"
-        style={{ width: '100%', height: 580 }}
+        style={{ width: '100%', height: 610 }}
       >
         <ReactFlow
           nodes={nodes}
