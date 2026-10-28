@@ -1,101 +1,1009 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Wallet, Plus, ArrowUpRight, ArrowDownLeft, History } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
+import {
+  Wallet,
+  ArrowUpRight,
+  ArrowDownLeft,
+  ArrowUp,
+  Plus,
+  CreditCard,
+  Building,
+  CheckCircle2,
+  Clock,
+  Search,
+  Filter,
+  Download,
+  ChevronRight,
+  ChevronLeft,
+  ShieldCheck,
+  TrendingUp,
+  Network,
+  QrCode,
+  Copy,
+  Check,
+  AlertCircle,
+} from 'lucide-react';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from 'recharts';
 import toast from 'react-hot-toast';
 import { AppLayout } from '../../components/layout/AppLayout';
-import { StatCard } from '../../components/dashboard/StatCard';
-import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
+import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
 import { formatINR } from '../../utils/currency';
+import { formatDate } from '../../utils/date';
+
+/* -------------------------------------------------------------------------
+   MOCK CASHFLOW & TRANSACTION DATA
+------------------------------------------------------------------------- */
+const cashflowData = [
+  { date: 'Oct 01', inflow: 5000, outflow: 0, balance: 5000 },
+  { date: 'Oct 03', inflow: 400, outflow: 0, balance: 5400 },
+  { date: 'Oct 06', inflow: 900, outflow: 0, balance: 6300 },
+  { date: 'Oct 09', inflow: 1400, outflow: 1200, balance: 6500 },
+  { date: 'Oct 12', inflow: 1150, outflow: 0, balance: 7650 },
+  { date: 'Oct 15', inflow: 1600, outflow: 0, balance: 9250 },
+  { date: 'Oct 18', inflow: 1400, outflow: 2000, balance: 8650 },
+  { date: 'Oct 21', inflow: 1850, outflow: 0, balance: 10500 },
+  { date: 'Oct 24', inflow: 1200, outflow: 0, balance: 11700 },
+  { date: 'Oct 27', inflow: 1550, outflow: 0, balance: 13250 },
+  { date: 'Oct 30', inflow: 1500, outflow: 2000, balance: 12750 },
+];
+
+const mockTransactions = [
+  {
+    id: 'TXN-90218',
+    type: 'ROI Payout',
+    category: 'roi',
+    date: '2024-10-30T10:00:00Z',
+    description: 'Growth Plan B (2.0% Daily ROI)',
+    amount: 400,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Automated Daily Payout',
+  },
+  {
+    id: 'TXN-90217',
+    type: 'Referral Bonus',
+    category: 'referral',
+    date: '2024-10-30T08:45:00Z',
+    description: 'Level 1 Commission from user123',
+    amount: 500,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Direct Referral Bonus',
+  },
+  {
+    id: 'TXN-90216',
+    type: 'Withdrawal',
+    category: 'withdrawal',
+    date: '2024-10-29T15:20:00Z',
+    description: 'Settlement to HDFC Bank •••• 9821',
+    amount: 2000,
+    isCredit: false,
+    status: 'Completed',
+    method: 'IMPS Bank Transfer',
+  },
+  {
+    id: 'TXN-90215',
+    type: 'ROI Payout',
+    category: 'roi',
+    date: '2024-10-29T10:00:00Z',
+    description: 'Growth Plan B (2.0% Daily ROI)',
+    amount: 400,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Automated Daily Payout',
+  },
+  {
+    id: 'TXN-90214',
+    type: 'Referral Bonus',
+    category: 'referral',
+    date: '2024-10-28T14:10:00Z',
+    description: 'Level 2 Commission from user654',
+    amount: 250,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Level 2 Referral Bonus',
+  },
+  {
+    id: 'TXN-90213',
+    type: 'ROI Payout',
+    category: 'roi',
+    date: '2024-10-28T10:00:00Z',
+    description: 'Wealth Plan (2.5% Daily ROI)',
+    amount: 625,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Automated Daily Payout',
+  },
+  {
+    id: 'TXN-90212',
+    type: 'Deposit',
+    category: 'deposit',
+    date: '2024-10-27T18:30:00Z',
+    description: 'Wallet Top-Up via UPI Instant',
+    amount: 5000,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Google Pay UPI',
+  },
+  {
+    id: 'TXN-90211',
+    type: 'Withdrawal',
+    category: 'withdrawal',
+    date: '2024-10-25T11:00:00Z',
+    description: 'Settlement to HDFC Bank •••• 9821',
+    amount: 1200,
+    isCredit: false,
+    status: 'Completed',
+    method: 'IMPS Bank Transfer',
+  },
+  {
+    id: 'TXN-90210',
+    type: 'Referral Bonus',
+    category: 'referral',
+    date: '2024-10-25T09:15:00Z',
+    description: 'Level 1 Commission from user321',
+    amount: 500,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Direct Referral Bonus',
+  },
+  {
+    id: 'TXN-90209',
+    type: 'ROI Payout',
+    category: 'roi',
+    date: '2024-10-24T10:00:00Z',
+    description: 'Growth Plan A (1.5% Daily ROI)',
+    amount: 300,
+    isCredit: true,
+    status: 'Completed',
+    method: 'Automated Daily Payout',
+  },
+];
+
+/* -------------------------------------------------------------------------
+   CUSTOM CHART TOOLTIP
+------------------------------------------------------------------------- */
+function CustomCashflowTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-slate-900/95 backdrop-blur-md text-white p-3 rounded-xl shadow-xl border border-slate-700/50 text-xs min-w-[150px]">
+        <p className="font-bold text-slate-300 pb-1.5 mb-1.5 border-b border-slate-700/60">
+          {label}
+        </p>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-1.5 text-blue-400">
+              <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
+              Inflow:
+            </span>
+            <span className="font-extrabold text-white">
+              {formatINR(payload[0]?.value || 0)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-[#00C48C]" />
+              Balance:
+            </span>
+            <span className="font-extrabold text-white">
+              {formatINR(payload[1]?.value || 0)}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
 
 export default function WalletPage() {
   const { user } = useAuth();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [amount, setAmount] = useState('5000');
+
+  // Modals
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [bankModalOpen, setBankModalOpen] = useState(false);
+
+  // Form states
+  const [depositAmount, setDepositAmount] = useState('5000');
+  const [depositMethod, setDepositMethod] = useState('UPI');
+  const [withdrawAmount, setWithdrawAmount] = useState('2000');
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [timeframe, setTimeframe] = useState('30D');
+  const [page, setPage] = useState(1);
+
+  // Bank Info state
+  const [bankInfo, setBankInfo] = useState({
+    bankName: 'HDFC Bank Ltd.',
+    accountNumber: '•••• •••• •••• 9821',
+    holderName: 'John Doe',
+    ifsc: 'HDFC0001234',
+    branch: 'Connaught Place, New Delhi',
+  });
+
+  const availableBalance = user?.walletBalance || 12750;
+  const totalRoi = user?.totalRoiEarned || 12750;
+  const totalLevel = user?.totalLevelIncomeEarned || 4500;
+  const totalWithdrawn = 3200;
+
+  // Filtered transactions
+  const filteredTransactions = useMemo(() => {
+    return mockTransactions.filter((txn) => {
+      const matchesTab =
+        activeTab === 'all' ||
+        (activeTab === 'roi' && txn.category === 'roi') ||
+        (activeTab === 'referral' && txn.category === 'referral') ||
+        (activeTab === 'deposit' && txn.category === 'deposit') ||
+        (activeTab === 'withdrawal' && txn.category === 'withdrawal');
+
+      const matchesSearch =
+        txn.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        txn.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        txn.type.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesTab && matchesSearch;
+    });
+  }, [activeTab, searchQuery]);
+
+  // Handlers
+  const handleDepositSubmit = () => {
+    const val = Number(depositAmount);
+    if (!val || val <= 0) {
+      toast.error('Please enter a valid deposit amount');
+      return;
+    }
+    toast.success(`Deposit request of ${formatINR(val)} via ${depositMethod} initiated!`);
+    setDepositModalOpen(false);
+  };
+
+  const handleWithdrawSubmit = () => {
+    const val = Number(withdrawAmount);
+    if (!val || val <= 0) {
+      toast.error('Please enter a valid withdrawal amount');
+      return;
+    }
+    if (val > availableBalance) {
+      toast.error('Insufficient available balance');
+      return;
+    }
+    toast.success(`Withdrawal of ${formatINR(val)} submitted! Processing to bank...`);
+    setWithdrawModalOpen(false);
+  };
 
   return (
-    <AppLayout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Wallet & Earnings
-          </h1>
-          <p className="text-sm font-medium text-slate-500 mt-1">
-            Manage your funds, deposits, and withdrawal requests.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <StatCard
-            title="Available Balance"
-            amount={user?.walletBalance || 12750}
-            badgeText="Active"
-            icon={Wallet}
-            iconBgColor="bg-[#0066FF]"
-          />
-          <StatCard
-            title="Total ROI Earned"
-            amount={user?.totalRoiEarned || 12750}
-            badgeText="Cumulative"
-            icon={ArrowUpRight}
-            iconBgColor="bg-emerald-500"
-          />
-          <StatCard
-            title="Total Level Income"
-            amount={user?.totalLevelIncomeEarned || 4500}
-            badgeText="Referrals"
-            icon={ArrowDownLeft}
-            iconBgColor="bg-purple-600"
-          />
-        </div>
-
-        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+    <AppLayout searchPlaceholder="Search transactions, deposits, withdrawals...">
+      <div className="space-y-4">
+        {/* Top Header Row with Breadcrumbs and Quick Action Buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Need to deposit or withdraw?</h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Transfer funds instantly or request settlement to your registered bank account.
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              Wallet & Earnings
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Manage your capital, deposits, withdrawals, and payout methods.
             </p>
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1">
+              <Link href="/dashboard" className="hover:text-slate-600 transition-colors">
+                Dashboard
+              </Link>
+              <ChevronRight className="w-3 h-3 text-slate-300" />
+              <span className="text-slate-500 font-medium">Wallet</span>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setModalOpen(true)}
-              leftIcon={<Plus className="w-4 h-4" />}
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => setDepositModalOpen(true)}
+              className="inline-flex items-center gap-2 bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
             >
-              Deposit Funds
-            </Button>
-            <Button
-              onClick={() => toast.success('Withdrawal request initiated!')}
-              rightIcon={<ArrowUpRight className="w-4 h-4" />}
+              <Plus className="w-3.5 h-3.5" />
+              <span>Deposit Funds</span>
+            </button>
+            <button
+              onClick={() => setWithdrawModalOpen(true)}
+              className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
             >
-              Request Withdrawal
-            </Button>
+              <ArrowUpRight className="w-3.5 h-3.5 text-slate-500" />
+              <span>Request Payout</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Top 4 KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+          {/* Card 1: Available Balance */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
+              <Wallet className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[11px] font-medium text-slate-500">Available Balance</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
+                  {formatINR(availableBalance)}
+                </h3>
+                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600">
+                  <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 14.8%
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">Withdrawable anytime</p>
+            </div>
+          </div>
+
+          {/* Card 2: Total ROI Income */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[11px] font-medium text-slate-500">Total ROI Income</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
+                  {formatINR(totalRoi)}
+                </h3>
+                <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-1.5 py-0.2 rounded-md">
+                  Daily
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">From active plans</p>
+            </div>
+          </div>
+
+          {/* Card 3: Total Level Income */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
+              <Network className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[11px] font-medium text-slate-500">Total Referral Income</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
+                  {formatINR(totalLevel)}
+                </h3>
+                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600">
+                  <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 18%
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">From 24 members</p>
+            </div>
+          </div>
+
+          {/* Card 4: Total Withdrawn */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
+              <ArrowUpRight className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-[11px] font-medium text-slate-500">Total Withdrawn</p>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
+                {formatINR(totalWithdrawn)}
+              </h3>
+              <p className="text-[10px] text-slate-400 mt-0.5">2 Completed &nbsp;|&nbsp; 0 Pending</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content: 8-col Left Area (Chart + Table) + 4-col Right Area (Card + Payout Method) */}
+        <div className="grid grid-cols-12 gap-3.5 sm:gap-4">
+          {/* Left Column (8 cols) */}
+          <div className="col-span-12 lg:col-span-8 space-y-3.5 sm:space-y-4">
+            {/* Cashflow & Balance History Chart */}
+            <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
+                    Cashflow & Balance Growth
+                  </h2>
+                  <p className="text-[11px] text-slate-400">
+                    Monthly credits, ROI payouts, and net wallet trajectory.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Legend */}
+                  <div className="hidden sm:flex items-center gap-3 text-xs font-semibold text-slate-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
+                      Inflow
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[#00C48C]" />
+                      Balance
+                    </span>
+                  </div>
+
+                  {/* Timeframe selector */}
+                  <div className="flex items-center border border-slate-200 rounded-xl p-0.5 bg-slate-50/50 text-[11px] font-semibold text-slate-600">
+                    {['7D', '30D', '90D', 'All'].map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTimeframe(t)}
+                        className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+                          timeframe === t
+                            ? 'bg-white text-blue-600 shadow-2xs font-bold'
+                            : 'hover:text-slate-900'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Chart Canvas */}
+              <div className="h-60 sm:h-64 mt-3 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={cashflowData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="walletInflowGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0066FF" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#0066FF" stopOpacity={0.0} />
+                      </linearGradient>
+                      <linearGradient id="walletBalanceGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#00C48C" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#00C48C" stopOpacity={0.0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#94A3B8"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={{ stroke: '#E2E8F0' }}
+                    />
+                    <YAxis
+                      stroke="#94A3B8"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+                    />
+                    <Tooltip content={<CustomCashflowTooltip />} />
+                    <Area
+                      type="monotone"
+                      dataKey="inflow"
+                      name="Inflow"
+                      stroke="#0066FF"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#walletInflowGrad)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="balance"
+                      name="Balance"
+                      stroke="#00C48C"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#walletBalanceGrad)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Transaction History Card */}
+            <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
+                    Transaction History
+                  </h2>
+                  <p className="text-[11px] text-slate-400">
+                    Detailed log of all credits, earnings, deposits, and bank settlements.
+                  </p>
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative w-full sm:w-60">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search transactions..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto py-2 border-b border-slate-100 text-xs">
+                {[
+                  { key: 'all', label: 'All Transactions' },
+                  { key: 'roi', label: 'ROI Payouts' },
+                  { key: 'referral', label: 'Referral Bonuses' },
+                  { key: 'deposit', label: 'Deposits' },
+                  { key: 'withdrawal', label: 'Withdrawals' },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`px-3 py-1 rounded-xl font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                      activeTab === tab.key
+                        ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                        : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Table */}
+              <div className="overflow-x-auto mt-2">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      <th className="py-2.5 px-3">Transaction</th>
+                      <th className="py-2.5 px-3">Type</th>
+                      <th className="py-2.5 px-3">Date & Time</th>
+                      <th className="py-2.5 px-3">Method / Source</th>
+                      <th className="py-2.5 px-3 text-right">Amount</th>
+                      <th className="py-2.5 px-3 text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50 text-xs">
+                    {filteredTransactions.slice((page - 1) * 8, page * 8).map((txn) => (
+                      <tr key={txn.id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="py-3 px-3">
+                          <p className="font-extrabold text-slate-900 font-mono text-[11px]">
+                            {txn.id}
+                          </p>
+                          <p className="text-[10px] text-slate-400 truncate max-w-[160px]">
+                            {txn.description}
+                          </p>
+                        </td>
+
+                        <td className="py-3 px-3">
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                              txn.category === 'roi'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                                : txn.category === 'referral'
+                                ? 'bg-purple-50 text-purple-700 border border-purple-100'
+                                : txn.category === 'deposit'
+                                ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                                : 'bg-amber-50 text-amber-700 border border-amber-100'
+                            }`}
+                          >
+                            {txn.type}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-3 text-slate-600 text-[11px] whitespace-nowrap">
+                          {formatDate(txn.date)}
+                        </td>
+
+                        <td className="py-3 px-3 text-slate-600 text-[11px]">
+                          {txn.method}
+                        </td>
+
+                        <td className="py-3 px-3 text-right font-extrabold whitespace-nowrap">
+                          <span className={txn.isCredit ? 'text-emerald-600' : 'text-slate-900'}>
+                            {txn.isCredit ? '+' : '-'}
+                            {formatINR(txn.amount)}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-3 text-center">
+                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                            <CheckCircle2 className="w-3 h-3" />
+                            {txn.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-100 text-xs">
+                <p className="text-[11px] text-slate-400">
+                  Showing 1 to {Math.min(8, filteredTransactions.length)} of {filteredTransactions.length} entries
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="p-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="px-2.5 py-0.5 text-[11px] font-bold text-blue-600 bg-blue-50 rounded-md">
+                    {page}
+                  </span>
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={page * 8 >= filteredTransactions.length}
+                    className="p-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column (4 cols) */}
+          <div className="col-span-12 lg:col-span-4 space-y-3.5 sm:space-y-4">
+            {/* Card 1: Virtual Nexachain Metallic Fintech Card */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B1528] via-[#102A43] to-[#0D3880] p-5 text-white shadow-md border border-slate-800">
+              {/* Decorative Mesh Background */}
+              <div className="absolute -right-12 -top-12 w-44 h-44 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="relative z-10 flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="font-extrabold text-sm tracking-wide text-white">
+                    Nexachain <span className="text-blue-400">AI</span>
+                  </h4>
+                  <p className="text-[9px] text-slate-400 tracking-wider uppercase font-semibold">
+                    Fintech Digital Wallet
+                  </p>
+                </div>
+                {/* Contactless Icon */}
+                <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xs">
+                  <CreditCard className="w-3.5 h-3.5 text-blue-300" />
+                </div>
+              </div>
+
+              {/* Metallic Chip */}
+              <div className="relative z-10 w-9 h-6 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-500 border border-amber-300/60 shadow-xs mb-4 flex items-center justify-around px-1">
+                <span className="w-px h-3 bg-amber-700/40" />
+                <span className="w-px h-3 bg-amber-700/40" />
+              </div>
+
+              {/* Card Number */}
+              <div className="relative z-10 font-mono tracking-widest text-sm text-slate-200 font-bold mb-4">
+                •••• &nbsp; •••• &nbsp; •••• &nbsp; 4289
+              </div>
+
+              {/* Bottom Card Row */}
+              <div className="relative z-10 flex items-end justify-between text-xs pt-1 border-t border-white/10">
+                <div>
+                  <p className="text-[9px] text-slate-400 uppercase font-semibold">Card Holder</p>
+                  <p className="font-bold text-white text-xs tracking-wider">
+                    {user?.fullName?.toUpperCase() || 'JOHN DOE'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[9px] text-slate-400 uppercase font-semibold">Expires</p>
+                  <p className="font-bold text-white text-xs tracking-wider">09/29</p>
+                </div>
+                <div>
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                    Active
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Quick Action & Limits Card */}
+            <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-3">
+                Quick Transfer & Limits
+              </h3>
+
+              {/* Progress bar for daily limits */}
+              <div className="space-y-1.5 mb-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium">Daily Limit Used</span>
+                  <span className="font-bold text-slate-900">
+                    {formatINR(totalWithdrawn)} / {formatINR(50000)}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-[#0066FF] h-full rounded-full transition-all duration-300"
+                    style={{ width: `${(totalWithdrawn / 50000) * 100}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-slate-400">
+                  Remaining daily quota: {formatINR(50000 - totalWithdrawn)}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-2.5">
+                <button
+                  onClick={() => setDepositModalOpen(true)}
+                  className="w-full py-2.5 px-3 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Deposit
+                </button>
+                <button
+                  onClick={() => setWithdrawModalOpen(true)}
+                  className="w-full py-2.5 px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                >
+                  <ArrowUpRight className="w-3.5 h-3.5 text-slate-500" />
+                  Withdraw
+                </button>
+              </div>
+            </div>
+
+            {/* Card 3: Verified Payout Bank Account */}
+            <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                  Payout Bank Account
+                </h3>
+                <button
+                  onClick={() => setBankModalOpen(true)}
+                  className="text-[11px] font-semibold text-blue-600 border border-slate-200 hover:bg-slate-50 rounded-lg px-2.5 py-0.5 transition-colors cursor-pointer"
+                >
+                  Edit
+                </button>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-blue-100 text-[#0066FF] flex items-center justify-center">
+                      <Building className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-xs text-slate-900 leading-tight">
+                        {bankInfo.bankName}
+                      </p>
+                      <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                        {bankInfo.accountNumber}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <Check className="w-3 h-3 stroke-[3]" />
+                    Verified
+                  </span>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200/60 grid grid-cols-2 gap-1 text-[10px]">
+                  <div>
+                    <span className="text-slate-400">Holder: </span>
+                    <span className="font-bold text-slate-800">{bankInfo.holderName}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-slate-400">IFSC: </span>
+                    <span className="font-bold text-slate-800 font-mono">{bankInfo.ifsc}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-start gap-2 text-[10px] text-slate-400 leading-tight">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                <p>
+                  All payout requests are processed via Instant IMPS with automated ledger settlement.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Deposit Funds">
+      {/* MODAL 1: DEPOSIT CAPITAL */}
+      <Modal
+        isOpen={depositModalOpen}
+        onClose={() => setDepositModalOpen(false)}
+        title="Deposit Capital to Wallet"
+      >
         <div className="space-y-4 text-xs">
+          <p className="text-slate-500">
+            Select or enter the amount you want to add to your Nexachain AI investment wallet.
+          </p>
+
+          {/* Quick preset chips */}
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
+              Quick Select Amount
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {['1000', '5000', '10000', '25000'].map((amt) => (
+                <button
+                  key={amt}
+                  type="button"
+                  onClick={() => setDepositAmount(amt)}
+                  className={`py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                    depositAmount === amt
+                      ? 'bg-blue-50 border-blue-600 text-blue-600'
+                      : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  ₹{Number(amt).toLocaleString()}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <Input
-            label="Amount (₹)"
+            label="Deposit Amount (₹)"
             type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={depositAmount}
+            onChange={(e) => setDepositAmount(e.target.value)}
+            placeholder="e.g. 5000"
           />
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>
+
+          {/* Payment Method Selector */}
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
+              Payment Gateway
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { key: 'UPI', label: 'UPI / QR', icon: QrCode },
+                { key: 'IMPS', label: 'Net Banking', icon: Building },
+                { key: 'USDT', label: 'USDT TRC20', icon: CreditCard },
+              ].map((m) => {
+                const IconComponent = m.icon;
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => setDepositMethod(m.key)}
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                      depositMethod === m.key
+                        ? 'bg-blue-50 border-blue-600 text-blue-600 font-bold'
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <IconComponent className="w-4 h-4 mx-auto mb-1" />
+                    <span className="text-[11px] block">{m.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100 flex items-center justify-between text-xs">
+            <span className="text-slate-600 font-medium">Estimated Credit Time:</span>
+            <span className="font-bold text-blue-700">Instant (0% Fee)</span>
+          </div>
+
+          <div className="flex justify-end gap-2.5 pt-2">
+            <Button variant="secondary" size="sm" onClick={() => setDepositModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleDepositSubmit}>
+              Proceed to Pay {formatINR(Number(depositAmount) || 0)}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MODAL 2: WITHDRAW CAPITAL */}
+      <Modal
+        isOpen={withdrawModalOpen}
+        onClose={() => setWithdrawModalOpen(false)}
+        title="Request Wallet Settlement"
+      >
+        <div className="space-y-4 text-xs">
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <span className="text-slate-500 font-medium">Available Balance:</span>
+            <span className="font-extrabold text-slate-900 text-sm">
+              {formatINR(availableBalance)}
+            </span>
+          </div>
+
+          {/* Quick percentage chips */}
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
+              Select Percentage
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {[25, 50, 75, 100].map((pct) => (
+                <button
+                  key={pct}
+                  type="button"
+                  onClick={() => setWithdrawAmount(String(Math.floor((availableBalance * pct) / 100)))}
+                  className="py-1.5 rounded-xl border border-slate-200 text-xs font-bold hover:bg-slate-50 text-slate-700 cursor-pointer"
+                >
+                  {pct}%
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <Input
+            label="Withdrawal Amount (₹)"
+            type="number"
+            value={withdrawAmount}
+            onChange={(e) => setWithdrawAmount(e.target.value)}
+            placeholder="e.g. 2000"
+          />
+
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-slate-500">Destination:</span>
+              <span className="font-bold text-slate-900">
+                {bankInfo.bankName} ({bankInfo.accountNumber})
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-slate-500">Processing Fee:</span>
+              <span className="font-bold text-emerald-600">₹ 0 (Free)</span>
+            </div>
+            <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200 font-bold">
+              <span className="text-slate-800">Net Settlement:</span>
+              <span className="text-blue-600">{formatINR(Number(withdrawAmount) || 0)}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2.5 pt-2">
+            <Button variant="secondary" size="sm" onClick={() => setWithdrawModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleWithdrawSubmit}>
+              Confirm Withdrawal
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MODAL 3: EDIT BANK ACCOUNT */}
+      <Modal
+        isOpen={bankModalOpen}
+        onClose={() => setBankModalOpen(false)}
+        title="Update Payout Bank Details"
+      >
+        <div className="space-y-3.5 text-xs">
+          <Input
+            label="Bank Name"
+            type="text"
+            value={bankInfo.bankName}
+            onChange={(e) => setBankInfo({ ...bankInfo, bankName: e.target.value })}
+            placeholder="e.g. HDFC Bank Ltd."
+          />
+          <Input
+            label="Account Holder Name"
+            type="text"
+            value={bankInfo.holderName}
+            onChange={(e) => setBankInfo({ ...bankInfo, holderName: e.target.value })}
+            placeholder="As on passbook"
+          />
+          <Input
+            label="Account Number"
+            type="text"
+            value={bankInfo.accountNumber}
+            onChange={(e) => setBankInfo({ ...bankInfo, accountNumber: e.target.value })}
+            placeholder="Account number"
+          />
+          <Input
+            label="IFSC Code"
+            type="text"
+            value={bankInfo.ifsc}
+            onChange={(e) => setBankInfo({ ...bankInfo, ifsc: e.target.value.toUpperCase() })}
+            placeholder="e.g. HDFC0001234"
+          />
+
+          <div className="flex justify-end gap-2.5 pt-2">
+            <Button variant="secondary" size="sm" onClick={() => setBankModalOpen(false)}>
               Cancel
             </Button>
             <Button
+              size="sm"
               onClick={() => {
-                toast.success(`Deposit of ${formatINR(Number(amount))} processed!`);
-                setModalOpen(false);
+                toast.success('Payout bank details updated!');
+                setBankModalOpen(false);
               }}
             >
-              Confirm Deposit
+              Save Bank Details
             </Button>
           </div>
         </div>

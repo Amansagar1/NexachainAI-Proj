@@ -481,6 +481,16 @@ const summaryMatrix = [
 ];
 
 /* -------------------------------------------------------------------------
+   STATIC REACT FLOW NODE TYPES (DEFINED OUTSIDE COMPONENT FOR ZERO WARNINGS)
+------------------------------------------------------------------------- */
+const nodeTypes = {
+  rootNode: RootNodeComponent,
+  level1Node: Level1NodeComponent,
+  level2Node: Level2NodeComponent,
+  level3Node: Level3NodeComponent,
+};
+
+/* -------------------------------------------------------------------------
    INNER FLOW CANVAS COMPONENT (USING useReactFlow)
 ------------------------------------------------------------------------- */
 function TreeFlowCanvas() {
@@ -488,16 +498,6 @@ function TreeFlowCanvas() {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
   const { zoomIn, zoomOut, fitView, getZoom } = useReactFlow();
   const [zoomPercent, setZoomPercent] = useState(100);
-
-  const memoizedNodeTypes = useMemo(
-    () => ({
-      rootNode: RootNodeComponent,
-      level1Node: Level1NodeComponent,
-      level2Node: Level2NodeComponent,
-      level3Node: Level3NodeComponent,
-    }),
-    []
-  );
 
   const handleZoomIn = () => {
     zoomIn({ duration: 250 });
@@ -590,7 +590,7 @@ function TreeFlowCanvas() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          nodeTypes={memoizedNodeTypes}
+          nodeTypes={nodeTypes}
           fitView
           fitViewOptions={{ padding: 0.08 }}
           minZoom={0.4}
