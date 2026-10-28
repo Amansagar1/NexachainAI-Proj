@@ -29,7 +29,7 @@ const loginSchema = z.object({
 });
 
 // Exact 3D Folded Ribbon Logo Component
-function NexachainRibbonLogo({ className = 'w-14 h-14' }) {
+function NexachainRibbonLogo({ className = 'w-12 h-12' }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -114,7 +114,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#EEF5FC]">
+    <div className="h-screen w-screen max-h-screen overflow-hidden flex flex-col lg:flex-row relative bg-[#EEF5FC]">
       {/* ========================================================================= */}
       {/* 1:1 Flowing Gradient Wave Canvas (Matching Reference Screenshot)          */}
       {/* ========================================================================= */}
@@ -167,7 +167,7 @@ export default function LoginPage() {
           {/* Pale Ice-Blue Base Canvas */}
           <rect width="1536" height="1024" fill="url(#right-pale-sky)" />
 
-          {/* Top-Right Deep Blue Corner Arc (Crucial visual element from screenshot) */}
+          {/* Top-Right Deep Blue Corner Arc */}
           <path
             d="M 850 0 C 960 140 1160 220 1536 260 L 1536 0 Z"
             fill="url(#top-right-wave-grad)"
@@ -208,83 +208,83 @@ export default function LoginPage() {
       {/* ========================================================================= */}
       {/* Left Column: Brand Identity, Value Highlights & 3D Analytics Widget       */}
       {/* ========================================================================= */}
-      <div className="lg:w-[52%] xl:w-[50%] flex flex-col justify-between p-8 sm:p-12 lg:p-16 xl:p-20 relative z-10 text-white min-h-[660px] lg:min-h-screen">
+      <div className="lg:w-[50%] xl:w-[48%] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 relative z-10 text-white h-full overflow-hidden">
         {/* Top Logo & Tagline */}
-        <div>
-          <div className="flex items-center gap-3">
-            <NexachainRibbonLogo className="w-12 h-12 drop-shadow-md" />
+        <div className="shrink-0">
+          <div className="flex items-center gap-2.5">
+            <NexachainRibbonLogo className="w-10 h-10 sm:w-11 sm:h-11 drop-shadow-md" />
             <div>
-              <div className="flex items-baseline text-[28px] font-black tracking-tight leading-none">
+              <div className="flex items-baseline text-2xl sm:text-[26px] font-black tracking-tight leading-none">
                 <span className="text-white">Nexachain</span>
                 <span className="text-[#1D6EFF] ml-1.5 font-black">AI</span>
               </div>
             </div>
           </div>
-          <p className="text-[10px] sm:text-[11px] font-bold text-[#8EA8D6] tracking-[0.22em] uppercase mt-2 pl-0.5">
+          <p className="text-[10px] font-bold text-[#8EA8D6] tracking-[0.22em] uppercase mt-1.5 pl-0.5">
             INVEST · EARN · GROW TOGETHER
           </p>
         </div>
 
         {/* Central Hero Headline & Feature Pills */}
-        <div className="my-auto py-8 sm:py-10 max-w-lg">
-          <h1 className="text-4xl sm:text-[46px] lg:text-[48px] font-black text-white leading-[1.12] tracking-tight">
+        <div className="my-auto py-3 max-w-lg shrink-0">
+          <h1 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-black text-white leading-[1.12] tracking-tight">
             Build Your <br />
             Financial Growth <br />
             with <span className="text-[#1D6EFF]">Nexachain AI</span>
           </h1>
 
-          <p className="mt-5 text-sm sm:text-[15px] text-[#A0B6D9] leading-relaxed font-normal max-w-md">
+          <p className="mt-3.5 text-xs sm:text-[13px] text-[#A0B6D9] leading-relaxed font-normal max-w-sm">
             A secure investment and referral platform designed for long-term growth. Invest, earn
             daily ROI and build your network.
           </p>
 
-          {/* 2x2 Feature Pills Grid (Matching Reference Screenshot) */}
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-md">
+          {/* 2x2 Feature Pills Grid */}
+          <div className="mt-5 grid grid-cols-2 gap-2.5 max-w-md">
             {/* Pill 1: Daily ROI Earnings */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <BarChart2 className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
+                <BarChart2 className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-white leading-tight">Daily ROI</p>
-                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">Earnings</p>
+                <p className="text-[11px] font-bold text-white leading-tight">Daily ROI</p>
+                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">Earnings</p>
               </div>
             </div>
 
             {/* Pill 2: Multi-Level Referral Income */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <Users className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
+                <Users className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-white leading-tight">Multi-Level</p>
-                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
+                <p className="text-[11px] font-bold text-white leading-tight">Multi-Level</p>
+                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Referral Income
                 </p>
               </div>
             </div>
 
             {/* Pill 3: Secure & Transparent */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <ShieldCheck className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-white leading-tight">Secure &</p>
-                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
+                <p className="text-[11px] font-bold text-white leading-tight">Secure &</p>
+                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Transparent
                 </p>
               </div>
             </div>
 
             {/* Pill 4: Track Your Investments */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <Wallet className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
+                <Wallet className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-white leading-tight">Track Your</p>
-                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
+                <p className="text-[11px] font-bold text-white leading-tight">Track Your</p>
+                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Investments
                 </p>
               </div>
@@ -292,8 +292,8 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Bottom Left: 3D Isometric Perspective Dashboard Preview (Exact Clone) */}
-        <div className="relative pt-4 max-w-lg hidden sm:block">
+        {/* Bottom Left: 3D Isometric Perspective Dashboard Preview */}
+        <div className="relative pt-2 max-w-lg hidden sm:block shrink-0">
           <div
             className="relative"
             style={{
@@ -303,23 +303,23 @@ export default function LoginPage() {
           >
             {/* Base Tilted Tablet Slate */}
             <div
-              className="relative w-[360px] sm:w-[390px] h-[210px] rounded-[24px] bg-[#071638]/90 border border-blue-400/25 p-5 shadow-[0_25px_60px_rgba(2,10,30,0.8)] backdrop-blur-xl"
+              className="relative w-[310px] sm:w-[340px] h-[155px] sm:h-[165px] rounded-[20px] bg-[#071638]/90 border border-blue-400/25 p-3.5 sm:p-4 shadow-[0_20px_50px_rgba(2,10,30,0.8)] backdrop-blur-xl"
               style={{
                 transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg)',
                 transformStyle: 'preserve-3d',
               }}
             >
               {/* Skeleton lines at top left */}
-              <div className="space-y-1.5">
-                <div className="w-16 h-1.5 rounded-full bg-white/20" />
-                <div className="w-10 h-1.5 rounded-full bg-white/10" />
+              <div className="space-y-1">
+                <div className="w-14 h-1.5 rounded-full bg-white/20" />
+                <div className="w-8 h-1.5 rounded-full bg-white/10" />
               </div>
 
               {/* Luminous Glowing Area Line Chart */}
-              <div className="w-full h-24 mt-2">
+              <div className="w-full h-16 sm:h-20 mt-1">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 280 80">
                   <defs>
-                    <linearGradient id="chart-glow-fill" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="chart-glow-fill" x1="0%" y1="0%" x2="0%" y2="1">
                       <stop offset="0%" stopColor="#00D2FF" stopOpacity="0.45" />
                       <stop offset="60%" stopColor="#0066FF" stopOpacity="0.15" />
                       <stop offset="100%" stopColor="#0047BA" stopOpacity="0.0" />
@@ -328,7 +328,7 @@ export default function LoginPage() {
                       <feDropShadow
                         dx="0"
                         dy="0"
-                        stdDeviation="3.5"
+                        stdDeviation="3"
                         floodColor="#00E5FF"
                         floodOpacity="0.9"
                       />
@@ -345,39 +345,39 @@ export default function LoginPage() {
                     strokeLinecap="round"
                     filter="url(#neon-glow)"
                   />
-                  <circle cx="105" cy="44" r="3.5" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
-                  <circle cx="210" cy="28" r="3.5" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
-                  <circle cx="275" cy="8" r="4.5" fill="#FFFFFF" stroke="#00A3FF" strokeWidth="2" />
+                  <circle cx="105" cy="44" r="3" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
+                  <circle cx="210" cy="28" r="3" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
+                  <circle cx="275" cy="8" r="4" fill="#FFFFFF" stroke="#00A3FF" strokeWidth="2" />
                 </svg>
               </div>
 
               {/* Skeleton lines at bottom */}
-              <div className="flex gap-2 mt-2 pt-2 border-t border-white/10">
-                <div className="w-12 h-1.5 rounded-full bg-white/20" />
-                <div className="w-16 h-1.5 rounded-full bg-white/15" />
+              <div className="flex gap-2 mt-1 pt-1.5 border-t border-white/10">
+                <div className="w-10 h-1.5 rounded-full bg-white/20" />
+                <div className="w-14 h-1.5 rounded-full bg-white/15" />
                 <div className="w-8 h-1.5 rounded-full bg-white/20" />
               </div>
             </div>
 
             {/* Overlapping Floating "Total Earnings" Card */}
             <div
-              className="absolute -bottom-3 -left-4 w-[210px] rounded-[18px] bg-[#0A235C]/95 border border-blue-400/35 p-3.5 px-4 shadow-[0_20px_45px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+              className="absolute -bottom-2 -left-3 w-[185px] rounded-[16px] bg-[#0A235C]/95 border border-blue-400/35 p-3 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl"
               style={{
                 transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg) translateZ(35px)',
               }}
             >
-              <p className="text-[11px] text-slate-300 font-medium">Total Earnings</p>
-              <h4 className="text-[22px] font-black text-white tracking-tight mt-0.5">₹ 12,750</h4>
-              <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-white/10">
-                <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-0.5">
-                  <ChevronUp className="w-3.5 h-3.5 stroke-[3]" /> +12%
+              <p className="text-[10px] text-slate-300 font-medium">Total Earnings</p>
+              <h4 className="text-lg font-black text-white tracking-tight mt-0.5">₹ 12,750</h4>
+              <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-white/10">
+                <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-0.5">
+                  <ChevronUp className="w-3 h-3 stroke-[3]" /> +12%
                 </span>
-                {/* 4-bar equalizer graphic in bright blue */}
-                <div className="flex items-end gap-1 h-4">
+                {/* 4-bar equalizer graphic */}
+                <div className="flex items-end gap-1 h-3.5">
+                  <span className="w-1 h-1.5 bg-[#1E74FF] rounded-full" />
+                  <span className="w-1 h-3 bg-[#1E74FF] rounded-full" />
                   <span className="w-1 h-2 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-3.5 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-2.5 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-4 bg-[#00E5FF] rounded-full" />
+                  <span className="w-1 h-3.5 bg-[#00E5FF] rounded-full" />
                 </div>
               </div>
             </div>
@@ -386,33 +386,33 @@ export default function LoginPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* Right Column: Floating Crisp White Login Card (Exact UI Clone)             */}
+      {/* Right Column: Floating Crisp White Login Card (Exact UI Clone, Fits Screen)*/}
       {/* ========================================================================= */}
-      <div className="lg:w-[48%] xl:w-[50%] flex items-center justify-center p-6 sm:p-10 lg:p-14 xl:p-16 relative z-10">
-        <div className="w-full max-w-[460px] bg-white rounded-[32px] sm:rounded-[36px] p-8 sm:p-12 shadow-[0_20px_60px_-15px_rgba(0,25,80,0.12)] border border-white/80">
+      <div className="lg:w-[50%] xl:w-[52%] flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-10 relative z-10 h-full overflow-hidden">
+        <div className="w-full max-w-[410px] xl:max-w-[430px] bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 lg:p-9 shadow-[0_20px_50px_-15px_rgba(0,25,80,0.12)] border border-white/80 my-auto">
           {/* Card Top: 3D Ribbon Logo & Welcome Typography */}
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-3">
-              <NexachainRibbonLogo className="w-16 h-16 drop-shadow-md" />
+          <div className="text-center mb-5 sm:mb-6">
+            <div className="flex justify-center mb-2">
+              <NexachainRibbonLogo className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md" />
             </div>
 
-            <h2 className="text-[26px] font-black text-[#0B132A] tracking-tight">
+            <h2 className="text-2xl sm:text-[25px] font-black text-[#0B132A] tracking-tight leading-tight">
               Nexachain <span className="text-[#0066FF]">AI</span>
             </h2>
 
-            <p className="text-[11px] font-bold tracking-[0.24em] text-slate-400 uppercase mt-2">
+            <p className="text-[10px] font-bold tracking-[0.22em] text-slate-400 uppercase mt-1">
               WELCOME BACK
             </p>
-            <p className="text-xs sm:text-[13px] text-slate-500 font-normal mt-1">
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
               Login to your account to continue
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-3.5">
             {/* Email Field */}
             <div>
-              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-800 mb-1">
                 Email
               </label>
               <div
@@ -422,24 +422,24 @@ export default function LoginPage() {
                     : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
-                  <Mail className="w-[18px] h-[18px]" />
+                <div className="absolute left-3 text-slate-400 pointer-events-none">
+                  <Mail className="w-4 h-4" />
                 </div>
                 <input
                   type="email"
                   placeholder="Enter your email address"
-                  className="w-full py-3.5 pl-11 pr-4 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-2.5 sm:py-3 pl-9 pr-3 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('email')}
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-xs text-rose-500 font-medium">{errors.email.message}</p>
+                <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-800 mb-1">
                 Password
               </label>
               <div
@@ -449,34 +449,34 @@ export default function LoginPage() {
                     : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
-                  <Lock className="w-[18px] h-[18px]" />
+                <div className="absolute left-3 text-slate-400 pointer-events-none">
+                  <Lock className="w-4 h-4" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  className="w-full py-3.5 pl-11 pr-11 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-2.5 sm:py-3 pl-9 pr-10 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('password')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                  className="absolute right-3 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-[18px] h-[18px]" />
+                    <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-[18px] h-[18px]" />
+                    <Eye className="w-4 h-4" />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-xs text-rose-500 font-medium">{errors.password.message}</p>
+                <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{errors.password.message}</p>
               )}
 
               {/* Forgot Password Link */}
-              <div className="flex justify-end mt-2">
+              <div className="flex justify-end mt-1">
                 <a
                   href="#"
                   onClick={(e) => {
@@ -485,7 +485,7 @@ export default function LoginPage() {
                       icon: 'ℹ️',
                     });
                   }}
-                  className="text-xs font-semibold text-[#0066FF] hover:underline"
+                  className="text-[11px] font-semibold text-[#0066FF] hover:underline"
                 >
                   Forgot Password?
                 </a>
@@ -496,7 +496,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-4 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-sm sm:text-base rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+              className="w-full mt-1.5 py-2.5 sm:py-3 px-4 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <span>Logging in...</span>
@@ -510,11 +510,11 @@ export default function LoginPage() {
           </form>
 
           {/* OR Divider */}
-          <div className="relative my-5 text-center">
+          <div className="relative my-3 sm:my-3.5 text-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
-            <span className="relative bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            <span className="relative bg-white px-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               OR
             </span>
           </div>
@@ -525,7 +525,7 @@ export default function LoginPage() {
             onClick={() =>
               toast('Google OAuth ready for client credentials configuration.', { icon: 'ℹ️' })
             }
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-xl border border-slate-200 text-xs sm:text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path
@@ -549,7 +549,7 @@ export default function LoginPage() {
           </button>
 
           {/* Registration Footer */}
-          <p className="text-center text-xs text-slate-500 mt-6">
+          <p className="text-center text-xs text-slate-500 mt-4 sm:mt-5">
             Don&apos;t have an account?{' '}
             <Link href={ROUTES.REGISTER} className="font-bold text-[#0066FF] hover:underline ml-1">
               Register
