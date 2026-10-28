@@ -104,9 +104,55 @@ const getCurrentUser = async (userId) => {
   return user;
 };
 
+/**
+ * Update user personal information
+ */
+const updateProfile = async (userId, updates) => {
+  const allowed = ['fullName', 'mobileNumber', 'city', 'country', 'address', 'dateOfBirth', 'gender'];
+  const updateData = {};
+  allowed.forEach((field) => {
+    if (updates[field] !== undefined) {
+      updateData[field] = updates[field];
+    }
+  });
+
+  const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updatedUser) {
+    throw new AppError('User not found', 404);
+  }
+
+  return updatedUser;
+};
+
+/**
+ * Change user password
+ */
+const changePassword = async (userId, { currentPassword, newPassword }) => {
+  const user = await User.findById(userId).select('+password');
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    throw new AppError('Current password is incorrect', 400);
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  return true;
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
+  updateProfile,
+  changePassword,
   signToken,
 };

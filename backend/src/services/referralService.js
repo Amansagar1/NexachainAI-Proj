@@ -218,11 +218,11 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
 
   const filter = { user: userId };
 
-  if (query.level) {
+  if (query.level && query.level !== 'All' && !isNaN(parseInt(query.level, 10))) {
     filter.referralLevel = parseInt(query.level, 10);
   }
 
-  if (query.type) {
+  if (query.type && query.type !== 'All') {
     filter.incomeType = query.type;
   }
 

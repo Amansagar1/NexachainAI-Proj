@@ -201,18 +201,16 @@ export default function ROIHistoryPage() {
         status: statusFilter !== 'All' ? statusFilter : undefined,
       });
 
-      const resData = res.data.data;
-      if (resData && resData.records && resData.records.length > 0) {
-        setData(resData);
-      } else {
+      const resData = res.data?.data;
+      if (resData) {
         setData({
-          records: defaultRoiRecords,
-          pagination: { page: 1, limit: 10, total: 26, totalPages: 3 },
-          metrics: {
-            totalRoiEarned: 12750,
-            totalRoiDays: 26,
-            averageDailyRoi: 490,
-            activeInvestmentsCount: 2,
+          records: resData.records || [],
+          pagination: resData.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 },
+          metrics: resData.metrics || {
+            totalRoiEarned: 0,
+            totalRoiDays: 0,
+            averageDailyRoi: 0,
+            activeInvestmentsCount: 0,
             distribution: defaultDistribution,
             trend: defaultRoiTrend,
           },
@@ -220,19 +218,7 @@ export default function ROIHistoryPage() {
       }
     } catch (err) {
       console.error('Fetch ROI history error:', err);
-      // Fallback matching reference screenshot
-      setData({
-        records: defaultRoiRecords,
-        pagination: { page: 1, limit: 10, total: 26, totalPages: 3 },
-        metrics: {
-          totalRoiEarned: 12750,
-          totalRoiDays: 26,
-          averageDailyRoi: 490,
-          activeInvestmentsCount: 2,
-          distribution: defaultDistribution,
-          trend: defaultRoiTrend,
-        },
-      });
+      setError('Failed to load ROI records. Please retry.');
     } finally {
       setLoading(false);
     }

@@ -12,6 +12,7 @@ import {
   Award,
   KeyRound,
   Smartphone,
+  
   Laptop,
   CheckCircle2,
   Copy,
@@ -32,11 +33,12 @@ import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
+import { authApi } from '../../features/auth/authApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
 
   // Active Tab
   const [activeTab, setActiveTab] = useState('personal');
@@ -50,17 +52,33 @@ export default function ProfilePage() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Profile Form state
+  // Profile Form state initialized dynamically from authenticated user
   const [profileData, setProfileData] = useState({
     fullName: user?.fullName || 'John Doe',
     email: user?.email || 'john@nexachain.ai',
     mobileNumber: user?.mobileNumber || '+91 98765 43210',
-    dateOfBirth: '1992-05-18',
-    gender: 'Male',
-    country: 'India',
-    city: 'New Delhi',
-    address: 'Suite 402, Barakhamba Road, Connaught Place',
+    dateOfBirth: user?.dateOfBirth || '1992-05-18',
+    gender: user?.gender || 'Male',
+    country: user?.country || 'India',
+    city: user?.city || 'New Delhi',
+    address: user?.address || 'Suite 402, Barakhamba Road, Connaught Place',
   });
+
+  // Sync state whenever user profile is updated or loaded
+  React.useEffect(() => {
+    if (user) {
+      setProfileData({
+        fullName: user.fullName || '',
+        email: user.email || '',
+        mobileNumber: user.mobileNumber || '',
+        dateOfBirth: user.dateOfBirth || '1992-05-18',
+        gender: user.gender || 'Male',
+        country: user.country || 'India',
+        city: user.city || 'New Delhi',
+        address: user.address || 'Suite 402, Barakhamba Road, Connaught Place',
+      });
+    }
+  }, [user]);
 
   // Password state
   const [passwordData, setPasswordData] = useState({
@@ -89,13 +107,27 @@ export default function ProfilePage() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const handleProfileSave = (e) => {
+  const handleProfileSave = async (e) => {
     e.preventDefault();
-    toast.success('Profile details updated successfully!');
-    setIsEditModalOpen(false);
+    try {
+      await authApi.updateProfile({
+        fullName: profileData.fullName,
+        mobileNumber: profileData.mobileNumber,
+        city: profileData.city,
+        country: profileData.country,
+        address: profileData.address,
+        dateOfBirth: profileData.dateOfBirth,
+        gender: profileData.gender,
+      });
+      await refreshUser();
+      toast.success('Profile details updated successfully!');
+      setIsEditModalOpen(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update profile');
+    }
   };
 
-  const handlePasswordSave = (e) => {
+  const handlePasswordSave = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword.length < 6) {
       toast.error('New password must be at least 6 characters');
@@ -105,9 +137,17 @@ export default function ProfilePage() {
       toast.error('Passwords do not match');
       return;
     }
-    toast.success('Password changed successfully!');
-    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    setIsPasswordModalOpen(false);
+    try {
+      await authApi.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+      toast.success('Password changed successfully!');
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setIsPasswordModalOpen(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Current password incorrect');
+    }
   };
 
   return (

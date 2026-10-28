@@ -36,6 +36,7 @@ import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { referralsApi } from '../../features/referrals/referralsApi';
+import { walletApi } from '../../features/wallet/walletApi';
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
 import { formatINR } from '../../utils/currency';
@@ -171,21 +172,22 @@ const defaultRecentReferrals = [
 ];
 
 export default function ReferralIncomePage() {
-  const { user } = useAuth();
+  const { user, updateUserBalance } = useAuth();
   const [data, setData] = useState({
-    records: defaultIncomeRecords,
-    pagination: { page: 1, limit: 10, total: 24, totalPages: 3 },
+    records: [],
+    pagination: { page: 1, limit: 10, total: 0, totalPages: 1 },
     metrics: {
-      totalLevelIncome: 4500,
-      directIncome: 2000,
-      totalReferrals: 24,
-      directReferrals: 8,
-      indirectReferrals: 16,
-      l1Income: 1800,
-      l2Income: 1575,
-      l3Income: 1125,
+      totalLevelIncome: 0,
+      directIncome: 0,
+      totalReferrals: 0,
+      directReferrals: 0,
+      indirectReferrals: 0,
+      l1Income: 0,
+      l2Income: 0,
+      l3Income: 0,
     },
   });
+  const [recentReferrals, setRecentReferrals] = useState(defaultRecentReferrals);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -203,20 +205,21 @@ export default function ReferralIncomePage() {
     setLoading(true);
     setError(null);
     try {
-      const incomeRes = await referralsApi.getReferralIncome({
-        level: levelFilter !== 'All' ? levelFilter : undefined,
-        page,
-        limit: 10,
-      });
+      const [incomeRes, directRes] = await Promise.all([
+        referralsApi.getReferralIncome({
+          level: levelFilter !== 'All' ? levelFilter : undefined,
+          page,
+          limit: 10,
+        }),
+        referralsApi.getDirectReferrals().catch(() => ({ data: { data: [] } })),
+      ]);
 
-      const resData = incomeRes.data.data;
-      if (resData && resData.records && resData.records.length > 0) {
-        setData(resData);
-      } else {
+      const resData = incomeRes.data?.data;
+      if (resData) {
         setData({
-          records: defaultIncomeRecords,
-          pagination: { page: 1, limit: 10, total: 24, totalPages: 3 },
-          metrics: {
+          records: resData.records || [],
+          pagination: resData.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 },
+          metrics: resData.metrics || {
             totalLevelIncome: 4500,
             directIncome: 2000,
             totalReferrals: 24,
@@ -228,23 +231,21 @@ export default function ReferralIncomePage() {
           },
         });
       }
+
+      // Populate recent direct referrals list dynamically
+      const directList = directRes.data?.data || [];
+      if (directList.length > 0) {
+        const mappedRecent = directList.slice(0, 5).map((u, i) => ({
+          username: u.fullName || u.email?.split('@')[0] || `user${i + 1}`,
+          date: `Joined on ${formatDate(u.createdAt)}`,
+          level: 'Level 1',
+          color: i % 4 === 0 ? 'blue' : i % 4 === 1 ? 'green' : i % 4 === 2 ? 'orange' : 'teal',
+        }));
+        setRecentReferrals(mappedRecent);
+      }
     } catch (err) {
       console.error('Fetch referral income error:', err);
-      // Fallback matching reference screenshot
-      setData({
-        records: defaultIncomeRecords,
-        pagination: { page: 1, limit: 10, total: 24, totalPages: 3 },
-        metrics: {
-          totalLevelIncome: 4500,
-          directIncome: 2000,
-          totalReferrals: 24,
-          directReferrals: 8,
-          indirectReferrals: 16,
-          l1Income: 1800,
-          l2Income: 1575,
-          l3Income: 1125,
-        },
-      });
+      setError('Failed to load referral income records. Please retry.');
     } finally {
       setLoading(false);
     }
@@ -673,7 +674,7 @@ export default function ReferralIncomePage() {
 
               {/* 5 User Feed Items */}
               <div className="space-y-3">
-                {defaultRecentReferrals.map((userItem, idx) => (
+                {recentReferrals.map((userItem, idx) => (
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div
@@ -750,9 +751,26 @@ export default function ReferralIncomePage() {
               Cancel
             </Button>
             <Button
-              onClick={() => {
-                toast.success(`Withdrawal request of ${formatINR(Number(withdrawAmount))} placed!`);
-                setWithdrawModalOpen(false);
+              onClick={async () => {
+                const amt = Number(withdrawAmount);
+                if (!amt || amt <= 0) {
+                  toast.error('Please enter a valid amount');
+                  return;
+                }
+                if (amt > (user?.walletBalance ?? 0)) {
+                  toast.error('Insufficient available balance');
+                  return;
+                }
+                try {
+                  const res = await walletApi.withdraw({ amount: amt });
+                  if (res.data?.data?.walletBalance !== undefined) {
+                    updateUserBalance(res.data.data.walletBalance);
+                  }
+                  toast.success(`Withdrawal request of ${formatINR(amt)} placed!`);
+                  setWithdrawModalOpen(false);
+                } catch (err) {
+                  toast.error(err.response?.data?.message || 'Withdrawal failed');
+                }
               }}
             >
               Confirm Withdrawal

@@ -27,6 +27,7 @@ import { Input } from '../../components/common/Input';
 import { LoadingState } from '../../components/common/LoadingState';
 import { ErrorState } from '../../components/common/ErrorState';
 import { investmentsApi } from '../../features/investments/investmentsApi';
+import { walletApi } from '../../features/wallet/walletApi';
 import { useAuth } from '../../context/AuthContext';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
@@ -126,7 +127,7 @@ const defaultInvestmentsList = [
 ];
 
 export default function InvestmentsPage() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, updateUserBalance } = useAuth();
   const [plans, setPlans] = useState(defaultPlans);
   const [investmentsData, setInvestmentsData] = useState({
     records: defaultInvestmentsList,
@@ -182,26 +183,13 @@ export default function InvestmentsPage() {
         setPlans(defaultPlans);
       }
 
-      const invData = invRes.data.data;
-      if (invData && invData.records && invData.records.length > 0) {
+      const invData = invRes.data?.data;
+      if (invData) {
         setInvestmentsData(invData);
-      } else {
-        // Use pristine fallback matching UI reference
-        setInvestmentsData({
-          records: defaultInvestmentsList,
-          counts: { all: 4, active: 2, completed: 1, cancelled: 1 },
-          pagination: { page: 1, limit: 10, total: 4, totalPages: 1 },
-        });
       }
     } catch (err) {
       console.error('Fetch error:', err);
-      // Seamless fallback matching screenshot
-      setPlans(defaultPlans);
-      setInvestmentsData({
-        records: defaultInvestmentsList,
-        counts: { all: 4, active: 2, completed: 1, cancelled: 1 },
-        pagination: { page: 1, limit: 10, total: 4, totalPages: 1 },
-      });
+      setError('Failed to load investments. Please retry.');
     } finally {
       setLoading(false);
     }
@@ -825,9 +813,23 @@ export default function InvestmentsPage() {
               Cancel
             </Button>
             <Button
-              onClick={() => {
-                toast.success(`Demo funds of ${formatINR(Number(fundAmount))} added!`);
-                setAddFundsOpen(false);
+              onClick={async () => {
+                const amt = Number(fundAmount);
+                if (!amt || amt <= 0) {
+                  toast.error('Please enter a valid amount');
+                  return;
+                }
+                try {
+                  const res = await walletApi.deposit({ amount: amt, method: 'UPI' });
+                  if (res.data?.data?.walletBalance !== undefined) {
+                    updateUserBalance(res.data.data.walletBalance);
+                  }
+                  await refreshUser();
+                  toast.success(`Capital funds of ${formatINR(amt)} deposited successfully!`);
+                  setAddFundsOpen(false);
+                } catch (err) {
+                  toast.error(err.response?.data?.message || 'Deposit failed');
+                }
               }}
             >
               Add Funds

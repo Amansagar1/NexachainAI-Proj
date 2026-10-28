@@ -67,6 +67,31 @@ const userSchema = new mongoose.Schema(
       default: 'Active',
       index: true,
     },
+    city: {
+      type: String,
+      trim: true,
+      default: 'New Delhi',
+    },
+    country: {
+      type: String,
+      trim: true,
+      default: 'India',
+    },
+    address: {
+      type: String,
+      trim: true,
+      default: 'Suite 402, Barakhamba Road, Connaught Place',
+    },
+    dateOfBirth: {
+      type: String,
+      trim: true,
+      default: '1992-05-18',
+    },
+    gender: {
+      type: String,
+      trim: true,
+      default: 'Male',
+    },
   },
   {
     timestamps: true,

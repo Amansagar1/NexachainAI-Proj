@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Wallet,
@@ -40,11 +40,12 @@ import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
+import { walletApi } from '../../features/wallet/walletApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
 /* -------------------------------------------------------------------------
-   MOCK CASHFLOW & TRANSACTION DATA
+   CASHFLOW DATA FALLBACK (USED WHILE INITIALIZING)
 ------------------------------------------------------------------------- */
 const cashflowData = [
   { date: 'Oct 01', inflow: 5000, outflow: 0, balance: 5000 },
@@ -58,119 +59,6 @@ const cashflowData = [
   { date: 'Oct 24', inflow: 1200, outflow: 0, balance: 11700 },
   { date: 'Oct 27', inflow: 1550, outflow: 0, balance: 13250 },
   { date: 'Oct 30', inflow: 1500, outflow: 2000, balance: 12750 },
-];
-
-const mockTransactions = [
-  {
-    id: 'TXN-90218',
-    type: 'ROI Payout',
-    category: 'roi',
-    date: '2024-10-30T10:00:00Z',
-    description: 'Growth Plan B (2.0% Daily ROI)',
-    amount: 400,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Automated Daily Payout',
-  },
-  {
-    id: 'TXN-90217',
-    type: 'Referral Bonus',
-    category: 'referral',
-    date: '2024-10-30T08:45:00Z',
-    description: 'Level 1 Commission from user123',
-    amount: 500,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Direct Referral Bonus',
-  },
-  {
-    id: 'TXN-90216',
-    type: 'Withdrawal',
-    category: 'withdrawal',
-    date: '2024-10-29T15:20:00Z',
-    description: 'Settlement to HDFC Bank •••• 9821',
-    amount: 2000,
-    isCredit: false,
-    status: 'Completed',
-    method: 'IMPS Bank Transfer',
-  },
-  {
-    id: 'TXN-90215',
-    type: 'ROI Payout',
-    category: 'roi',
-    date: '2024-10-29T10:00:00Z',
-    description: 'Growth Plan B (2.0% Daily ROI)',
-    amount: 400,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Automated Daily Payout',
-  },
-  {
-    id: 'TXN-90214',
-    type: 'Referral Bonus',
-    category: 'referral',
-    date: '2024-10-28T14:10:00Z',
-    description: 'Level 2 Commission from user654',
-    amount: 250,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Level 2 Referral Bonus',
-  },
-  {
-    id: 'TXN-90213',
-    type: 'ROI Payout',
-    category: 'roi',
-    date: '2024-10-28T10:00:00Z',
-    description: 'Wealth Plan (2.5% Daily ROI)',
-    amount: 625,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Automated Daily Payout',
-  },
-  {
-    id: 'TXN-90212',
-    type: 'Deposit',
-    category: 'deposit',
-    date: '2024-10-27T18:30:00Z',
-    description: 'Wallet Top-Up via UPI Instant',
-    amount: 5000,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Google Pay UPI',
-  },
-  {
-    id: 'TXN-90211',
-    type: 'Withdrawal',
-    category: 'withdrawal',
-    date: '2024-10-25T11:00:00Z',
-    description: 'Settlement to HDFC Bank •••• 9821',
-    amount: 1200,
-    isCredit: false,
-    status: 'Completed',
-    method: 'IMPS Bank Transfer',
-  },
-  {
-    id: 'TXN-90210',
-    type: 'Referral Bonus',
-    category: 'referral',
-    date: '2024-10-25T09:15:00Z',
-    description: 'Level 1 Commission from user321',
-    amount: 500,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Direct Referral Bonus',
-  },
-  {
-    id: 'TXN-90209',
-    type: 'ROI Payout',
-    category: 'roi',
-    date: '2024-10-24T10:00:00Z',
-    description: 'Growth Plan A (1.5% Daily ROI)',
-    amount: 300,
-    isCredit: true,
-    status: 'Completed',
-    method: 'Automated Daily Payout',
-  },
 ];
 
 /* -------------------------------------------------------------------------
@@ -210,7 +98,15 @@ function CustomCashflowTooltip({ active, payload, label }) {
 }
 
 export default function WalletPage() {
-  const { user } = useAuth();
+  const { user, updateUserBalance } = useAuth();
+
+  // Live Overview and Transactions State from Backend API
+  const [overview, setOverview] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingOverview, setLoadingOverview] = useState(true);
+  const [loadingTxns, setLoadingTxns] = useState(true);
 
   // Modals
   const [depositModalOpen, setDepositModalOpen] = useState(false);
@@ -230,47 +126,85 @@ export default function WalletPage() {
   const [bankInfo, setBankInfo] = useState({
     bankName: 'HDFC Bank Ltd.',
     accountNumber: '•••• •••• •••• 9821',
-    holderName: 'John Doe',
+    holderName: user?.fullName || 'John Doe',
     ifsc: 'HDFC0001234',
     branch: 'Connaught Place, New Delhi',
   });
 
-  const availableBalance = user?.walletBalance || 12750;
-  const totalRoi = user?.totalRoiEarned || 12750;
-  const totalLevel = user?.totalLevelIncomeEarned || 4500;
-  const totalWithdrawn = 3200;
+  // Fetch Overview Data (balances, total roi, level income, total withdrawn, cashflow chart points)
+  const fetchOverview = useCallback(async () => {
+    try {
+      const res = await walletApi.getOverview();
+      if (res.data?.data) {
+        setOverview(res.data.data);
+      }
+    } catch (err) {
+      console.error('Wallet overview error:', err);
+    } finally {
+      setLoadingOverview(false);
+    }
+  }, []);
 
-  // Filtered transactions
-  const filteredTransactions = useMemo(() => {
-    return mockTransactions.filter((txn) => {
-      const matchesTab =
-        activeTab === 'all' ||
-        (activeTab === 'roi' && txn.category === 'roi') ||
-        (activeTab === 'referral' && txn.category === 'referral') ||
-        (activeTab === 'deposit' && txn.category === 'deposit') ||
-        (activeTab === 'withdrawal' && txn.category === 'withdrawal');
+  // Fetch Transactions List from Backend API with Category & Search Filters
+  const fetchTransactions = useCallback(async () => {
+    setLoadingTxns(true);
+    try {
+      const res = await walletApi.getTransactions({
+        category: activeTab !== 'all' ? activeTab : undefined,
+        search: searchQuery || undefined,
+        page,
+        limit: 8,
+      });
+      if (res.data?.data) {
+        setTransactions(res.data.data.records || []);
+        setTotalRecords(res.data.data.pagination?.total || 0);
+        setTotalPages(res.data.data.pagination?.totalPages || 1);
+      }
+    } catch (err) {
+      console.error('Wallet transactions error:', err);
+    } finally {
+      setLoadingTxns(false);
+    }
+  }, [activeTab, searchQuery, page]);
 
-      const matchesSearch =
-        txn.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        txn.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        txn.type.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    fetchOverview();
+  }, [fetchOverview]);
 
-      return matchesTab && matchesSearch;
-    });
-  }, [activeTab, searchQuery]);
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
+  const availableBalance = overview?.walletBalance ?? user?.walletBalance ?? 0;
+  const totalRoi = overview?.totalRoiEarned ?? user?.totalRoiEarned ?? 0;
+  const totalLevel = overview?.totalLevelIncomeEarned ?? user?.totalLevelIncomeEarned ?? 0;
+  const totalWithdrawn = overview?.totalWithdrawn ?? 0;
+
+  // Chart data from API or smooth fallback
+  const liveCashflow = overview?.cashflow?.length ? overview.cashflow : cashflowData;
 
   // Handlers
-  const handleDepositSubmit = () => {
+  const handleDepositSubmit = async () => {
     const val = Number(depositAmount);
     if (!val || val <= 0) {
       toast.error('Please enter a valid deposit amount');
       return;
     }
-    toast.success(`Deposit request of ${formatINR(val)} via ${depositMethod} initiated!`);
-    setDepositModalOpen(false);
+    try {
+      const res = await walletApi.deposit({ amount: val, method: depositMethod });
+      if (res.data?.data?.walletBalance !== undefined) {
+        updateUserBalance(res.data.data.walletBalance);
+      }
+      toast.success(`Deposit request of ${formatINR(val)} via ${depositMethod} completed!`);
+      setDepositModalOpen(false);
+      fetchOverview();
+      fetchTransactions();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Deposit failed');
+    }
   };
 
-  const handleWithdrawSubmit = () => {
+  const handleWithdrawSubmit = async () => {
     const val = Number(withdrawAmount);
     if (!val || val <= 0) {
       toast.error('Please enter a valid withdrawal amount');
@@ -280,8 +214,21 @@ export default function WalletPage() {
       toast.error('Insufficient available balance');
       return;
     }
-    toast.success(`Withdrawal of ${formatINR(val)} submitted! Processing to bank...`);
-    setWithdrawModalOpen(false);
+    try {
+      const res = await walletApi.withdraw({
+        amount: val,
+        destination: `${bankInfo.bankName} (${bankInfo.accountNumber})`,
+      });
+      if (res.data?.data?.walletBalance !== undefined) {
+        updateUserBalance(res.data.data.walletBalance);
+      }
+      toast.success(`Withdrawal of ${formatINR(val)} submitted! Processing to bank...`);
+      setWithdrawModalOpen(false);
+      fetchOverview();
+      fetchTransactions();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Withdrawal failed');
+    }
   };
 
   return (
@@ -448,7 +395,7 @@ export default function WalletPage() {
               {/* Chart Canvas */}
               <div className="h-60 sm:h-64 mt-3 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={cashflowData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart data={liveCashflow} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="walletInflowGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#0066FF" stopOpacity={0.25} />
@@ -560,56 +507,73 @@ export default function WalletPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50 text-xs">
-                    {filteredTransactions.slice((page - 1) * 8, page * 8).map((txn) => (
-                      <tr key={txn.id} className="hover:bg-slate-50/60 transition-colors">
-                        <td className="py-3 px-3">
-                          <p className="font-extrabold text-slate-900 font-mono text-[11px]">
-                            {txn.id}
-                          </p>
-                          <p className="text-[10px] text-slate-400 truncate max-w-[160px]">
-                            {txn.description}
-                          </p>
-                        </td>
-
-                        <td className="py-3 px-3">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                              txn.category === 'roi'
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                                : txn.category === 'referral'
-                                ? 'bg-purple-50 text-purple-700 border border-purple-100'
-                                : txn.category === 'deposit'
-                                ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                                : 'bg-amber-50 text-amber-700 border border-amber-100'
-                            }`}
-                          >
-                            {txn.type}
-                          </span>
-                        </td>
-
-                        <td className="py-3 px-3 text-slate-600 text-[11px] whitespace-nowrap">
-                          {formatDate(txn.date)}
-                        </td>
-
-                        <td className="py-3 px-3 text-slate-600 text-[11px]">
-                          {txn.method}
-                        </td>
-
-                        <td className="py-3 px-3 text-right font-extrabold whitespace-nowrap">
-                          <span className={txn.isCredit ? 'text-emerald-600' : 'text-slate-900'}>
-                            {txn.isCredit ? '+' : '-'}
-                            {formatINR(txn.amount)}
-                          </span>
-                        </td>
-
-                        <td className="py-3 px-3 text-center">
-                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                            <CheckCircle2 className="w-3 h-3" />
-                            {txn.status}
-                          </span>
+                    {loadingTxns ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-xs text-slate-400">
+                          Loading transactions...
                         </td>
                       </tr>
-                    ))}
+                    ) : transactions.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-xs text-slate-400">
+                          No transactions found.
+                        </td>
+                      </tr>
+                    ) : (
+                      transactions.map((txn) => {
+                        const txnId = txn.transactionId || txn.id || 'TXN-00000';
+                        return (
+                          <tr key={txn._id || txnId} className="hover:bg-slate-50/60 transition-colors">
+                            <td className="py-3 px-3">
+                              <p className="font-extrabold text-slate-900 font-mono text-[11px]">
+                                {txnId}
+                              </p>
+                              <p className="text-[10px] text-slate-400 truncate max-w-[160px]">
+                                {txn.description}
+                              </p>
+                            </td>
+
+                            <td className="py-3 px-3">
+                              <span
+                                className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                  txn.category === 'roi'
+                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                                    : txn.category === 'referral'
+                                    ? 'bg-purple-50 text-purple-700 border border-purple-100'
+                                    : txn.category === 'deposit'
+                                    ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                                    : 'bg-amber-50 text-amber-700 border border-amber-100'
+                                }`}
+                              >
+                                {txn.type}
+                              </span>
+                            </td>
+
+                            <td className="py-3 px-3 text-slate-600 text-[11px] whitespace-nowrap">
+                              {formatDate(txn.date)}
+                            </td>
+
+                            <td className="py-3 px-3 text-slate-600 text-[11px]">
+                              {txn.method}
+                            </td>
+
+                            <td className="py-3 px-3 text-right font-extrabold whitespace-nowrap">
+                              <span className={txn.isCredit ? 'text-emerald-600' : 'text-slate-900'}>
+                                {txn.isCredit ? '+' : '-'}
+                                {formatINR(txn.amount)}
+                              </span>
+                            </td>
+
+                            <td className="py-3 px-3 text-center">
+                              <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                <CheckCircle2 className="w-3 h-3" />
+                                {txn.status || 'Completed'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -617,12 +581,12 @@ export default function WalletPage() {
               {/* Pagination */}
               <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-100 text-xs">
                 <p className="text-[11px] text-slate-400">
-                  Showing 1 to {Math.min(8, filteredTransactions.length)} of {filteredTransactions.length} entries
+                  Showing 1 to {transactions.length} of {totalRecords} entries
                 </p>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
+                    disabled={page <= 1}
                     className="p-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
@@ -632,7 +596,7 @@ export default function WalletPage() {
                   </span>
                   <button
                     onClick={() => setPage((p) => p + 1)}
-                    disabled={page * 8 >= filteredTransactions.length}
+                    disabled={page >= totalPages}
                     className="p-1 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />

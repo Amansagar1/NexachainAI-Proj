@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import ReactFlow, {
   ReactFlowProvider,
@@ -31,7 +31,9 @@ import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
+import { referralsApi } from '../../features/referrals/referralsApi';
 import { formatINR } from '../../utils/currency';
+import { formatDate } from '../../utils/date';
 
 /* -------------------------------------------------------------------------
    CUSTOM REACT FLOW NODE COMPONENTS
@@ -490,14 +492,156 @@ const nodeTypes = {
   level3Node: Level3NodeComponent,
 };
 
+function generateFlowFromTree(treeData) {
+  if (!treeData || !treeData.root) {
+    return { nodes: initialNodes, edges: initialEdges };
+  }
+
+  const { root, summary } = treeData;
+  const nodes = [];
+  const edges = [];
+
+  // Root Node (Level 0 - You)
+  nodes.push({
+    id: 'root',
+    type: 'rootNode',
+    position: { x: 371, y: 20 },
+    data: {
+      name: root.fullName || 'User',
+      code: root.referralCode || 'NXA123456',
+      totalReferrals: summary?.totalReferrals ?? root.totalReferrals ?? 0,
+      directReferrals: summary?.directReferrals ?? root.directReferralsCount ?? 0,
+      totalIncome: summary?.totalLevelIncome ?? root.totalLevelIncome ?? 0,
+    },
+  });
+
+  const level1 = root.children || [];
+  if (level1.length === 0) {
+    return { nodes, edges };
+  }
+
+  const l1Positions = [
+    { x: 64, y: 180 },
+    { x: 316, y: 180 },
+    { x: 568, y: 180 },
+    { x: 820, y: 180 },
+  ];
+
+  const l2Positions = [
+    { x: 30, y: 340 }, { x: 146, y: 340 },
+    { x: 282, y: 340 }, { x: 398, y: 340 },
+    { x: 534, y: 340 }, { x: 650, y: 340 },
+    { x: 786, y: 340 }, { x: 902, y: 340 },
+  ];
+
+  const l3Positions = [
+    { x: 34, y: 480 }, { x: 150, y: 480 },
+    { x: 286, y: 480 }, { x: 402, y: 480 },
+    { x: 654, y: 480 }, { x: 790, y: 480 },
+  ];
+
+  let l2Index = 0;
+  let l3Index = 0;
+
+  level1.forEach((l1Child, i) => {
+    const l1Id = l1Child._id ? String(l1Child._id) : `u1_${i}`;
+    const pos1 = l1Positions[i] || { x: 64 + i * 252, y: 180 };
+
+    nodes.push({
+      id: l1Id,
+      type: 'level1Node',
+      position: pos1,
+      data: {
+        name: l1Child.fullName || `user${i + 1}`,
+        referrals: l1Child.directReferralsCount || 0,
+        earned: l1Child.totalEarned || 0,
+      },
+    });
+
+    edges.push({
+      id: `e-root-${l1Id}`,
+      source: 'root',
+      target: l1Id,
+      type: 'smoothstep',
+      pathOptions: { borderRadius: 16 },
+      style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
+    });
+
+    const level2 = l1Child.children || [];
+    level2.forEach((l2Child) => {
+      const l2Id = l2Child._id ? String(l2Child._id) : `u2_${l2Index}`;
+      const pos2 = l2Positions[l2Index] || { x: 30 + l2Index * 116, y: 340 };
+      l2Index++;
+
+      nodes.push({
+        id: l2Id,
+        type: 'level2Node',
+        position: pos2,
+        data: {
+          name: l2Child.fullName || `user${l2Index}`,
+          referrals: l2Child.directReferralsCount || 0,
+          earned: l2Child.totalEarned || 0,
+        },
+      });
+
+      edges.push({
+        id: `e-${l1Id}-${l2Id}`,
+        source: l1Id,
+        target: l2Id,
+        type: 'smoothstep',
+        pathOptions: { borderRadius: 12 },
+        style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
+      });
+
+      const level3 = l2Child.children || [];
+      level3.forEach((l3Child) => {
+        const l3Id = l3Child._id ? String(l3Child._id) : `u3_${l3Index}`;
+        const pos3 = l3Positions[l3Index] || { x: 34 + l3Index * 120, y: 480 };
+        l3Index++;
+
+        nodes.push({
+          id: l3Id,
+          type: 'level3Node',
+          position: pos3,
+          data: {
+            name: l3Child.fullName || `user${l3Index}`,
+            referrals: l3Child.directReferralsCount || 0,
+            earned: l3Child.totalEarned || 0,
+          },
+        });
+
+        edges.push({
+          id: `e-${l2Id}-${l3Id}`,
+          source: l2Id,
+          target: l3Id,
+          type: 'smoothstep',
+          pathOptions: { borderRadius: 12 },
+          style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
+        });
+      });
+    });
+  });
+
+  return { nodes, edges };
+}
+
 /* -------------------------------------------------------------------------
    INNER FLOW CANVAS COMPONENT (USING useReactFlow)
 ------------------------------------------------------------------------- */
-function TreeFlowCanvas() {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(dynamicNodes || initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(dynamicEdges || initialEdges);
   const { zoomIn, zoomOut, fitView, getZoom } = useReactFlow();
   const [zoomPercent, setZoomPercent] = useState(100);
+
+  useEffect(() => {
+    if (dynamicNodes && dynamicNodes.length > 0) {
+      setNodes(dynamicNodes);
+    }
+    if (dynamicEdges && dynamicEdges.length > 0) {
+      setEdges(dynamicEdges);
+    }
+  }, [dynamicNodes, dynamicEdges, setNodes, setEdges]);
 
   const handleZoomIn = () => {
     zoomIn({ duration: 250 });
@@ -616,14 +760,92 @@ function TreeFlowCanvas() {
 ------------------------------------------------------------------------- */
 export default function ReferralTreePage() {
   const { user } = useAuth();
+  const [treeData, setTreeData] = useState(null);
+  const [directReferrals, setDirectReferrals] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [customRefCode, setCustomRefCode] = useState('NXA123456');
 
-  const referralCode = user?.referralCode || customRefCode;
+  // Load Tree Data and Direct Referrals from API
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [treeRes, directRes] = await Promise.all([
+          referralsApi.getReferralTree(),
+          referralsApi.getDirectReferrals().catch(() => ({ data: { data: [] } })),
+        ]);
+        if (treeRes.data?.data) {
+          setTreeData(treeRes.data.data);
+        }
+        if (directRes.data?.data) {
+          setDirectReferrals(directRes.data.data);
+        }
+      } catch (err) {
+        console.error('Referral tree load error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const referralCode = user?.referralCode || treeData?.root?.referralCode || customRefCode;
   const referralLink = `https://nexachain.ai/register?ref=${referralCode}`;
+
+  // Dynamically compute React Flow nodes & edges from backend tree
+  const { nodes: flowNodes, edges: flowEdges } = useMemo(() => {
+    return generateFlowFromTree(treeData);
+  }, [treeData]);
+
+  // Dynamically compute Direct Referrals list for right panel
+  const directList = useMemo(() => {
+    if (directReferrals.length > 0) {
+      return directReferrals.slice(0, 5).map((u, i) => ({
+        name: u.fullName || u.email?.split('@')[0],
+        joined: `Joined ${formatDate(u.createdAt)}`,
+        status: u.accountStatus || 'Active',
+        avatarBg: i % 3 === 0 ? 'bg-[#0066FF]' : i % 3 === 1 ? 'bg-[#FF8A00]' : 'bg-[#00C48C]',
+      }));
+    }
+    return directReferralsList;
+  }, [directReferrals]);
+
+  // Dynamically compute Tree Summary breakdown
+  const treeSummaryBreakdown = useMemo(() => {
+    if (treeData?.summary?.levelBreakdown) {
+      const b = treeData.summary.levelBreakdown;
+      return [
+        {
+          level: 'Level 1 (Direct)',
+          count: `${b[0]?.users ?? 8} Users`,
+          amount: b[0]?.income ?? 1800,
+          dotColor: 'bg-[#0066FF]',
+        },
+        {
+          level: 'Level 2',
+          count: `${b[1]?.users ?? 12} Users`,
+          amount: b[1]?.income ?? 1750,
+          dotColor: 'bg-[#00C48C]',
+        },
+        {
+          level: 'Level 3',
+          count: `${b[2]?.users ?? 4} Users`,
+          amount: b[2]?.income ?? 950,
+          dotColor: 'bg-[#7B2CBF]',
+        },
+      ];
+    }
+    return summaryMatrix;
+  }, [treeData]);
+
+  // Metrics
+  const totalReferrals = treeData?.summary?.totalReferrals ?? 24;
+  const totalLevelIncome = treeData?.summary?.totalLevelIncome ?? 4500;
+  const directReferralsCount = treeData?.summary?.directReferrals ?? 8;
+  const totalTeamSize = treeData?.summary?.totalTeamSize ?? 25;
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(referralCode);
@@ -642,9 +864,9 @@ export default function ReferralTreePage() {
   const handleExportTree = () => {
     const exportPayload = {
       user: referralCode,
-      nodes: initialNodes,
-      edges: initialEdges,
-      summary: summaryMatrix,
+      nodes: flowNodes,
+      edges: flowEdges,
+      summary: treeSummaryBreakdown,
     };
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(exportPayload, null, 2)
@@ -721,9 +943,9 @@ export default function ReferralTreePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Total Referrals</p>
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
-                24
+                {totalReferrals}
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">8 Direct &nbsp;|&nbsp; 16 Indirect</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">{directReferralsCount} Direct &nbsp;|&nbsp; {totalReferrals - directReferralsCount} Indirect</p>
             </div>
           </div>
 
@@ -736,7 +958,7 @@ export default function ReferralTreePage() {
               <p className="text-[11px] font-medium text-slate-500">Total Level Income</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
-                  ₹ 4,500
+                  {formatINR(totalLevelIncome)}
                 </h3>
                 <span className="inline-flex items-center text-[10px] font-bold text-emerald-600">
                   <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 18%
@@ -755,13 +977,13 @@ export default function ReferralTreePage() {
               <p className="text-[11px] font-medium text-slate-500">Direct Referrals</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
-                  8
+                  {directReferralsCount}
                 </h3>
                 <span className="inline-flex items-center text-[10px] font-bold text-emerald-600">
                   <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 12%
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">Joined this month</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Active downline members</p>
             </div>
           </div>
 
@@ -773,9 +995,9 @@ export default function ReferralTreePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Total Team Size</p>
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
-                25
+                {totalTeamSize}
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">(You + 24)</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">(You + {totalReferrals})</p>
             </div>
           </div>
         </div>
@@ -785,7 +1007,7 @@ export default function ReferralTreePage() {
           {/* Left Canvas: Referral Network Tree (col-span-12 lg:col-span-8) */}
           <div className="col-span-12 lg:col-span-8 bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
             <ReactFlowProvider>
-              <TreeFlowCanvas />
+              <TreeFlowCanvas dynamicNodes={flowNodes} dynamicEdges={flowEdges} />
             </ReactFlowProvider>
           </div>
 
@@ -848,11 +1070,11 @@ export default function ReferralTreePage() {
               </div>
             </div>
 
-            {/* Card 2: Direct Referrals (8) */}
+            {/* Card 2: Direct Referrals */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Direct Referrals (8)
+                  Direct Referrals ({directReferralsCount})
                 </h3>
                 <Link
                   href="/referral-income"
@@ -863,7 +1085,7 @@ export default function ReferralTreePage() {
               </div>
 
               <div className="space-y-2.5">
-                {directReferralsList.map((item) => (
+                {directList.map((item) => (
                   <div
                     key={item.name}
                     className="flex items-center justify-between py-1"
@@ -896,7 +1118,7 @@ export default function ReferralTreePage() {
               </h3>
 
               <div className="space-y-2">
-                {summaryMatrix.map((item) => (
+                {treeSummaryBreakdown.map((item) => (
                   <div
                     key={item.level}
                     className="flex items-center justify-between text-xs py-0.5"
@@ -918,11 +1140,11 @@ export default function ReferralTreePage() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">Total Referrals</span>
-                  <span className="font-bold text-slate-900">24 Users</span>
+                  <span className="font-bold text-slate-900">{totalReferrals} Users</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">Total Level Income</span>
-                  <span className="text-sm font-extrabold text-slate-900">₹ 4,500</span>
+                  <span className="text-sm font-extrabold text-slate-900">{formatINR(totalLevelIncome)}</span>
                 </div>
               </div>
             </div>

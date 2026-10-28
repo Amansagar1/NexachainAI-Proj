@@ -4,6 +4,7 @@ const User = require('./src/models/User');
 const Investment = require('./src/models/Investment');
 const ROIHistory = require('./src/models/ROIHistory');
 const ReferralIncome = require('./src/models/ReferralIncome');
+const WalletTransaction = require('./src/models/WalletTransaction');
 const { INVESTMENT_PLANS, INVESTMENT_STATUS, ROI_STATUS, REFERRAL_INCOME_TYPE } = require('./src/constants/businessRules');
 
 const seedAtlas = async () => {
@@ -19,6 +20,7 @@ const seedAtlas = async () => {
       Investment.deleteMany({}),
       ROIHistory.deleteMany({}),
       ReferralIncome.deleteMany({}),
+      WalletTransaction.deleteMany({}),
     ]);
 
     console.log('Seeding demo users into naxachain...');
@@ -27,13 +29,18 @@ const seedAtlas = async () => {
     const john = await User.create({
       fullName: 'John Doe',
       email: 'john@nexachain.ai',
-      mobileNumber: '+919876543210',
+      mobileNumber: '+91 98765 43210',
       password: 'password123',
       referralCode: 'NXA123456',
       walletBalance: 12750,
       totalRoiEarned: 12750,
       totalLevelIncomeEarned: 4500,
       accountStatus: 'Active',
+      city: 'New Delhi',
+      country: 'India',
+      address: 'Suite 402, Barakhamba Road, Connaught Place',
+      dateOfBirth: '1992-05-18',
+      gender: 'Male',
     });
 
     // 2. Direct referrals (Level 1)
@@ -402,6 +409,128 @@ const seedAtlas = async () => {
         earningDateStr: roi.date,
         status: ROI_STATUS.CREDITED,
         remarks: 'Daily ROI credited successfully',
+      });
+    }
+
+    // 8. Wallet Transactions (matching UI Design screenshot #6 & Wallet Page)
+    console.log('Seeding wallet transactions into naxachain...');
+    const walletTxns = [
+      {
+        transactionId: 'TXN-90218',
+        type: 'ROI Payout',
+        category: 'roi',
+        date: new Date('2024-10-30T10:00:00Z'),
+        description: 'Growth Plan B (2.0% Daily ROI)',
+        amount: 400,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Automated Daily Payout',
+      },
+      {
+        transactionId: 'TXN-90217',
+        type: 'Referral Bonus',
+        category: 'referral',
+        date: new Date('2024-10-30T08:45:00Z'),
+        description: 'Level 1 Commission from user123',
+        amount: 500,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Direct Referral Bonus',
+      },
+      {
+        transactionId: 'TXN-90216',
+        type: 'Withdrawal',
+        category: 'withdrawal',
+        date: new Date('2024-10-29T15:20:00Z'),
+        description: 'Settlement to HDFC Bank •••• 9821',
+        amount: 2000,
+        isCredit: false,
+        status: 'Completed',
+        method: 'IMPS Bank Transfer',
+      },
+      {
+        transactionId: 'TXN-90215',
+        type: 'ROI Payout',
+        category: 'roi',
+        date: new Date('2024-10-29T10:00:00Z'),
+        description: 'Growth Plan B (2.0% Daily ROI)',
+        amount: 400,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Automated Daily Payout',
+      },
+      {
+        transactionId: 'TXN-90214',
+        type: 'Referral Bonus',
+        category: 'referral',
+        date: new Date('2024-10-28T14:10:00Z'),
+        description: 'Level 2 Commission from user654',
+        amount: 250,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Level 2 Referral Bonus',
+      },
+      {
+        transactionId: 'TXN-90213',
+        type: 'ROI Payout',
+        category: 'roi',
+        date: new Date('2024-10-28T10:00:00Z'),
+        description: 'Wealth Plan (2.5% Daily ROI)',
+        amount: 625,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Automated Daily Payout',
+      },
+      {
+        transactionId: 'TXN-90212',
+        type: 'Deposit',
+        category: 'deposit',
+        date: new Date('2024-10-27T18:30:00Z'),
+        description: 'Wallet Top-Up via UPI Instant',
+        amount: 5000,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Google Pay UPI',
+      },
+      {
+        transactionId: 'TXN-90211',
+        type: 'Withdrawal',
+        category: 'withdrawal',
+        date: new Date('2024-10-25T11:00:00Z'),
+        description: 'Settlement to HDFC Bank •••• 9821',
+        amount: 1200,
+        isCredit: false,
+        status: 'Completed',
+        method: 'IMPS Bank Transfer',
+      },
+      {
+        transactionId: 'TXN-90210',
+        type: 'Referral Bonus',
+        category: 'referral',
+        date: new Date('2024-10-25T09:15:00Z'),
+        description: 'Level 1 Commission from user321',
+        amount: 500,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Direct Referral Bonus',
+      },
+      {
+        transactionId: 'TXN-90209',
+        type: 'ROI Payout',
+        category: 'roi',
+        date: new Date('2024-10-24T10:00:00Z'),
+        description: 'Growth Plan A (1.5% Daily ROI)',
+        amount: 300,
+        isCredit: true,
+        status: 'Completed',
+        method: 'Automated Daily Payout',
+      },
+    ];
+
+    for (const txn of walletTxns) {
+      await WalletTransaction.create({
+        user: john._id,
+        ...txn,
       });
     }
 
