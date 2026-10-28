@@ -473,6 +473,16 @@ function TreeFlowCanvas() {
   const { zoomIn, zoomOut, fitView, getZoom } = useReactFlow();
   const [zoomPercent, setZoomPercent] = useState(100);
 
+  const memoizedNodeTypes = useMemo(
+    () => ({
+      rootNode: RootNodeComponent,
+      level1Node: Level1NodeComponent,
+      level2Node: Level2NodeComponent,
+      level3Node: Level3NodeComponent,
+    }),
+    []
+  );
+
   const handleZoomIn = () => {
     zoomIn({ duration: 250 });
     setTimeout(() => {
@@ -555,13 +565,16 @@ function TreeFlowCanvas() {
       </div>
 
       {/* React Flow Viewport Container */}
-      <div className="relative w-full h-[520px] rounded-xl overflow-hidden mt-2 bg-gradient-to-b from-blue-50/10 to-slate-50/30">
+      <div
+        className="relative w-full rounded-xl overflow-hidden mt-2 bg-gradient-to-b from-blue-50/10 to-slate-50/30 border border-slate-100"
+        style={{ width: '100%', height: 530 }}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          nodeTypes={nodeTypes}
+          nodeTypes={memoizedNodeTypes}
           fitView
           fitViewOptions={{ padding: 0.12 }}
           minZoom={0.5}
@@ -573,6 +586,7 @@ function TreeFlowCanvas() {
           panOnDrag={true}
           connectionLineType={ConnectionLineType.SmoothStep}
           proOptions={{ hideAttribution: true }}
+          style={{ width: '100%', height: '100%' }}
         >
           <Background color="#cbd5e1" gap={20} size={1} />
         </ReactFlow>
