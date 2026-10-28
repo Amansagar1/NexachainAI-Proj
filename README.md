@@ -1,4 +1,4 @@
-# Nexachain AI - MERN Stack Investment and Referral Platform
+﻿# Nexachain AI - MERN Stack Investment and Referral Platform
 
 [![Fullstack Tests](https://img.shields.io/badge/Tests-8%2F8%20Passed-emerald.svg)](#17-testing-instructions)
 [![Next.js](https://img.shields.io/badge/Next.js-v16-black.svg)](https://nextjs.org/)
@@ -47,125 +47,125 @@ A full-stack, enterprise-grade investment and multi-level referral platform buil
 
 ```text
 d:/MYMOBILEPROJECTS/
-├── frontend/                     # Next.js Frontend with Inline Tailwind CSS
-│   ├── public/
-│   │   └── favicon.svg           # Nexachain AI branded vector icon
-│   ├── src/
-│   │   ├── app/                  # Next.js App Router Pages
-│   │   │   ├── layout.jsx        # Root Layout with AuthProvider & Toaster
-│   │   │   ├── globals.css       # Base Tailwind styling & scrollbars
-│   │   │   ├── page.jsx          # Root Entry (redirects to /dashboard or /login)
-│   │   │   ├── login/page.jsx    # Split-screen Auth Page (UI Design #1)
-│   │   │   ├── register/page.jsx # Registration with sponsor referral validation
-│   │   │   ├── dashboard/page.jsx# Main Overview Dashboard (UI Design #2)
-│   │   │   ├── investments/page.jsx# Investment Plans & History (UI Design #3)
-│   │   │   ├── roi-history/page.jsx# Daily ROI Tracking & Charts (UI Design #4)
-│   │   │   ├── referral-income/page.jsx# Level Income & Charts (UI Design #5)
-│   │   │   ├── referral-tree/page.jsx  # Interactive Tree Visualizer (UI Design #6)
-│   │   │   ├── wallet/page.jsx   # Wallet & Settlement View
-│   │   │   ├── profile/page.jsx  # User Profile Details
-│   │   │   └── settings/page.jsx # Notification & Security Preferences
-│   │   ├── components/
-│   │   │   ├── common/           # Reusable UI Components
-│   │   │   │   ├── Button.jsx
-│   │   │   │   ├── Input.jsx
-│   │   │   │   ├── Modal.jsx
-│   │   │   │   ├── StatusBadge.jsx
-│   │   │   │   ├── Pagination.jsx
-│   │   │   │   ├── LoadingState.jsx
-│   │   │   │   ├── EmptyState.jsx
-│   │   │   │   └── ErrorState.jsx
-│   │   │   ├── layout/           # Shared Navigation & Shell
-│   │   │   │   ├── AppLayout.jsx
-│   │   │   │   ├── Sidebar.jsx
-│   │   │   │   └── Header.jsx
-│   │   │   └── dashboard/
-│   │   │       └── StatCard.jsx  # Configurable KPI Card Component
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx   # Global User Session & Balance Store
-│   │   ├── features/             # Feature-specific API Clients
-│   │   │   ├── auth/authApi.js
-│   │   │   ├── dashboard/dashboardApi.js
-│   │   │   ├── investments/investmentsApi.js
-│   │   │   ├── roi/roiApi.js
-│   │   │   └── referrals/referralsApi.js
-│   │   ├── services/
-│   │   │   └── apiClient.js      # Central Axios client with JWT interceptor
-│   │   ├── utils/
-│   │   │   ├── currency.js       # Indian Rupee (INR) formatters
-│   │   │   ├── date.js           # Date and timestamp formatters
-│   │   │   └── errorHandler.js   # Unified API error extractor
-│   │   └── constants/
-│   │       ├── routes.js         # Centralized route definitions
-│   │       └── navigation.js     # Sidebar menu configuration
-│   ├── next.config.js            # Next.js configuration & API reverse proxy
-│   ├── tailwind.config.js        # Brand color extensions & font definitions
-│   ├── .env                      # Frontend environment settings
-│   └── package.json
-│
-├── backend/                      # Layered Express.js Backend Architecture
-│   ├── src/
-│   │   ├── config/
-│   │   │   ├── env.js            # Environment validation
-│   │   │   ├── database.js       # MongoDB Atlas connection manager
-│   │   │   └── cors.js           # CORS whitelisting & security
-│   │   ├── models/               # The 4 Core Mongoose Models
-│   │   │   ├── User.js           # Users & wallet balances
-│   │   │   ├── Investment.js     # Investments & plan details
-│   │   │   ├── ROIHistory.js     # Daily credited returns (idempotent key)
-│   │   │   └── ReferralIncome.js # Multi-level referral commission ledger
-│   │   ├── controllers/          # HTTP Request/Response Handlers
-│   │   │   ├── authController.js
-│   │   │   ├── dashboardController.js
-│   │   │   ├── investmentController.js
-│   │   │   ├── roiController.js
-│   │   │   └── referralController.js
-│   │   ├── services/             # Core Business Logic & Calculations
-│   │   │   ├── authService.js
-│   │   │   ├── dashboardService.js
-│   │   │   ├── investmentService.js
-│   │   │   ├── roiService.js     # Daily ROI execution & idempotency
-│   │   │   └── referralService.js# Hierarchy traversal & level commission
-│   │   ├── routes/               # Express Endpoint Routers
-│   │   │   ├── authRoutes.js
-│   │   │   ├── dashboardRoutes.js
-│   │   │   ├── investmentRoutes.js
-│   │   │   ├── roiRoutes.js
-│   │   │   └── referralRoutes.js
-│   │   ├── middleware/           # Reusable Middlewares
-│   │   │   ├── authenticate.js   # JWT verification & active status check
-│   │   │   ├── authorize.js      # Account authorization
-│   │   │   ├── validateRequest.js# Express-validator error pipeline
-│   │   │   ├── rateLimiter.js    # Auth & API abuse prevention
-│   │   │   ├── notFound.js       # 404 handler
-│   │   │   └── errorHandler.js   # Centralized error handler
-│   │   ├── validators/           # Request input validators
-│   │   │   ├── authValidator.js
-│   │   │   └── investmentValidator.js
-│   │   ├── jobs/
-│   │   │   └── roiScheduler.js   # Automated node-cron 12:00 AM scheduler
-│   │   ├── utils/
-│   │   │   ├── AppError.js       # Operational error class
-│   │   │   ├── asyncHandler.js   # Async controller wrapper
-│   │   │   └── logger.js         # Structured logger
-│   │   ├── constants/
-│   │   │   └── businessRules.js  # Centralized business parameters & rates
-│   │   ├── app.js                # Express Application Setup
-│   │   └── server.js             # HTTP Server & DB bootstrap
-│   ├── tests/
-│   │   └── nexachain.test.js     # Complete Automated Test Suite (Jest)
-│   ├── seedAtlas.js              # Atlas seeder script
-│   ├── .env                      # Backend environment settings
-│   └── package.json
-│
-├── docs/
-│   ├── api.md                    # Detailed REST API Documentation
-│   └── business-rules.md         # Financial formulas & idempotency rules
-├── postman/
-│   └── collection.json           # Ready-to-import Postman collection
-├── UiDesign/                     # The 6 approved UI Design Screenshots
-├── package.json                  # Root scripts
-└── README.md
+â”œâ”€â”€ frontend/                     # Next.js Frontend with Inline Tailwind CSS
+â”‚   â”œâ”€â”€ public/
+â”‚   â”‚   â””â”€â”€ favicon.svg           # Nexachain AI branded vector icon
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ app/                  # Next.js App Router Pages
+â”‚   â”‚   â”‚   â”œâ”€â”€ layout.jsx        # Root Layout with AuthProvider & Toaster
+â”‚   â”‚   â”‚   â”œâ”€â”€ globals.css       # Base Tailwind styling & scrollbars
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.jsx          # Root Entry (redirects to /dashboard or /login)
+â”‚   â”‚   â”‚   â”œâ”€â”€ login/page.jsx    # Split-screen Auth Page (UI Design #1)
+â”‚   â”‚   â”‚   â”œâ”€â”€ register/page.jsx # Registration with sponsor referral validation
+â”‚   â”‚   â”‚   â”œâ”€â”€ dashboard/page.jsx# Main Overview Dashboard (UI Design #2)
+â”‚   â”‚   â”‚   â”œâ”€â”€ investments/page.jsx# Investment Plans & History (UI Design #3)
+â”‚   â”‚   â”‚   â”œâ”€â”€ roi-history/page.jsx# Daily ROI Tracking & Charts (UI Design #4)
+â”‚   â”‚   â”‚   â”œâ”€â”€ referral-income/page.jsx# Level Income & Charts (UI Design #5)
+â”‚   â”‚   â”‚   â”œâ”€â”€ referral-tree/page.jsx  # Interactive Tree Visualizer (UI Design #6)
+â”‚   â”‚   â”‚   â”œâ”€â”€ wallet/page.jsx   # Wallet & Settlement View
+â”‚   â”‚   â”‚   â”œâ”€â”€ profile/page.jsx  # User Profile Details
+â”‚   â”‚   â”‚   â””â”€â”€ settings/page.jsx # Notification & Security Preferences
+â”‚   â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”‚   â”œâ”€â”€ common/           # Reusable UI Components
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Button.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Input.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Modal.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ StatusBadge.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Pagination.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ LoadingState.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ EmptyState.jsx
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ ErrorState.jsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ layout/           # Shared Navigation & Shell
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ AppLayout.jsx
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Sidebar.jsx
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ Header.jsx
+â”‚   â”‚   â”‚   â””â”€â”€ dashboard/
+â”‚   â”‚   â”‚       â””â”€â”€ StatCard.jsx  # Configurable KPI Card Component
+â”‚   â”‚   â”œâ”€â”€ context/
+â”‚   â”‚   â”‚   â””â”€â”€ AuthContext.jsx   # Global User Session & Balance Store
+â”‚   â”‚   â”œâ”€â”€ features/             # Feature-specific API Clients
+â”‚   â”‚   â”‚   â”œâ”€â”€ auth/authApi.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ dashboard/dashboardApi.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ investments/investmentsApi.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ roi/roiApi.js
+â”‚   â”‚   â”‚   â””â”€â”€ referrals/referralsApi.js
+â”‚   â”‚   â”œâ”€â”€ services/
+â”‚   â”‚   â”‚   â””â”€â”€ apiClient.js      # Central Axios client with JWT interceptor
+â”‚   â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”‚   â”œâ”€â”€ currency.js       # Indian Rupee (INR) formatters
+â”‚   â”‚   â”‚   â”œâ”€â”€ date.js           # Date and timestamp formatters
+â”‚   â”‚   â”‚   â””â”€â”€ errorHandler.js   # Unified API error extractor
+â”‚   â”‚   â””â”€â”€ constants/
+â”‚   â”‚       â”œâ”€â”€ routes.js         # Centralized route definitions
+â”‚   â”‚       â””â”€â”€ navigation.js     # Sidebar menu configuration
+â”‚   â”œâ”€â”€ next.config.js            # Next.js configuration & API reverse proxy
+â”‚   â”œâ”€â”€ tailwind.config.js        # Brand color extensions & font definitions
+â”‚   â”œâ”€â”€ .env                      # Frontend environment settings
+â”‚   â””â”€â”€ package.json
+â”‚
+â”œâ”€â”€ backend/                      # Layered Express.js Backend Architecture
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ config/
+â”‚   â”‚   â”‚   â”œâ”€â”€ env.js            # Environment validation
+â”‚   â”‚   â”‚   â”œâ”€â”€ database.js       # MongoDB Atlas connection manager
+â”‚   â”‚   â”‚   â””â”€â”€ cors.js           # CORS whitelisting & security
+â”‚   â”‚   â”œâ”€â”€ models/               # The 4 Core Mongoose Models
+â”‚   â”‚   â”‚   â”œâ”€â”€ User.js           # Users & wallet balances
+â”‚   â”‚   â”‚   â”œâ”€â”€ Investment.js     # Investments & plan details
+â”‚   â”‚   â”‚   â”œâ”€â”€ ROIHistory.js     # Daily credited returns (idempotent key)
+â”‚   â”‚   â”‚   â””â”€â”€ ReferralIncome.js # Multi-level referral commission ledger
+â”‚   â”‚   â”œâ”€â”€ controllers/          # HTTP Request/Response Handlers
+â”‚   â”‚   â”‚   â”œâ”€â”€ authController.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ dashboardController.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ investmentController.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ roiController.js
+â”‚   â”‚   â”‚   â””â”€â”€ referralController.js
+â”‚   â”‚   â”œâ”€â”€ services/             # Core Business Logic & Calculations
+â”‚   â”‚   â”‚   â”œâ”€â”€ authService.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ dashboardService.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ investmentService.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ roiService.js     # Daily ROI execution & idempotency
+â”‚   â”‚   â”‚   â””â”€â”€ referralService.js# Hierarchy traversal & level commission
+â”‚   â”‚   â”œâ”€â”€ routes/               # Express Endpoint Routers
+â”‚   â”‚   â”‚   â”œâ”€â”€ authRoutes.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ dashboardRoutes.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ investmentRoutes.js
+â”‚   â”‚   â”‚   â”œâ”€â”€ roiRoutes.js
+â”‚   â”‚   â”‚   â””â”€â”€ referralRoutes.js
+â”‚   â”‚   â”œâ”€â”€ middleware/           # Reusable Middlewares
+â”‚   â”‚   â”‚   â”œâ”€â”€ authenticate.js   # JWT verification & active status check
+â”‚   â”‚   â”‚   â”œâ”€â”€ authorize.js      # Account authorization
+â”‚   â”‚   â”‚   â”œâ”€â”€ validateRequest.js# Express-validator error pipeline
+â”‚   â”‚   â”‚   â”œâ”€â”€ rateLimiter.js    # Auth & API abuse prevention
+â”‚   â”‚   â”‚   â”œâ”€â”€ notFound.js       # 404 handler
+â”‚   â”‚   â”‚   â””â”€â”€ errorHandler.js   # Centralized error handler
+â”‚   â”‚   â”œâ”€â”€ validators/           # Request input validators
+â”‚   â”‚   â”‚   â”œâ”€â”€ authValidator.js
+â”‚   â”‚   â”‚   â””â”€â”€ investmentValidator.js
+â”‚   â”‚   â”œâ”€â”€ jobs/
+â”‚   â”‚   â”‚   â””â”€â”€ roiScheduler.js   # Automated node-cron 12:00 AM scheduler
+â”‚   â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”‚   â”œâ”€â”€ AppError.js       # Operational error class
+â”‚   â”‚   â”‚   â”œâ”€â”€ asyncHandler.js   # Async controller wrapper
+â”‚   â”‚   â”‚   â””â”€â”€ logger.js         # Structured logger
+â”‚   â”‚   â”œâ”€â”€ constants/
+â”‚   â”‚   â”‚   â””â”€â”€ businessRules.js  # Centralized business parameters & rates
+â”‚   â”‚   â”œâ”€â”€ app.js                # Express Application Setup
+â”‚   â”‚   â””â”€â”€ server.js             # HTTP Server & DB bootstrap
+â”‚   â”œâ”€â”€ tests/
+â”‚   â”‚   â””â”€â”€ nexachain.test.js     # Complete Automated Test Suite (Jest)
+â”‚   â”œâ”€â”€ seedAtlas.js              # Atlas seeder script
+â”‚   â”œâ”€â”€ .env                      # Backend environment settings
+â”‚   â””â”€â”€ package.json
+â”‚
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ api.md                    # Detailed REST API Documentation
+â”‚   â””â”€â”€ business-rules.md         # Financial formulas & idempotency rules
+â”œâ”€â”€ postman/
+â”‚   â””â”€â”€ collection.json           # Ready-to-import Postman collection
+â”œâ”€â”€ UiDesign/                     # The 6 approved UI Design Screenshots
+â”œâ”€â”€ package.json                  # Root scripts
+â””â”€â”€ README.md
 ```
 
 ---
@@ -175,7 +175,7 @@ d:/MYMOBILEPROJECTS/
 The project is connected to the **MongoDB Atlas Cluster** database `naxachain`:
 
 ```text
-mongodb+srv://sagarsharmaofficial0:%40Developer%400531@cluster0.sf919.mongodb.net/naxachain?retryWrites=true&w=majority
+mongodb+srv://<username>:<password>@cluster0.sf919.mongodb.net/naxachain?retryWrites=true&w=majority
 ```
 
 All 4 collections are provisioned with unique indexes and seeded with demo evaluation data:
@@ -237,14 +237,14 @@ node seedAtlas.js
 
 ### A. Investment Plans
 Configured in `backend/src/constants/businessRules.js`:
-- **Growth Plan A**: 1.0% Daily ROI | 90 Days Duration | Min Investment: ₹ 1,000
-- **Growth Plan B** (Most Popular): 1.5% Daily ROI | 120 Days Duration | Min Investment: ₹ 5,000
-- **Wealth Plan**: 2.0% Daily ROI | 180 Days Duration | Min Investment: ₹ 10,000
-- **Premium Plan**: 2.5% Daily ROI | 365 Days Duration | Min Investment: ₹ 25,000
+- **Growth Plan A**: 1.0% Daily ROI | 90 Days Duration | Min Investment: â‚¹ 1,000
+- **Growth Plan B** (Most Popular): 1.5% Daily ROI | 120 Days Duration | Min Investment: â‚¹ 5,000
+- **Wealth Plan**: 2.0% Daily ROI | 180 Days Duration | Min Investment: â‚¹ 10,000
+- **Premium Plan**: 2.5% Daily ROI | 365 Days Duration | Min Investment: â‚¹ 25,000
 
 ### B. Daily ROI Calculation Formula
 ```text
-Daily ROI = (Investment Amount × Daily ROI Percentage) / 100
+Daily ROI = (Investment Amount Ã— Daily ROI Percentage) / 100
 ```
 - Credited once daily for every active investment between `startDate` and `endDate`.
 - Upon reaching `endDate`, status automatically transitions to `Completed`.
@@ -312,16 +312,16 @@ npm test
 ```text
 PASS tests/nexachain.test.js
   Nexachain AI - Authentication & Security Tests
-    √ should register a new user successfully and return JWT (792 ms)
-    √ should reject registration with duplicate email (172 ms)
-    √ should authenticate user and return valid token (198 ms)
-    √ should protect private routes from unauthenticated access (26 ms)
+    âˆš should register a new user successfully and return JWT (792 ms)
+    âˆš should reject registration with duplicate email (172 ms)
+    âˆš should authenticate user and return valid token (198 ms)
+    âˆš should protect private routes from unauthenticated access (26 ms)
   Nexachain AI - Investment & Referral Multi-Level Commission Tests
-    √ should create investment and distribute Level 1 (5%) commission to referrer (305 ms)
-    √ should reject investment if amount is below plan minimum (217 ms)
-    √ should retrieve complete referral tree hierarchy for parent (255 ms)
+    âˆš should create investment and distribute Level 1 (5%) commission to referrer (305 ms)
+    âˆš should reject investment if amount is below plan minimum (217 ms)
+    âˆš should retrieve complete referral tree hierarchy for parent (255 ms)
   Nexachain AI - Daily ROI Calculation & Idempotency Safeguards
-    √ should process daily ROI and prevent duplicate execution for the same day (168 ms)
+    âˆš should process daily ROI and prevent duplicate execution for the same day (168 ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       8 passed, 8 total
