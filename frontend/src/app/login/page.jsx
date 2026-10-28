@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -12,11 +13,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Users,
-  ShieldCheck,
-  Wallet,
-  BarChart2,
-  ChevronUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
@@ -28,59 +24,6 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-// Exact 3D Folded Ribbon Logo Component
-function NexachainRibbonLogo({ className = 'w-12 h-12' }) {
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <defs>
-        {/* Left vertical ribbon - vibrant cyan to azure */}
-        <linearGradient id="ribbon-cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#38BDF8" />
-          <stop offset="60%" stopColor="#0EA5E9" />
-          <stop offset="100%" stopColor="#0284C7" />
-        </linearGradient>
-
-        {/* Center diagonal ribbon - vivid royal electric blue */}
-        <linearGradient id="ribbon-mid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0284C7" />
-          <stop offset="50%" stopColor="#0066FF" />
-          <stop offset="100%" stopColor="#004AD6" />
-        </linearGradient>
-
-        {/* Right vertical facet - deep cobalt shadow */}
-        <linearGradient id="ribbon-dark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#2563EB" />
-          <stop offset="50%" stopColor="#1D4ED8" />
-          <stop offset="100%" stopColor="#1E3A8A" />
-        </linearGradient>
-      </defs>
-
-      {/* Left Pillar */}
-      <path
-        d="M20 18 C20 15 23 13 26 14.5 L44 24.5 C46.5 25.8 48 28.3 48 31 L48 82 C48 85 45 87 42 85.5 L24 75.5 C21.5 74.2 20 71.7 20 69 Z"
-        fill="url(#ribbon-cyan-grad)"
-      />
-
-      {/* Diagonal Connecting Ribbon Fold */}
-      <path
-        d="M48 31 L78 50 C80.5 51.5 82 54 82 57 L82 82 C82 85 79 87 76 85.5 L46 66.5 Z"
-        fill="url(#ribbon-dark-grad)"
-      />
-
-      {/* Right Pillar Overlapping */}
-      <path
-        d="M52 18 C52 15 55 13 58 14.5 L76 24.5 C78.5 25.8 80 28.3 80 31 L80 58 C80 60.5 77.5 62.5 74.5 61 L56 50 C53.5 48.7 52 46.2 52 43.5 Z"
-        fill="url(#ribbon-mid-grad)"
-      />
-    </svg>
-  );
-}
-
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -90,7 +33,6 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -114,305 +56,101 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen w-screen max-h-screen overflow-hidden flex flex-col lg:flex-row relative bg-[#EEF5FC]">
+    <div className="h-screen w-screen max-h-screen overflow-hidden flex flex-col lg:flex-row relative bg-[#EEF5FC] select-none">
       {/* ========================================================================= */}
-      {/* 1:1 Flowing Gradient Wave Canvas (Matching Reference Screenshot)          */}
+      {/* Left Column: Exact Edge-to-Edge 3D Artwork from Nexachain AI Design       */}
       {/* ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <svg
-          className="w-full h-full object-cover"
-          viewBox="0 0 1536 1024"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            {/* Deep Midnight Navy Base Gradient */}
-            <linearGradient id="navy-base-grad" x1="0%" y1="0%" x2="60%" y2="100%">
-              <stop offset="0%" stopColor="#02143A" />
-              <stop offset="35%" stopColor="#05215A" />
-              <stop offset="70%" stopColor="#093988" />
-              <stop offset="100%" stopColor="#0D4AB5" />
-            </linearGradient>
-
-            {/* Glowing Royal Blue Sweeping Wave */}
-            <linearGradient id="wave-royal-grad" x1="15%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#08378E" stopOpacity="0.95" />
-              <stop offset="45%" stopColor="#1155D0" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#226BFF" stopOpacity="0.5" />
-            </linearGradient>
-
-            {/* Top Right Deep Blue Corner Swirl */}
-            <linearGradient id="top-right-wave-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#0A3B94" />
-              <stop offset="60%" stopColor="#1357D2" />
-              <stop offset="100%" stopColor="#226BFF" stopOpacity="0.8" />
-            </linearGradient>
-
-            {/* Bottom Dark Blue Fluid Anchor */}
-            <linearGradient id="bottom-fluid-anchor" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#041846" stopOpacity="0.98" />
-              <stop offset="50%" stopColor="#0A368A" stopOpacity="0.88" />
-              <stop offset="100%" stopColor="#1864F0" stopOpacity="0.3" />
-            </linearGradient>
-
-            {/* Right Pale Sky Backdrop */}
-            <linearGradient id="right-pale-sky" x1="40%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#E6F0FC" />
-              <stop offset="50%" stopColor="#F0F5FE" />
-              <stop offset="100%" stopColor="#F8FAFE" />
-            </linearGradient>
-          </defs>
-
-          {/* Pale Ice-Blue Base Canvas */}
-          <rect width="1536" height="1024" fill="url(#right-pale-sky)" />
-
-          {/* Top-Right Deep Blue Corner Arc */}
-          <path
-            d="M 850 0 C 960 140 1160 220 1536 260 L 1536 0 Z"
-            fill="url(#top-right-wave-grad)"
-          />
-
-          {/* Main Left Navy Organic Mass */}
-          <path
-            d="M 0 0 L 830 0 C 780 180 730 320 780 480 C 840 660 770 830 700 1024 L 0 1024 Z"
-            fill="url(#navy-base-grad)"
-          />
-
-          {/* Flowing Mid Wave Curving Across Lower Canvas */}
-          <path
-            d="M 0 420 C 280 340 540 560 760 490 C 910 440 980 660 1100 1024 L 520 1024 Z"
-            fill="url(#wave-royal-grad)"
-          />
-
-          {/* Bottom Dark Anchor Wave */}
-          <path
-            d="M 0 740 C 300 660 540 820 790 770 C 910 750 990 850 1120 1024 L 0 1024 Z"
-            fill="url(#bottom-fluid-anchor)"
-          />
-
-          {/* Soft Organic Contours Behind Right White Card */}
-          <path
-            d="M 810 0 C 750 280 920 450 1020 680 C 1090 840 1240 900 1536 1024 L 1536 0 Z"
-            fill="#DFECFC"
-            fillOpacity="0.75"
-          />
-          <path
-            d="M 940 0 C 890 300 1050 470 1150 700 C 1210 850 1350 900 1536 1024 L 1536 0 Z"
-            fill="#EDF4FE"
-            fillOpacity="0.9"
-          />
-        </svg>
+      <div className="hidden lg:block lg:w-1/2 h-full relative overflow-hidden bg-[#03173D]">
+        <img
+          src="/assets/login-hero.png"
+          alt="Nexachain AI Financial Growth Platform"
+          className="w-full h-full object-cover object-left-top pointer-events-none"
+        />
       </div>
 
       {/* ========================================================================= */}
-      {/* Left Column: Brand Identity, Value Highlights & 3D Analytics Widget       */}
+      {/* Right Column: Exact Ambient Waves Background & Interactive White Card     */}
       {/* ========================================================================= */}
-      <div className="lg:w-[50%] xl:w-[48%] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 relative z-10 text-white h-full overflow-hidden">
-        {/* Top Logo & Tagline */}
-        <div className="shrink-0">
-          <div className="flex items-center gap-2.5">
-            <NexachainRibbonLogo className="w-10 h-10 sm:w-11 sm:h-11 drop-shadow-md" />
-            <div>
-              <div className="flex items-baseline text-2xl sm:text-[26px] font-black tracking-tight leading-none">
-                <span className="text-white">Nexachain</span>
-                <span className="text-[#1D6EFF] ml-1.5 font-black">AI</span>
-              </div>
-            </div>
-          </div>
-          <p className="text-[10px] font-bold text-[#8EA8D6] tracking-[0.22em] uppercase mt-1.5 pl-0.5">
-            INVEST · EARN · GROW TOGETHER
-          </p>
-        </div>
-
-        {/* Central Hero Headline & Feature Pills */}
-        <div className="my-auto py-3 max-w-lg shrink-0">
-          <h1 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-black text-white leading-[1.12] tracking-tight">
-            Build Your <br />
-            Financial Growth <br />
-            with <span className="text-[#1D6EFF]">Nexachain AI</span>
-          </h1>
-
-          <p className="mt-3.5 text-xs sm:text-[13px] text-[#A0B6D9] leading-relaxed font-normal max-w-sm">
-            A secure investment and referral platform designed for long-term growth. Invest, earn
-            daily ROI and build your network.
-          </p>
-
-          {/* 2x2 Feature Pills Grid */}
-          <div className="mt-5 grid grid-cols-2 gap-2.5 max-w-md">
-            {/* Pill 1: Daily ROI Earnings */}
-            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <BarChart2 className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-white leading-tight">Daily ROI</p>
-                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">Earnings</p>
-              </div>
-            </div>
-
-            {/* Pill 2: Multi-Level Referral Income */}
-            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-white leading-tight">Multi-Level</p>
-                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
-                  Referral Income
-                </p>
-              </div>
-            </div>
-
-            {/* Pill 3: Secure & Transparent */}
-            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-white leading-tight">Secure &</p>
-                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
-                  Transparent
-                </p>
-              </div>
-            </div>
-
-            {/* Pill 4: Track Your Investments */}
-            <div className="flex items-center gap-2.5 p-2.5 px-3 rounded-xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
-                <Wallet className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-white leading-tight">Track Your</p>
-                <p className="text-[10px] font-medium text-[#8EA8D6] leading-tight mt-0.5">
-                  Investments
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Left: 3D Isometric Perspective Dashboard Preview */}
-        <div className="relative pt-2 max-w-lg hidden sm:block shrink-0">
-          <div
-            className="relative"
-            style={{
-              perspective: '1200px',
-              perspectiveOrigin: 'center center',
-            }}
+      <div className="w-full lg:w-1/2 h-full flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-12 relative overflow-hidden bg-[#EEF5FC]">
+        {/* Soft Ambient Background Wave in top-right corner matching design */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <svg
+            className="w-full h-full object-cover"
+            viewBox="0 0 768 1024"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
           >
-            {/* Base Tilted Tablet Slate */}
-            <div
-              className="relative w-[310px] sm:w-[340px] h-[155px] sm:h-[165px] rounded-[20px] bg-[#071638]/90 border border-blue-400/25 p-3.5 sm:p-4 shadow-[0_20px_50px_rgba(2,10,30,0.8)] backdrop-blur-xl"
-              style={{
-                transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg)',
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              {/* Skeleton lines at top left */}
-              <div className="space-y-1">
-                <div className="w-14 h-1.5 rounded-full bg-white/20" />
-                <div className="w-8 h-1.5 rounded-full bg-white/10" />
-              </div>
+            <defs>
+              <linearGradient id="top-right-swoop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0A3B94" />
+                <stop offset="50%" stopColor="#1256D1" />
+                <stop offset="100%" stopColor="#226BFF" stopOpacity="0.85" />
+              </linearGradient>
+              <linearGradient id="soft-ice-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#E6F0FC" />
+                <stop offset="50%" stopColor="#EEF5FE" />
+                <stop offset="100%" stopColor="#F8FAFE" />
+              </linearGradient>
+            </defs>
 
-              {/* Luminous Glowing Area Line Chart */}
-              <div className="w-full h-16 sm:h-20 mt-1">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 280 80">
-                  <defs>
-                    <linearGradient id="chart-glow-fill" x1="0%" y1="0%" x2="0%" y2="1">
-                      <stop offset="0%" stopColor="#00D2FF" stopOpacity="0.45" />
-                      <stop offset="60%" stopColor="#0066FF" stopOpacity="0.15" />
-                      <stop offset="100%" stopColor="#0047BA" stopOpacity="0.0" />
-                    </linearGradient>
-                    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow
-                        dx="0"
-                        dy="0"
-                        stdDeviation="3"
-                        floodColor="#00E5FF"
-                        floodOpacity="0.9"
-                      />
-                    </filter>
-                  </defs>
-                  <path
-                    d="M 5 60 C 45 55 70 68 105 44 C 140 20 175 48 210 28 C 235 12 255 20 275 8 L 275 80 L 5 80 Z"
-                    fill="url(#chart-glow-fill)"
-                  />
-                  <path
-                    d="M 5 60 C 45 55 70 68 105 44 C 140 20 175 48 210 28 C 235 12 255 20 275 8"
-                    stroke="#00E5FF"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    filter="url(#neon-glow)"
-                  />
-                  <circle cx="105" cy="44" r="3" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
-                  <circle cx="210" cy="28" r="3" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
-                  <circle cx="275" cy="8" r="4" fill="#FFFFFF" stroke="#00A3FF" strokeWidth="2" />
-                </svg>
-              </div>
+            {/* Base pale sky canvas */}
+            <rect width="768" height="1024" fill="url(#soft-ice-bg)" />
 
-              {/* Skeleton lines at bottom */}
-              <div className="flex gap-2 mt-1 pt-1.5 border-t border-white/10">
-                <div className="w-10 h-1.5 rounded-full bg-white/20" />
-                <div className="w-14 h-1.5 rounded-full bg-white/15" />
-                <div className="w-8 h-1.5 rounded-full bg-white/20" />
-              </div>
-            </div>
+            {/* Top-Right Deep Blue Corner Arc */}
+            <path
+              d="M 120 0 C 220 130 420 200 768 240 L 768 0 Z"
+              fill="url(#top-right-swoop)"
+            />
 
-            {/* Overlapping Floating "Total Earnings" Card */}
-            <div
-              className="absolute -bottom-2 -left-3 w-[185px] rounded-[16px] bg-[#0A235C]/95 border border-blue-400/35 p-3 shadow-[0_15px_35px_rgba(0,0,0,0.6)] backdrop-blur-xl"
-              style={{
-                transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg) translateZ(35px)',
-              }}
-            >
-              <p className="text-[10px] text-slate-300 font-medium">Total Earnings</p>
-              <h4 className="text-lg font-black text-white tracking-tight mt-0.5">₹ 12,750</h4>
-              <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-white/10">
-                <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-0.5">
-                  <ChevronUp className="w-3 h-3 stroke-[3]" /> +12%
-                </span>
-                {/* 4-bar equalizer graphic */}
-                <div className="flex items-end gap-1 h-3.5">
-                  <span className="w-1 h-1.5 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-3 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-2 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-3.5 bg-[#00E5FF] rounded-full" />
-                </div>
-              </div>
-            </div>
-          </div>
+            {/* Soft Ambient Lower Wave Contour */}
+            <path
+              d="M 0 850 C 250 820 450 900 768 1024 L 0 1024 Z"
+              fill="#DFECFC"
+              fillOpacity="0.6"
+            />
+          </svg>
         </div>
-      </div>
 
-      {/* ========================================================================= */}
-      {/* Right Column: Floating Crisp White Login Card (Exact UI Clone, Fits Screen)*/}
-      {/* ========================================================================= */}
-      <div className="lg:w-[50%] xl:w-[52%] flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-10 relative z-10 h-full overflow-hidden">
-        <div className="w-full max-w-[410px] xl:max-w-[430px] bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 lg:p-9 shadow-[0_20px_50px_-15px_rgba(0,25,80,0.12)] border border-white/80 my-auto">
+        {/* Mobile Header for small screens where left column is hidden */}
+        <div className="lg:hidden absolute top-4 left-4 flex items-center gap-2 z-20">
+          <img src="/assets/logo-ribbon.png" alt="Nexachain AI Logo" className="w-8 h-8 object-contain" />
+          <span className="text-lg font-black text-[#0B132A]">
+            Nexachain <span className="text-[#0066FF]">AI</span>
+          </span>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* The Exact White Login Card (1:1 Clone of Design)                          */}
+        {/* ========================================================================= */}
+        <div className="w-full max-w-[460px] xl:max-w-[480px] bg-white rounded-[32px] sm:rounded-[36px] p-7 sm:p-10 lg:p-11 shadow-[0_25px_60px_-15px_rgba(10,35,90,0.13)] border border-white/90 relative z-10 my-auto">
           {/* Card Top: 3D Ribbon Logo & Welcome Typography */}
-          <div className="text-center mb-5 sm:mb-6">
-            <div className="flex justify-center mb-2">
-              <NexachainRibbonLogo className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md" />
+          <div className="text-center mb-6 sm:mb-7">
+            <div className="flex justify-center mb-2.5">
+              <img
+                src="/assets/logo-ribbon.png"
+                alt="Nexachain 3D Ribbon Logo"
+                className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-md"
+              />
             </div>
 
-            <h2 className="text-2xl sm:text-[25px] font-black text-[#0B132A] tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-[26px] font-black text-[#0B132A] tracking-tight leading-tight">
               Nexachain <span className="text-[#0066FF]">AI</span>
             </h2>
 
-            <p className="text-[10px] font-bold tracking-[0.22em] text-slate-400 uppercase mt-1">
+            <p className="text-[11px] font-bold tracking-[0.24em] text-slate-400 uppercase mt-2">
               WELCOME BACK
             </p>
-            <p className="text-xs text-slate-500 font-normal mt-0.5">
+            <p className="text-xs sm:text-[13px] text-slate-500 font-normal mt-1">
               Login to your account to continue
             </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-3.5">
+          {/* Login Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-semibold text-slate-800 mb-1">
+              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
                 Email
               </label>
               <div
@@ -422,24 +160,24 @@ export default function LoginPage() {
                     : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="absolute left-3 text-slate-400 pointer-events-none">
-                  <Mail className="w-4 h-4" />
+                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
+                  <Mail className="w-[18px] h-[18px]" />
                 </div>
                 <input
                   type="email"
                   placeholder="Enter your email address"
-                  className="w-full py-2.5 sm:py-3 pl-9 pr-3 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-3.5 pl-11 pr-4 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('email')}
                 />
               </div>
               {errors.email && (
-                <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-rose-500 font-medium">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-semibold text-slate-800 mb-1">
+              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
                 Password
               </label>
               <div
@@ -449,43 +187,43 @@ export default function LoginPage() {
                     : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="absolute left-3 text-slate-400 pointer-events-none">
-                  <Lock className="w-4 h-4" />
+                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
+                  <Lock className="w-[18px] h-[18px]" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  className="w-full py-2.5 sm:py-3 pl-9 pr-10 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-3.5 pl-11 pr-11 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('password')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                  className="absolute right-3.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="w-[18px] h-[18px]" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-[18px] h-[18px]" />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{errors.password.message}</p>
+                <p className="mt-1 text-xs text-rose-500 font-medium">{errors.password.message}</p>
               )}
 
               {/* Forgot Password Link */}
-              <div className="flex justify-end mt-1">
+              <div className="flex justify-end mt-2">
                 <a
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast('Password reset link sent to your registered email address.', {
+                    toast('Password reset instruction sent to your registered email.', {
                       icon: 'ℹ️',
                     });
                   }}
-                  className="text-[11px] font-semibold text-[#0066FF] hover:underline"
+                  className="text-xs font-semibold text-[#0066FF] hover:underline"
                 >
                   Forgot Password?
                 </a>
@@ -496,7 +234,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-1.5 py-2.5 sm:py-3 px-4 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+              className="w-full mt-2 py-3.5 px-4 bg-[#0066FF] hover:bg-[#0051D6] text-white font-bold text-sm sm:text-base rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <span>Logging in...</span>
@@ -510,11 +248,11 @@ export default function LoginPage() {
           </form>
 
           {/* OR Divider */}
-          <div className="relative my-3 sm:my-3.5 text-center">
+          <div className="relative my-4 sm:my-5 text-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
-            <span className="relative bg-white px-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <span className="relative bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
               OR
             </span>
           </div>
@@ -525,7 +263,7 @@ export default function LoginPage() {
             onClick={() =>
               toast('Google OAuth ready for client credentials configuration.', { icon: 'ℹ️' })
             }
-            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-xl border border-slate-200 text-xs sm:text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path
@@ -549,7 +287,7 @@ export default function LoginPage() {
           </button>
 
           {/* Registration Footer */}
-          <p className="text-center text-xs text-slate-500 mt-4 sm:mt-5">
+          <p className="text-center text-xs text-slate-500 mt-5 sm:mt-6">
             Don&apos;t have an account?{' '}
             <Link href={ROUTES.REGISTER} className="font-bold text-[#0066FF] hover:underline ml-1">
               Register
