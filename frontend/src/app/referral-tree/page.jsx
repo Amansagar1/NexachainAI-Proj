@@ -102,7 +102,7 @@ export default function ReferralTreePage() {
 
   return (
     <AppLayout searchPlaceholder="Search users, referrals, nodes...">
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-5">
         {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

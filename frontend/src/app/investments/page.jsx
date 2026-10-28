@@ -131,7 +131,7 @@ export default function InvestmentsPage() {
 
   return (
     <AppLayout searchPlaceholder="Search investments, plans, etc...">
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-5">
         {/* Top Header & Wallet Action */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

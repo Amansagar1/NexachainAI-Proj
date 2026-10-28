@@ -32,7 +32,7 @@ export const AppLayout = ({ children, searchPlaceholder }) => {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#F8FAFC]">
+    <div className="flex h-screen w-full overflow-hidden bg-[#F4F7FC]">
       {/* Desktop Persistent Sidebar */}
       <div className="hidden lg:block shrink-0 h-full">
         <Sidebar />
@@ -57,7 +57,7 @@ export const AppLayout = ({ children, searchPlaceholder }) => {
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
           searchPlaceholder={searchPlaceholder}
         />
-        <main className="flex-1 overflow-y-auto px-6 py-8 sm:px-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-6 sm:py-4 max-w-[1540px] w-full mx-auto">
           {children}
         </main>
       </div>

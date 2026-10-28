@@ -110,7 +110,7 @@ export default function ROIHistoryPage() {
 
   return (
     <AppLayout searchPlaceholder="Search ROI history, date, etc...">
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-5">
         {/* Top Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
