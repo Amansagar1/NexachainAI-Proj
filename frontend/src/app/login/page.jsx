@@ -28,8 +28,8 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-// Reusable 3D Folded Geometric 'N' Ribbon Logo matching UI specification
-function NexachainRibbonLogo({ className = 'w-12 h-12' }) {
+// Exact 3D Folded Ribbon Logo Component
+function NexachainRibbonLogo({ className = 'w-14 h-14' }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -38,40 +38,44 @@ function NexachainRibbonLogo({ className = 'w-12 h-12' }) {
       className={className}
     >
       <defs>
-        <linearGradient id="n-left-ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
+        {/* Left vertical ribbon - vibrant cyan to azure */}
+        <linearGradient id="ribbon-cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#38BDF8" />
-          <stop offset="50%" stopColor="#0EA5E9" />
+          <stop offset="60%" stopColor="#0EA5E9" />
           <stop offset="100%" stopColor="#0284C7" />
         </linearGradient>
-        <linearGradient id="n-mid-ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
+
+        {/* Center diagonal ribbon - vivid royal electric blue */}
+        <linearGradient id="ribbon-mid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#0284C7" />
           <stop offset="50%" stopColor="#0066FF" />
           <stop offset="100%" stopColor="#004AD6" />
         </linearGradient>
-        <linearGradient id="n-right-ribbon" x1="0%" y1="0%" x2="100%" y2="100%">
+
+        {/* Right vertical facet - deep cobalt shadow */}
+        <linearGradient id="ribbon-dark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#2563EB" />
           <stop offset="50%" stopColor="#1D4ED8" />
           <stop offset="100%" stopColor="#1E3A8A" />
         </linearGradient>
       </defs>
 
-      {/* 3D Folded Facets */}
-      {/* Left Vertical Ribbon */}
+      {/* Left Pillar */}
       <path
         d="M20 18 C20 15 23 13 26 14.5 L44 24.5 C46.5 25.8 48 28.3 48 31 L48 82 C48 85 45 87 42 85.5 L24 75.5 C21.5 74.2 20 71.7 20 69 Z"
-        fill="url(#n-left-ribbon)"
+        fill="url(#ribbon-cyan-grad)"
       />
 
-      {/* Diagonal Connecting Ribbon with 3D Fold depth */}
+      {/* Diagonal Connecting Ribbon Fold */}
       <path
         d="M48 31 L78 50 C80.5 51.5 82 54 82 57 L82 82 C82 85 79 87 76 85.5 L46 66.5 Z"
-        fill="url(#n-right-ribbon)"
+        fill="url(#ribbon-dark-grad)"
       />
 
-      {/* Right Vertical Facet overlapping in isometric perspective */}
+      {/* Right Pillar Overlapping */}
       <path
         d="M52 18 C52 15 55 13 58 14.5 L76 24.5 C78.5 25.8 80 28.3 80 31 L80 58 C80 60.5 77.5 62.5 74.5 61 L56 50 C53.5 48.7 52 46.2 52 43.5 Z"
-        fill="url(#n-mid-ribbon)"
+        fill="url(#ribbon-mid-grad)"
       />
     </svg>
   );
@@ -109,171 +113,178 @@ export default function LoginPage() {
     }
   };
 
-  const handleFillDemo = () => {
-    setValue('email', 'john@nexachain.ai');
-    setValue('password', 'password123');
-    toast('Demo credentials auto-filled', { icon: '🔑' });
-  };
-
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#EFF5FC]">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-[#EEF5FC]">
       {/* ========================================================================= */}
-      {/* 1:1 Precise Organic Flowing Gradient Waves Background Canvas               */}
+      {/* 1:1 Flowing Gradient Wave Canvas (Matching Reference Screenshot)          */}
       {/* ========================================================================= */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <svg
           className="w-full h-full object-cover"
-          viewBox="0 0 1440 900"
+          viewBox="0 0 1536 1024"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
           <defs>
-            {/* Deep Dark Navy Base Gradient */}
-            <linearGradient id="bg-deep-navy" x1="0%" y1="0%" x2="70%" y2="100%">
-              <stop offset="0%" stopColor="#031538" />
-              <stop offset="40%" stopColor="#06225B" />
-              <stop offset="75%" stopColor="#0A3A8E" />
-              <stop offset="100%" stopColor="#0F4FC1" />
+            {/* Deep Midnight Navy Base Gradient */}
+            <linearGradient id="navy-base-grad" x1="0%" y1="0%" x2="60%" y2="100%">
+              <stop offset="0%" stopColor="#02143A" />
+              <stop offset="35%" stopColor="#05215A" />
+              <stop offset="70%" stopColor="#093988" />
+              <stop offset="100%" stopColor="#0D4AB5" />
             </linearGradient>
 
-            {/* Radiant Cobalt Wave Layer */}
-            <linearGradient id="bg-royal-wave" x1="20%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#0A3C94" stopOpacity="0.95" />
-              <stop offset="50%" stopColor="#145BD8" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#256EFF" stopOpacity="0.5" />
+            {/* Glowing Royal Blue Sweeping Wave */}
+            <linearGradient id="wave-royal-grad" x1="15%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#08378E" stopOpacity="0.95" />
+              <stop offset="45%" stopColor="#1155D0" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#226BFF" stopOpacity="0.5" />
             </linearGradient>
 
-            {/* Lower Fluid Swoop */}
-            <linearGradient id="bg-lower-swoop" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#061F54" stopOpacity="0.98" />
-              <stop offset="50%" stopColor="#0C3D9A" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#1A6BF8" stopOpacity="0.3" />
+            {/* Top Right Deep Blue Corner Swirl */}
+            <linearGradient id="top-right-wave-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#0A3B94" />
+              <stop offset="60%" stopColor="#1357D2" />
+              <stop offset="100%" stopColor="#226BFF" stopOpacity="0.8" />
             </linearGradient>
 
-            {/* Right Side Soft Ambient Sky Gradients */}
-            <linearGradient id="bg-sky-soft" x1="50%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#E9F2FD" />
-              <stop offset="60%" stopColor="#F1F6FE" />
-              <stop offset="100%" stopColor="#F7FAFF" />
+            {/* Bottom Dark Blue Fluid Anchor */}
+            <linearGradient id="bottom-fluid-anchor" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#041846" stopOpacity="0.98" />
+              <stop offset="50%" stopColor="#0A368A" stopOpacity="0.88" />
+              <stop offset="100%" stopColor="#1864F0" stopOpacity="0.3" />
+            </linearGradient>
+
+            {/* Right Pale Sky Backdrop */}
+            <linearGradient id="right-pale-sky" x1="40%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#E6F0FC" />
+              <stop offset="50%" stopColor="#F0F5FE" />
+              <stop offset="100%" stopColor="#F8FAFE" />
             </linearGradient>
           </defs>
 
-          {/* Right Pale Canvas */}
-          <rect width="1440" height="900" fill="url(#bg-sky-soft)" />
+          {/* Pale Ice-Blue Base Canvas */}
+          <rect width="1536" height="1024" fill="url(#right-pale-sky)" />
+
+          {/* Top-Right Deep Blue Corner Arc (Crucial visual element from screenshot) */}
+          <path
+            d="M 850 0 C 960 140 1160 220 1536 260 L 1536 0 Z"
+            fill="url(#top-right-wave-grad)"
+          />
 
           {/* Main Left Navy Organic Mass */}
           <path
-            d="M 0 0 L 760 0 C 720 160 670 290 710 430 C 760 590 850 670 940 900 L 0 900 Z"
-            fill="url(#bg-deep-navy)"
+            d="M 0 0 L 830 0 C 780 180 730 320 780 480 C 840 660 770 830 700 1024 L 0 1024 Z"
+            fill="url(#navy-base-grad)"
           />
 
-          {/* Sweeping Mid Wave that curls gracefully across the lower-center */}
+          {/* Flowing Mid Wave Curving Across Lower Canvas */}
           <path
-            d="M 0 380 C 240 310 480 500 680 440 C 820 400 900 580 1020 900 L 650 900 Z"
-            fill="url(#bg-royal-wave)"
+            d="M 0 420 C 280 340 540 560 760 490 C 910 440 980 660 1100 1024 L 520 1024 Z"
+            fill="url(#wave-royal-grad)"
           />
 
-          {/* Bottom Dark Blue Anchor Wave */}
+          {/* Bottom Dark Anchor Wave */}
           <path
-            d="M 0 680 C 280 610 500 760 740 710 C 850 690 940 790 1060 900 L 0 900 Z"
-            fill="url(#bg-lower-swoop)"
+            d="M 0 740 C 300 660 540 820 790 770 C 910 750 990 850 1120 1024 L 0 1024 Z"
+            fill="url(#bottom-fluid-anchor)"
           />
 
-          {/* Soft Organic Right Contour Shading */}
+          {/* Soft Organic Contours Behind Right White Card */}
           <path
-            d="M 720 0 C 670 250 820 420 920 640 C 990 800 1140 850 1440 900 L 1440 0 Z"
-            fill="#E2EEFC"
-            fillOpacity="0.7"
+            d="M 810 0 C 750 280 920 450 1020 680 C 1090 840 1240 900 1536 1024 L 1536 0 Z"
+            fill="#DFECFC"
+            fillOpacity="0.75"
           />
           <path
-            d="M 830 0 C 780 270 930 430 1030 650 C 1100 810 1240 860 1440 900 L 1440 0 Z"
+            d="M 940 0 C 890 300 1050 470 1150 700 C 1210 850 1350 900 1536 1024 L 1536 0 Z"
             fill="#EDF4FE"
-            fillOpacity="0.85"
+            fillOpacity="0.9"
           />
         </svg>
       </div>
 
       {/* ========================================================================= */}
-      {/* Left Side: Brand Story, Value Highlights & 3D Analytics Widget            */}
+      {/* Left Column: Brand Identity, Value Highlights & 3D Analytics Widget       */}
       {/* ========================================================================= */}
-      <div className="lg:w-[52%] xl:w-[50%] flex flex-col justify-between p-8 sm:p-12 lg:p-16 xl:p-20 relative z-10 text-white min-h-[640px] lg:min-h-screen">
-        {/* Top Header: 3D Logo & Tagline */}
+      <div className="lg:w-[52%] xl:w-[50%] flex flex-col justify-between p-8 sm:p-12 lg:p-16 xl:p-20 relative z-10 text-white min-h-[660px] lg:min-h-screen">
+        {/* Top Logo & Tagline */}
         <div>
-          <div className="flex items-center gap-3.5">
-            <NexachainRibbonLogo className="w-11 h-11 drop-shadow-md" />
+          <div className="flex items-center gap-3">
+            <NexachainRibbonLogo className="w-12 h-12 drop-shadow-md" />
             <div>
-              <div className="flex items-baseline text-[26px] font-black tracking-tight leading-none">
+              <div className="flex items-baseline text-[28px] font-black tracking-tight leading-none">
                 <span className="text-white">Nexachain</span>
                 <span className="text-[#1D6EFF] ml-1.5 font-black">AI</span>
               </div>
             </div>
           </div>
-          <p className="text-[10px] sm:text-[11px] font-bold text-slate-300 tracking-[0.25em] uppercase mt-2 pl-0.5">
+          <p className="text-[10px] sm:text-[11px] font-bold text-[#8EA8D6] tracking-[0.22em] uppercase mt-2 pl-0.5">
             INVEST · EARN · GROW TOGETHER
           </p>
         </div>
 
-        {/* Central Hero Headline & Description */}
+        {/* Central Hero Headline & Feature Pills */}
         <div className="my-auto py-8 sm:py-10 max-w-lg">
           <h1 className="text-4xl sm:text-[46px] lg:text-[48px] font-black text-white leading-[1.12] tracking-tight">
             Build Your <br />
             Financial Growth <br />
-            with <span className="text-[#1E6EFF]">Nexachain AI</span>
+            with <span className="text-[#1D6EFF]">Nexachain AI</span>
           </h1>
 
-          <p className="mt-5 text-sm sm:text-[15px] text-slate-200/90 leading-relaxed font-normal max-w-md">
+          <p className="mt-5 text-sm sm:text-[15px] text-[#A0B6D9] leading-relaxed font-normal max-w-md">
             A secure investment and referral platform designed for long-term growth. Invest, earn
             daily ROI and build your network.
           </p>
 
-          {/* 2x2 Feature Pills Grid (Exact Clone of UI Design) */}
+          {/* 2x2 Feature Pills Grid (Matching Reference Screenshot) */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-md">
             {/* Pill 1: Daily ROI Earnings */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/75 border border-blue-400/20 backdrop-blur-md shadow-sm">
+            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
                 <BarChart2 className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-xs font-bold text-white leading-tight">Daily ROI</p>
-                <p className="text-xs font-medium text-slate-300 leading-tight mt-0.5">Earnings</p>
+                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">Earnings</p>
               </div>
             </div>
 
             {/* Pill 2: Multi-Level Referral Income */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/75 border border-blue-400/20 backdrop-blur-md shadow-sm">
+            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
                 <Users className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-xs font-bold text-white leading-tight">Multi-Level</p>
-                <p className="text-xs font-medium text-slate-300 leading-tight mt-0.5">
+                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Referral Income
                 </p>
               </div>
             </div>
 
             {/* Pill 3: Secure & Transparent */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/75 border border-blue-400/20 backdrop-blur-md shadow-sm">
+            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-xs font-bold text-white leading-tight">Secure &</p>
-                <p className="text-xs font-medium text-slate-300 leading-tight mt-0.5">
+                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Transparent
                 </p>
               </div>
             </div>
 
             {/* Pill 4: Track Your Investments */}
-            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/75 border border-blue-400/20 backdrop-blur-md shadow-sm">
+            <div className="flex items-center gap-3.5 p-3 px-4 rounded-2xl bg-[#092254]/70 border border-blue-400/15 backdrop-blur-md shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
                 <Wallet className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-xs font-bold text-white leading-tight">Track Your</p>
-                <p className="text-xs font-medium text-slate-300 leading-tight mt-0.5">
+                <p className="text-xs font-medium text-[#8EA8D6] leading-tight mt-0.5">
                   Investments
                 </p>
               </div>
@@ -282,94 +293,91 @@ export default function LoginPage() {
         </div>
 
         {/* Bottom Left: 3D Isometric Perspective Dashboard Preview (Exact Clone) */}
-        <div className="relative pt-2 max-w-lg hidden sm:block">
+        <div className="relative pt-4 max-w-lg hidden sm:block">
           <div
-            className="relative transform -rotate-2 hover:rotate-0 transition-transform duration-500 ease-out"
+            className="relative"
             style={{
-              perspective: '1000px',
+              perspective: '1200px',
+              perspectiveOrigin: 'center center',
             }}
           >
-            {/* Background Slanted Analytics Board */}
-            <div className="rounded-3xl bg-[#06183E]/85 border border-blue-500/25 backdrop-blur-xl p-5 shadow-[0_20px_50px_rgba(3,15,45,0.6)] relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                {/* Horizontal skeleton placeholder bars */}
-                <div className="space-y-1.5">
-                  <div className="w-24 h-2 rounded-full bg-white/20" />
-                  <div className="w-14 h-2 rounded-full bg-white/10" />
-                </div>
-                {/* Status indicator */}
-                <div className="w-3 h-3 rounded-full bg-blue-500/30 flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#00C8FF] animate-pulse" />
-                </div>
+            {/* Base Tilted Tablet Slate */}
+            <div
+              className="relative w-[360px] sm:w-[390px] h-[210px] rounded-[24px] bg-[#071638]/90 border border-blue-400/25 p-5 shadow-[0_25px_60px_rgba(2,10,30,0.8)] backdrop-blur-xl"
+              style={{
+                transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg)',
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              {/* Skeleton lines at top left */}
+              <div className="space-y-1.5">
+                <div className="w-16 h-1.5 rounded-full bg-white/20" />
+                <div className="w-10 h-1.5 rounded-full bg-white/10" />
               </div>
 
-              {/* Glowing Curved Area Line Chart */}
-              <div className="h-28 w-full mt-3 relative">
-                <svg
-                  className="w-full h-full overflow-visible"
-                  viewBox="0 0 340 100"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+              {/* Luminous Glowing Area Line Chart */}
+              <div className="w-full h-24 mt-2">
+                <svg className="w-full h-full overflow-visible" viewBox="0 0 280 80">
                   <defs>
-                    <linearGradient id="neon-area-glow" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#00A3FF" stopOpacity="0.45" />
+                    <linearGradient id="chart-glow-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00D2FF" stopOpacity="0.45" />
                       <stop offset="60%" stopColor="#0066FF" stopOpacity="0.15" />
                       <stop offset="100%" stopColor="#0047BA" stopOpacity="0.0" />
                     </linearGradient>
-                    <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#00D2FF" floodOpacity="0.9" />
+                    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow
+                        dx="0"
+                        dy="0"
+                        stdDeviation="3.5"
+                        floodColor="#00E5FF"
+                        floodOpacity="0.9"
+                      />
                     </filter>
                   </defs>
-
-                  {/* Shaded Area Under Line */}
                   <path
-                    d="M 10 75 C 60 70 90 85 130 55 C 170 25 210 60 250 35 C 280 15 305 25 330 10 L 330 100 L 10 100 Z"
-                    fill="url(#neon-area-glow)"
+                    d="M 5 60 C 45 55 70 68 105 44 C 140 20 175 48 210 28 C 235 12 255 20 275 8 L 275 80 L 5 80 Z"
+                    fill="url(#chart-glow-fill)"
                   />
-
-                  {/* Electric Cyan Glowing Curve */}
                   <path
-                    d="M 10 75 C 60 70 90 85 130 55 C 170 25 210 60 250 35 C 280 15 305 25 330 10"
-                    stroke="#00D2FF"
-                    strokeWidth="3.5"
+                    d="M 5 60 C 45 55 70 68 105 44 C 140 20 175 48 210 28 C 235 12 255 20 275 8"
+                    stroke="#00E5FF"
+                    strokeWidth="3"
                     strokeLinecap="round"
-                    filter="url(#line-glow)"
+                    filter="url(#neon-glow)"
                   />
-
-                  {/* Spark Data Nodes */}
-                  <circle cx="130" cy="55" r="4" fill="#FFFFFF" stroke="#00D2FF" strokeWidth="2" />
-                  <circle cx="250" cy="35" r="4" fill="#FFFFFF" stroke="#00D2FF" strokeWidth="2" />
-                  <circle cx="330" cy="10" r="5" fill="#FFFFFF" stroke="#00A3FF" strokeWidth="2.5" />
+                  <circle cx="105" cy="44" r="3.5" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
+                  <circle cx="210" cy="28" r="3.5" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
+                  <circle cx="275" cy="8" r="4.5" fill="#FFFFFF" stroke="#00A3FF" strokeWidth="2" />
                 </svg>
               </div>
 
-              {/* Bottom Skeleton UI Pills */}
-              <div className="flex gap-2.5 mt-2 pt-3 border-t border-white/10">
-                <div className="w-14 h-2 rounded-full bg-white/20" />
-                <div className="w-20 h-2 rounded-full bg-white/15" />
-                <div className="w-10 h-2 rounded-full bg-white/20" />
+              {/* Skeleton lines at bottom */}
+              <div className="flex gap-2 mt-2 pt-2 border-t border-white/10">
+                <div className="w-12 h-1.5 rounded-full bg-white/20" />
+                <div className="w-16 h-1.5 rounded-full bg-white/15" />
+                <div className="w-8 h-1.5 rounded-full bg-white/20" />
               </div>
             </div>
 
-            {/* Overlapping Floating "Total Earnings" Card (Positioned exactly as in UI screenshot) */}
-            <div className="absolute -bottom-4 -left-3 sm:-left-4 bg-[#0A2663]/95 border border-blue-400/35 rounded-2xl p-3.5 px-4 shadow-[0_15px_35px_rgba(0,0,0,0.5)] backdrop-blur-xl w-52">
+            {/* Overlapping Floating "Total Earnings" Card */}
+            <div
+              className="absolute -bottom-3 -left-4 w-[210px] rounded-[18px] bg-[#0A235C]/95 border border-blue-400/35 p-3.5 px-4 shadow-[0_20px_45px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+              style={{
+                transform: 'rotateX(26deg) rotateY(-18deg) rotateZ(6deg) translateZ(35px)',
+              }}
+            >
               <p className="text-[11px] text-slate-300 font-medium">Total Earnings</p>
-              <div className="flex items-baseline justify-between mt-0.5">
-                <h4 className="text-xl font-black text-white tracking-tight">₹ 12,750</h4>
-              </div>
-
-              <div className="flex items-center justify-between mt-2 pt-1 border-t border-white/10">
+              <h4 className="text-[22px] font-black text-white tracking-tight mt-0.5">₹ 12,750</h4>
+              <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-white/10">
                 <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-0.5">
                   <ChevronUp className="w-3.5 h-3.5 stroke-[3]" /> +12%
                 </span>
-
-                {/* 4-bar mini graphic */}
+                {/* 4-bar equalizer graphic in bright blue */}
                 <div className="flex items-end gap-1 h-4">
                   <span className="w-1 h-2 bg-[#1E74FF] rounded-full" />
                   <span className="w-1 h-3.5 bg-[#1E74FF] rounded-full" />
                   <span className="w-1 h-2.5 bg-[#1E74FF] rounded-full" />
-                  <span className="w-1 h-4 bg-[#00D2FF] rounded-full" />
+                  <span className="w-1 h-4 bg-[#00E5FF] rounded-full" />
                 </div>
               </div>
             </div>
@@ -378,49 +386,49 @@ export default function LoginPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* Right Side: Floating Crisp White Login Card (Exact UI Clone)              */}
+      {/* Right Column: Floating Crisp White Login Card (Exact UI Clone)             */}
       {/* ========================================================================= */}
       <div className="lg:w-[48%] xl:w-[50%] flex items-center justify-center p-6 sm:p-10 lg:p-14 xl:p-16 relative z-10">
-        <div className="w-full max-w-[460px] bg-white rounded-[32px] sm:rounded-[36px] p-8 sm:p-11 shadow-[0_25px_65px_-12px_rgba(10,35,90,0.14)] border border-slate-100">
+        <div className="w-full max-w-[460px] bg-white rounded-[32px] sm:rounded-[36px] p-8 sm:p-12 shadow-[0_20px_60px_-15px_rgba(0,25,80,0.12)] border border-white/80">
           {/* Card Top: 3D Ribbon Logo & Welcome Typography */}
-          <div className="text-center mb-7">
+          <div className="text-center mb-8">
             <div className="flex justify-center mb-3">
               <NexachainRibbonLogo className="w-16 h-16 drop-shadow-md" />
             </div>
 
-            <h2 className="text-[26px] font-black text-[#0B1736] tracking-tight">
-              Nexachain <span className="text-[#0062FF]">AI</span>
+            <h2 className="text-[26px] font-black text-[#0B132A] tracking-tight">
+              Nexachain <span className="text-[#0066FF]">AI</span>
             </h2>
 
-            <p className="text-[11px] font-bold tracking-[0.22em] text-slate-400 uppercase mt-2">
+            <p className="text-[11px] font-bold tracking-[0.24em] text-slate-400 uppercase mt-2">
               WELCOME BACK
             </p>
-            <p className="text-xs sm:text-[13px] text-slate-500 font-medium mt-1">
+            <p className="text-xs sm:text-[13px] text-slate-500 font-normal mt-1">
               Login to your account to continue
             </p>
           </div>
 
-          {/* Login Form */}
+          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label className="block text-xs sm:text-[13px] font-bold text-slate-800 mb-1.5">
+              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
                 Email
               </label>
               <div
                 className={`relative flex items-center rounded-xl border bg-white transition-all ${
                   errors.email
                     ? 'border-rose-400 ring-2 ring-rose-100'
-                    : 'border-slate-200 focus-within:border-[#0062FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="pl-3.5 pr-1 text-slate-400">
+                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
                   <Mail className="w-[18px] h-[18px]" />
                 </div>
                 <input
                   type="email"
                   placeholder="Enter your email address"
-                  className="w-full py-3.5 pr-4 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-3.5 pl-11 pr-4 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('email')}
                 />
               </div>
@@ -431,23 +439,23 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs sm:text-[13px] font-bold text-slate-800 mb-1.5">
+              <label className="block text-xs sm:text-[13px] font-semibold text-slate-800 mb-1.5">
                 Password
               </label>
               <div
                 className={`relative flex items-center rounded-xl border bg-white transition-all ${
                   errors.password
                     ? 'border-rose-400 ring-2 ring-rose-100'
-                    : 'border-slate-200 focus-within:border-[#0062FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
                 }`}
               >
-                <div className="pl-3.5 pr-1 text-slate-400">
+                <div className="absolute left-3.5 text-slate-400 pointer-events-none">
                   <Lock className="w-[18px] h-[18px]" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  className="w-full py-3.5 pr-11 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
+                  className="w-full py-3.5 pl-11 pr-11 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                   {...register('password')}
                 />
                 <button
@@ -473,9 +481,11 @@ export default function LoginPage() {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast('Password reset instruction sent to your registered email.', { icon: 'ℹ️' });
+                    toast('Password reset link sent to your registered email address.', {
+                      icon: 'ℹ️',
+                    });
                   }}
-                  className="text-xs font-semibold text-[#0062FF] hover:underline"
+                  className="text-xs font-semibold text-[#0066FF] hover:underline"
                 >
                   Forgot Password?
                 </a>
@@ -486,7 +496,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-4 bg-[#0062FF] hover:bg-[#0051D6] text-white font-bold text-sm sm:text-base rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+              className="w-full mt-2 py-3.5 px-4 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-sm sm:text-base rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer"
             >
               {loading ? (
                 <span>Logging in...</span>
@@ -499,24 +509,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Demo Autofill Pill */}
-          <div className="mt-3.5 pt-2.5 flex items-center justify-between text-xs border-t border-slate-100">
-            <span className="text-slate-400 font-medium">Demo account:</span>
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              className="text-[#0062FF] font-bold hover:underline cursor-pointer"
-            >
-              Autofill Credentials
-            </button>
-          </div>
-
           {/* OR Divider */}
-          <div className="relative my-4 text-center">
+          <div className="relative my-5 text-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
-            <span className="relative bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="relative bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
               OR
             </span>
           </div>
@@ -551,9 +549,9 @@ export default function LoginPage() {
           </button>
 
           {/* Registration Footer */}
-          <p className="text-center text-xs text-slate-500 mt-5">
+          <p className="text-center text-xs text-slate-500 mt-6">
             Don&apos;t have an account?{' '}
-            <Link href={ROUTES.REGISTER} className="font-bold text-[#0062FF] hover:underline ml-1">
+            <Link href={ROUTES.REGISTER} className="font-bold text-[#0066FF] hover:underline ml-1">
               Register
             </Link>
           </p>
