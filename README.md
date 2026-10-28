@@ -348,3 +348,5 @@ All 6 screens from the `UiDesign` folder have been faithfully reproduced using *
 4. **ROI History**: Metric cards, ROI earnings area trend chart, plan distribution donut chart, and credited returns ledger.
 5. **Referral Income**: Metric cards, stacked bar chart (Direct vs Level), level-wise donut chart, and transaction history table.
 6. **Referral Tree**: Zoomable and collapsible visual tree canvas with root, Level 1, Level 2, and Level 3 nodes, shareable referral link, and tree summary matrix.
+#   N e x a c h a i n A I - P r o j  
+ 
