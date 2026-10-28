@@ -1,0 +1,15 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/_global-error/page": "/_global-error",
+  "/dashboard/page": "/dashboard",
+  "/investments/page": "/investments",
+  "/login/page": "/login",
+  "/page": "/",
+  "/profile/page": "/profile",
+  "/referral-income/page": "/referral-income",
+  "/referral-tree/page": "/referral-tree",
+  "/register/page": "/register",
+  "/roi-history/page": "/roi-history",
+  "/settings/page": "/settings",
+  "/wallet/page": "/wallet"
+}

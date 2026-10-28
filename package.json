@@ -1,0 +1,24 @@
+{
+  "name": "nexachain-ai",
+  "version": "1.0.0",
+  "description": "Nexachain AI - MERN Stack Investment and Referral Platform",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "test:backend": "cd backend && npm test"
+  },
+  "keywords": [
+    "mern",
+    "investment",
+    "referral",
+    "roi",
+    "mongodb",
+    "react",
+    "node"
+  ],
+  "author": "Nexachain AI Developer",
+  "license": "ISC"
+}

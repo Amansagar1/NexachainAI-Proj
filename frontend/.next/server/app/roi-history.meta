@@ -1,0 +1,34 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/roi-history/layout,_N_T_/roi-history/page,_N_T_/roi-history"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/roi-history/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/e19083817188510c09642fdeb778dcd762aee78e5c08325baaec7889c20cb7a0/$/roi-history",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/roi-history/page"
+    },
+    "isFallback": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/wallet/layout,_N_T_/wallet/page,_N_T_/wallet"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/wallet/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/0599ec3fe691b004ac3f2f4fa19796d471db98ae9d379eb4978b3dcc9b8114ae/$/wallet",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/wallet/page"
+    },
+    "isFallback": false
+  }
+}
