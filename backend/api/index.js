@@ -1,0 +1,8 @@
+// ------------------------------ Vercel Serverless Entry Point ------------------------------
+const app = require('../src/app');
+const { connectDB } = require('../src/config/database');
+
+module.exports = async (req, res) => {
+  await connectDB();
+  return app(req, res);
+};

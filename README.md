@@ -290,7 +290,35 @@ npm run start
 
 ---
 
-## 6. Seed Demo Data (Optional)
+## 6. Vercel Deployment Guide
+
+Both the Express backend and the Next.js frontend are fully pre-configured for **Vercel**:
+
+### A. Deploy Backend API to Vercel
+1. In Vercel, click **Add New** &rarr; **Project** &rarr; Select your GitHub repository (`NexachainAI-Proj`).
+2. In **Root Directory**, click *Edit* and select **`backend`**.
+3. **Environment Variables**:
+   - `MONGODB_URI`: `mongodb+srv://sagarsharmaofficial0:%40Developer%400531@cluster0.sf919.mongodb.net/naxachain?retryWrites=true&w=majority`
+   - `JWT_SECRET`: `nexachain_super_secret_jwt_key_2026_secure`
+   - `CLIENT_URL`: `https://<your-frontend-project>.vercel.app` (or `*`)
+   - `ROI_TIMEZONE`: `Asia/Kolkata`
+4. Click **Deploy**.
+   > **Note**: `backend/vercel.json` already contains the Vercel Serverless Function entry point (`api/index.js`) and **Vercel Cron** (`"schedule": "0 0 * * *"`) to automatically execute the 12:00 AM daily ROI calculation.
+   > Copy your deployed backend URL (e.g. `https://nexachain-backend.vercel.app`).
+
+### B. Deploy Frontend Dashboard to Vercel
+1. In Vercel, click **Add New** &rarr; **Project** &rarr; Select the same repository (`NexachainAI-Proj`).
+2. In **Root Directory**, click *Edit* and select **`frontend`**.
+3. Framework Preset: **Next.js** (auto-detected).
+4. **Environment Variables**:
+   - `NEXT_PUBLIC_API_BASE_URL`: `https://<your-backend-project>.vercel.app/api`
+   - `BACKEND_API_URL`: `https://<your-backend-project>.vercel.app`
+5. Click **Deploy**.
+   > Your Next.js fintech dashboard is now live and fully connected to the backend API!
+
+---
+
+## 7. Seed Demo Data (Optional)
 
 To re-seed the MongoDB Atlas database with the baseline data matching all 6 UI screenshots:
 ```bash
@@ -304,10 +332,10 @@ node seedAtlas.js
 
 ### A. Investment Plans
 Configured in `backend/src/constants/businessRules.js`:
-- **Growth Plan A**: 1.0% Daily ROI | 90 Days Duration | Min Investment: â‚¹ 1,000
-- **Growth Plan B** (Most Popular): 1.5% Daily ROI | 120 Days Duration | Min Investment: â‚¹ 5,000
-- **Wealth Plan**: 2.0% Daily ROI | 180 Days Duration | Min Investment: â‚¹ 10,000
-- **Premium Plan**: 2.5% Daily ROI | 365 Days Duration | Min Investment: â‚¹ 25,000
+- **Growth Plan A**: 1.0% Daily ROI | 90 Days Duration | Min Investment: ₹ 1,000
+- **Growth Plan B** (Most Popular): 1.5% Daily ROI | 120 Days Duration | Min Investment: ₹ 5,000
+- **Wealth Plan**: 2.0% Daily ROI | 180 Days Duration | Min Investment: ₹ 10,000
+- **Premium Plan**: 2.5% Daily ROI | 365 Days Duration | Min Investment: ₹ 25,000
 
 ### B. Daily ROI Calculation Formula
 ```text

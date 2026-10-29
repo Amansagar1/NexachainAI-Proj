@@ -4,8 +4,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const corsOptions = require('./config/cors');
+const { connectDB } = require('./config/database');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
@@ -27,6 +29,18 @@ app.use('/api', apiLimiter);
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
+
+// ------------------------------ Ensure Database Connection (Serverless) ------------------------------
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState < 1) {
+    try {
+      await connectDB();
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
+});
 
 // ------------------------------ Health Check ------------------------------
 app.get('/api/health', (req, res) => {
