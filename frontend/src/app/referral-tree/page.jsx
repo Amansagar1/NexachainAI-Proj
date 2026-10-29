@@ -35,10 +35,7 @@ import { referralsApi } from '../../features/referrals/referralsApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-/* -------------------------------------------------------------------------
-   CUSTOM REACT FLOW NODE COMPONENTS
-   100% pixel-accurate to UiDesign/Nexachain AI Referral Tree Dashboard.png
-------------------------------------------------------------------------- */
+// ------------------------------ Custom React Flow Node Components ------------------------------
 
 // ROOT NODE (Level 0 - You)
 const RootNodeComponent = ({ data }) => {
@@ -178,9 +175,7 @@ const Level3NodeComponent = ({ data }) => {
   );
 };
 
-/* -------------------------------------------------------------------------
-   STATIC REACT FLOW NODE TYPES (DEFINED OUTSIDE COMPONENT FOR ZERO WARNINGS)
-------------------------------------------------------------------------- */
+// ------------------------------ React Flow Static Node Types ------------------------------
 const nodeTypes = {
   rootNode: RootNodeComponent,
   level1Node: Level1NodeComponent,
@@ -340,9 +335,7 @@ function generateFlowFromTree(treeData, user) {
   return { nodes, edges };
 }
 
-/* -------------------------------------------------------------------------
-   INNER FLOW CANVAS COMPONENT (USING useReactFlow)
-------------------------------------------------------------------------- */
+// ------------------------------ Inner Flow Canvas Component ------------------------------
 function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(dynamicNodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(dynamicEdges || []);
@@ -470,9 +463,7 @@ function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
   );
 }
 
-/* -------------------------------------------------------------------------
-   MAIN REFERRAL TREE PAGE COMPONENT
-------------------------------------------------------------------------- */
+// ------------------------------ Main Referral Tree Page Component ------------------------------
 export default function ReferralTreePage() {
   const { user } = useAuth();
   const [treeData, setTreeData] = useState(null);

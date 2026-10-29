@@ -6,12 +6,8 @@ const logger = require('../utils/logger');
 let cronJob = null;
 let isJobRunning = false;
 
-/**
- * Initialize automated Daily ROI scheduler
- * Schedule: Every day at 12:00 AM (00:00)
- */
+// ------------------------------ Initialize Daily ROI Scheduler (12:00 AM) ------------------------------
 const initRoiScheduler = () => {
-  // '0 0 * * *' = at 00:00 every day
   const cronExpression = '0 0 * * *';
 
   cronJob = cron.schedule(
@@ -43,7 +39,7 @@ const initRoiScheduler = () => {
   logger.info(`Daily ROI Scheduler initialized. Schedule: '${cronExpression}' [Timezone: ${env.ROI_TIMEZONE}]`);
 };
 
-const stopRoiScheduler = () => {
+// ------------------------------ Stop Daily ROI Scheduler ------------------------------
   if (cronJob) {
     cronJob.stop();
     logger.info('Daily ROI Scheduler stopped.');

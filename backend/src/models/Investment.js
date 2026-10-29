@@ -69,7 +69,7 @@ const investmentSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for common queries (e.g. active investments for scheduler, user investments sorted by date)
+// ------------------------------ Indexes for Query Optimization ------------------------------
 investmentSchema.index({ investmentStatus: 1, startDate: 1, endDate: 1 });
 investmentSchema.index({ user: 1, createdAt: -1 });
 

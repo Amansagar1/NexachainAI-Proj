@@ -134,7 +134,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
+// ------------------------------ Password Hashing Middleware ------------------------------
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -142,12 +142,12 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Instance method to compare password
+// ------------------------------ Password Comparison Method ------------------------------
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Generate a random referral code (e.g. NXA123456)
+// ------------------------------ Referral Code Generator ------------------------------
 userSchema.statics.generateReferralCode = function () {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = 'NXA';

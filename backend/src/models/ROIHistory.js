@@ -49,7 +49,7 @@ const roiHistorySchema = new mongoose.Schema(
   }
 );
 
-// Idempotency constraint: An investment can only have ONE ROI calculation per earning date!
+// ------------------------------ Idempotency Unique Compound Index ------------------------------
 roiHistorySchema.index({ investment: 1, earningDateStr: 1 }, { unique: true });
 roiHistorySchema.index({ user: 1, date: -1 });
 

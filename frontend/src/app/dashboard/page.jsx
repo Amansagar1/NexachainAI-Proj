@@ -264,9 +264,7 @@ export default function DashboardPage() {
           {/* Row 2: 2-Column Split (Left 7 Cols vs Right 5 Cols)                        */}
           {/* ========================================================================= */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
-            {/* ----------------------------------------------------------------------- */}
-            {/* Left 7 Cols: Earnings Overview Chart & Your Referral Network Tree       */}
-            {/* ----------------------------------------------------------------------- */}
+            {/* ------------------------------ Left 7 Cols: Earnings Overview & Network Tree ------------------------------ */}
             <div className="lg:col-span-7 space-y-3.5 sm:space-y-4">
               {/* Card A: Earnings Overview Chart */}
               <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
@@ -488,9 +486,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* ----------------------------------------------------------------------- */}
-            {/* Right 5 Cols: Recent Investments, Recent Earnings, Investment Plans     */}
-            {/* ----------------------------------------------------------------------- */}
+            {/* ------------------------------ Right 5 Cols: Recent Investments & Plans ------------------------------ */}
             <div className="lg:col-span-5 space-y-3.5 sm:space-y-4">
               {/* Card 1: Recent Investments Table */}
               <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-slate-100 shadow-xs">

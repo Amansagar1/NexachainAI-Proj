@@ -45,9 +45,7 @@ import { authApi } from '../../features/auth/authApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-/* -------------------------------------------------------------------------
-   CUSTOM CHART TOOLTIP
-------------------------------------------------------------------------- */
+// ------------------------------ Custom Cashflow Chart Tooltip ------------------------------
 function CustomCashflowTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (

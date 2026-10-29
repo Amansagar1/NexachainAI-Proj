@@ -52,7 +52,7 @@ const referralIncomeSchema = new mongoose.Schema(
   }
 );
 
-// Idempotency: One commission per recipient per level for a specific investment
+// ------------------------------ Idempotency Unique Compound Index ------------------------------
 referralIncomeSchema.index(
   { user: 1, fromUser: 1, investment: 1, referralLevel: 1 },
   { unique: true }
