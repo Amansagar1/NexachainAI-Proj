@@ -1,51 +1,118 @@
-﻿# Nexachain AI - MERN Stack Investment and Referral Platform
-
-[![Fullstack Tests](https://img.shields.io/badge/Tests-8%2F8%20Passed-emerald.svg)](#17-testing-instructions)
-[![Next.js](https://img.shields.io/badge/Next.js-v16-black.svg)](https://nextjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-v24-green.svg)](https://nodejs.org/)
-[![MongoDB Atlas](https://img.shields.io/badge/MongoDB%20Atlas-naxachain-forestgreen.svg)](https://mongodb.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-Inline%20Utilities-blue.svg)](https://tailwindcss.com/)
-
-A full-stack, enterprise-grade investment and multi-level referral platform built for **Nexachain AI** in accordance with the official Technical Assessment specifications and UI designs.
-
----
-
-## 1. Project Overview
-
-**Nexachain AI** is a financial technology platform that allows users to:
-- Invest in tiered growth plans with fixed daily ROI payouts.
-- Earn multi-level referral commissions across 3 levels (5% direct, 3% level 2, 2% level 3).
-- Monitor live earnings and analytics through a modern fintech dashboard.
-- Explore their multi-level downline using an interactive, zoomable, and collapsible referral tree hierarchy.
-- Benefit from an automated, idempotent `node-cron` scheduler running daily at 12:00 AM.
-
----
-
-## 2. Technology Stack
-
-### Frontend
-- **Framework**: **Next.js** (React 18/19 App Router) with client-side hydration
-- **Styling**: **Inline Tailwind CSS** (`className="..."` utility classes)
-- **Icons**: Lucide React
-- **Data Visualization**: Recharts (interactive Line charts, Stacked Bar charts, Donut distribution charts)
-- **Form Management & Validation**: React Hook Form with Zod schemas
-- **HTTP Client**: Axios with interceptors, JWT authorization headers, and 401 handling
-- **Notifications**: React Hot Toast
-
-### Backend
-- **Runtime**: Node.js (v24+)
-- **Framework**: Express.js
-- **Database & ODM**: MongoDB Atlas (`naxachain` database) with Mongoose v8
-- **Authentication**: JSON Web Tokens (JWT) + bcryptjs password hashing
-- **Security**: Helmet, CORS with strict origin validation, Express Rate Limiter, input sanitization
-- **Automated Scheduler**: `node-cron` (configured for 12:00 AM daily execution)
-- **Testing**: Jest + Supertest + in-memory MongoDB runner
-
----
-
-## 3. Project Folder Structure
-
 ```text
+d:/MYMOBILEPROJECTS/
+├── frontend/                     # Next.js Frontend with Inline Tailwind CSS
+│   ├── public/
+│   │   └── favicon.svg           # Nexachain AI branded vector icon
+│   ├── src/
+│   │   ├── app/                  # Next.js App Router Pages
+│   │   │   ├── layout.jsx        # Root Layout with AuthProvider & Toaster
+│   │   │   ├── globals.css       # Base Tailwind styling & scrollbars
+│   │   │   ├── page.jsx          # Root Entry (redirects to /dashboard or /login)
+│   │   │   ├── login/page.jsx    # Unified Auth Page with In-Card Toggle (UI Design #1)
+│   │   │   ├── register/page.jsx # Registration Redirect Handler
+│   │   │   ├── dashboard/page.jsx# Main Overview Dashboard (UI Design #2)
+│   │   │   ├── investments/page.jsx# Investment Plans & History (UI Design #3)
+│   │   │   ├── roi-history/page.jsx# Daily ROI Tracking & Charts (UI Design #4)
+│   │   │   ├── referral-income/page.jsx# Level Income & Charts (UI Design #5)
+│   │   │   ├── referral-tree/page.jsx  # Interactive Tree Visualizer (UI Design #6)
+│   │   │   ├── wallet/page.jsx   # Wallet & Settlement View
+│   │   │   ├── profile/page.jsx  # User Profile Details
+│   │   │   └── settings/page.jsx # Notification & Security Preferences
+│   │   ├── components/
+│   │   │   ├── common/           # Reusable UI Components
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Input.jsx
+│   │   │   │   ├── Modal.jsx
+│   │   │   │   ├── StatusBadge.jsx
+│   │   │   │   ├── Pagination.jsx
+│   │   │   │   ├── LoadingState.jsx
+│   │   │   │   ├── EmptyState.jsx
+│   │   │   │   └── ErrorState.jsx
+│   │   │   └── layout/           # Shared Navigation & Shell
+│   │   │       ├── AppLayout.jsx
+│   │   │       ├── Sidebar.jsx
+│   │   │       └── Header.jsx
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx   # Global User Session & Balance Store
+│   │   ├── features/             # Feature-specific API Clients
+│   │   │   ├── auth/authApi.js
+│   │   │   ├── dashboard/dashboardApi.js
+│   │   │   ├── investments/investmentsApi.js
+│   │   │   ├── roi/roiApi.js
+│   │   │   └── referrals/referralsApi.js
+│   │   ├── services/
+│   │   │   └── apiClient.js      # Central Axios client with JWT interceptor
+│   │   ├── utils/
+│   │   │   ├── currency.js       # Indian Rupee (INR) formatters
+│   │   │   ├── date.js           # Date and timestamp formatters
+│   │   │   └── errorHandler.js   # Unified API error extractor
+│   │   └── constants/
+│   │       ├── routes.js         # Centralized route definitions
+│   │       └── navigation.js     # Sidebar menu configuration
+│   ├── next.config.js            # Next.js configuration & API reverse proxy
+│   ├── tailwind.config.js        # Brand color extensions & font definitions
+│   ├── .env                      # Frontend environment settings
+│   └── package.json
+│
+├── backend/                      # Layered Express.js Backend Architecture
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── env.js            # Environment validation
+│   │   │   ├── database.js       # MongoDB Atlas connection manager
+│   │   │   └── cors.js           # CORS whitelisting & security
+│   │   ├── models/               # The 4 Core Mongoose Models
+│   │   │   ├── User.js           # Users & wallet balances
+│   │   │   ├── Investment.js     # Investments & plan details
+│   │   │   ├── ROIHistory.js     # Daily credited returns (idempotent key)
+│   │   │   └── ReferralIncome.js # Multi-level referral commission ledger
+│   │   ├── controllers/          # HTTP Request/Response Handlers
+│   │   │   ├── authController.js
+│   │   │   ├── dashboardController.js
+│   │   │   ├── investmentController.js
+│   │   │   ├── roiController.js
+│   │   │   └── referralController.js
+│   │   ├── services/             # Core Business Logic & Calculations
+│   │   │   ├── authService.js
+│   │   │   ├── dashboardService.js
+│   │   │   ├── investmentService.js
+│   │   │   ├── roiService.js     # Daily ROI execution & idempotency
+│   │   │   └── referralService.js# Hierarchy traversal & level commission
+│   │   ├── routes/               # Express Endpoint Routers
+│   │   │   ├── authRoutes.js
+│   │   │   ├── dashboardRoutes.js
+│   │   │   ├── investmentRoutes.js
+│   │   │   ├── roiRoutes.js
+│   │   │   └── referralRoutes.js
+│   │   ├── middleware/           # Reusable Middlewares
+│   │   │   ├── authenticate.js   # JWT verification & active status check
+│   │   │   ├── authorize.js      # Account authorization
+│   │   │   ├── validateRequest.js# Express-validator error pipeline
+│   │   │   ├── rateLimiter.js    # Auth & API abuse prevention
+│   │   │   ├── notFound.js       # 404 handler
+│   │   │   └── errorHandler.js   # Centralized error handler
+│   │   ├── validators/           # Request input validators
+│   │   │   ├── authValidator.js
+│   │   │   └── investmentValidator.js
+│   │   ├── jobs/
+│   │   │   └── roiScheduler.js   # Automated node-cron 12:00 AM scheduler
+│   │   ├── utils/
+│   │   │   ├── AppError.js       # Operational error class
+│   │   │   ├── asyncHandler.js   # Async controller wrapper
+│   │   │   └── logger.js         # Structured logger
+│   │   ├── constants/
+│   │   │   └── businessRules.js  # Centralized business parameters & rates
+│   │   ├── app.js                # Express Application Setup
+│   │   └── server.js             # HTTP Server & DB bootstrap
+│   ├── tests/
+│   │   └── nexachain.test.js     # Complete Automated Test Suite (Jest)
+│   ├── seedAtlas.js              # Atlas seeder script
+│   ├── .env                      # Backend environment settings
+│   └── package.json
+│
+├── docs/
+│   └── api.md                    # Comprehensive REST API Documentation
+└── postman/
+    └── collection.json           # Complete Postman Collection with Tests```text
 d:/MYMOBILEPROJECTS/
 â”œâ”€â”€ frontend/                     # Next.js Frontend with Inline Tailwind CSS
 â”‚   â”œâ”€â”€ public/
@@ -185,7 +252,7 @@ All 4 collections are provisioned with unique indexes and seeded with demo evalu
 - **`referralincomes`**
 
 ### Pre-configured Demo Login Credentials:
-- **Email**: `john@nexachain.ai`
+- **Email**: `Aman@nexachain.ai` (or `john@nexachain.ai`)
 - **Password**: `password123`
 - **Referral Code**: `NXA123456`
 
@@ -348,8 +415,6 @@ All 6 screens from the `UiDesign` folder have been faithfully reproduced using *
 4. **ROI History**: Metric cards, ROI earnings area trend chart, plan distribution donut chart, and credited returns ledger.
 5. **Referral Income**: Metric cards, stacked bar chart (Direct vs Level), level-wise donut chart, and transaction history table.
 6. **Referral Tree**: Zoomable and collapsible visual tree canvas with root, Level 1, Level 2, and Level 3 nodes, shareable referral link, and tree summary matrix.
-#   N e x a c h a i n A I - P r o j  
- 
 
 
 ---
