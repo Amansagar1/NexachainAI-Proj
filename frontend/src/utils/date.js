@@ -1,6 +1,4 @@
-/**
- * Date formatting utilities
- */
+// ------------------------------ Date Formatting Utilities ------------------------------
 export const formatDate = (dateString, options = {}) => {
   if (!dateString) return '-';
   const date = new Date(dateString);

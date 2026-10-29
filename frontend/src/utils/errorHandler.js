@@ -1,6 +1,4 @@
-/**
- * Extract clean error message from API response or Error
- */
+// ------------------------------ Extract Error Message ------------------------------
 export const extractErrorMessage = (error, fallback = 'Something went wrong. Please try again.') => {
   if (typeof error === 'string') return error;
 

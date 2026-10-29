@@ -1,7 +1,6 @@
 import React from 'react';
 
 const statusStyles = {
-  // Investment & General statuses
   Active: 'bg-emerald-50 text-emerald-600 border-emerald-200/80',
   active: 'bg-emerald-50 text-emerald-600 border-emerald-200/80',
   Completed: 'bg-blue-50 text-blue-600 border-blue-200/80',
@@ -12,7 +11,6 @@ const statusStyles = {
   pending: 'bg-amber-50 text-amber-600 border-amber-200/80',
   Credited: 'bg-emerald-50 text-emerald-600 border-emerald-200/80',
 
-  // Levels
   'Level 0': 'bg-blue-100 text-blue-700 border-blue-300',
   'Level 1': 'bg-blue-50 text-blue-600 border-blue-200',
   'Level 2': 'bg-emerald-50 text-emerald-600 border-emerald-200',
@@ -21,7 +19,6 @@ const statusStyles = {
   L2: 'bg-emerald-50 text-emerald-600 border-emerald-200',
   L3: 'bg-purple-50 text-purple-600 border-purple-200',
 
-  // Types
   'Direct Income': 'bg-blue-50 text-blue-600 border-blue-200',
   'Level Income': 'bg-purple-50 text-purple-600 border-purple-200',
 };

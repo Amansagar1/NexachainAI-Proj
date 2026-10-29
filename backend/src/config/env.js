@@ -13,7 +13,7 @@ const env = {
   ROI_TIMEZONE: process.env.ROI_TIMEZONE || 'Asia/Kolkata',
 };
 
-// Validate critical variables in production
+// ------------------------------ Production Validation ------------------------------
 if (env.NODE_ENV === 'production') {
   if (!process.env.JWT_SECRET) {
     throw new Error('FATAL: JWT_SECRET environment variable is missing in production!');

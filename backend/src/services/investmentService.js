@@ -5,23 +5,18 @@ const { distributeReferralCommissions } = require('./referralService');
 const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
-/**
- * Get configured investment plans
- */
+// ------------------------------ Get Available Investment Plans ------------------------------
 const getAvailablePlans = () => {
   return Object.values(INVESTMENT_PLANS);
 };
 
-/**
- * Create a new investment
- */
+// ------------------------------ Create New Investment ------------------------------
 const createInvestment = async (userId, { planId, amount }) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new AppError('User not found', 404);
   }
 
-  // Find plan from business rules
   const plan = Object.values(INVESTMENT_PLANS).find((p) => p.id === planId);
   if (!plan) {
     throw new AppError('Invalid investment plan selected', 400);
@@ -57,20 +52,16 @@ const createInvestment = async (userId, { planId, amount }) => {
 
   logger.info(`New investment created: ID ${investment._id}, Amount: ₹${numericAmount} by User ${userId}`);
 
-  // Automatically trigger multi-level referral commission distribution
   try {
     await distributeReferralCommissions(investment);
   } catch (err) {
     logger.error(`Error distributing referral commissions for investment ${investment._id}:`, err);
-    // Note: Do not fail the investment creation if referral distribution encounters an error, but log it
   }
 
   return investment;
 };
 
-/**
- * Get user's investments with filtering and pagination
- */
+// ------------------------------ Get User Investments with Filters & Pagination ------------------------------
 const getUserInvestments = async (userId, query = {}) => {
   const page = parseInt(query.page, 10) || 1;
   const limit = parseInt(query.limit, 10) || 10;
@@ -101,7 +92,6 @@ const getUserInvestments = async (userId, query = {}) => {
     Investment.countDocuments(filter),
   ]);
 
-  // Aggregate stats
   const allUserInvestments = await Investment.find({ user: userId });
   let totalAmount = 0;
   let activeCount = 0;
@@ -133,9 +123,7 @@ const getUserInvestments = async (userId, query = {}) => {
   };
 };
 
-/**
- * Get single investment by ID with ownership check
- */
+// ------------------------------ Get Investment By ID ------------------------------
 const getInvestmentById = async (userId, investmentId) => {
   const investment = await Investment.findOne({ _id: investmentId, user: userId });
   if (!investment) {

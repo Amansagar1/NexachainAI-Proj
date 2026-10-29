@@ -94,9 +94,7 @@ export default function DashboardPage() {
         <ErrorState message={error} onRetry={fetchData} />
       ) : (
         <div className="space-y-3.5 sm:space-y-4 select-none">
-          {/* ========================================================================= */}
-          {/* Top Header Row: Title & Greeting on Left | Referral Badges on Right       */}
-          {/* ========================================================================= */}
+          {/* ------------------------------ Dashboard Header & Referral Badges ------------------------------ */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 tracking-tight leading-tight">
@@ -108,7 +106,6 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-              {/* Your Referral Code Card */}
               <div className="flex items-center gap-3 px-3.5 py-1.5 bg-[#EAF2FF] border border-blue-100 rounded-xl">
                 <div>
                   <p className="text-[10px] font-medium text-slate-500">
@@ -130,8 +127,6 @@ export default function DashboardPage() {
                   )}
                 </button>
               </div>
-
-              {/* Total Referrals Badge */}
               <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white border border-slate-100 rounded-xl shadow-xs">
                 <div className="w-8 h-8 rounded-full bg-blue-50 text-[#0066FF] flex items-center justify-center shrink-0">
                   <Users className="w-4 h-4" />
@@ -147,11 +142,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* ========================================================================= */}
-          {/* Row 1: 4 Core Metric KPI Stat Cards                                       */}
-          {/* ========================================================================= */}
+          {/* ------------------------------ Core Metric KPI Cards ------------------------------ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-3.5">
-            {/* KPI 1: Total Investments */}
             <div
               onClick={() => router.push(ROUTES.INVESTMENTS)}
               className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between"
@@ -177,8 +169,6 @@ export default function DashboardPage() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
               </div>
             </div>
-
-            {/* KPI 2: Daily ROI */}
             <div
               onClick={() => router.push(ROUTES.ROI_HISTORY)}
               className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between"
@@ -204,8 +194,6 @@ export default function DashboardPage() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
               </div>
             </div>
-
-            {/* KPI 3: Total Level Income */}
             <div
               onClick={() => router.push(ROUTES.REFERRAL_INCOME)}
               className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between"
@@ -231,8 +219,6 @@ export default function DashboardPage() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
               </div>
             </div>
-
-            {/* KPI 4: Wallet Balance */}
             <div
               onClick={() => router.push(ROUTES.WALLET)}
               className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs hover:shadow-sm transition-all cursor-pointer flex flex-col justify-between"
@@ -260,13 +246,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* ========================================================================= */}
-          {/* Row 2: 2-Column Split (Left 7 Cols vs Right 5 Cols)                        */}
-          {/* ========================================================================= */}
+          {/* ------------------------------ Analytics & Network Body Grid ------------------------------ */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
             {/* ------------------------------ Left 7 Cols: Earnings Overview & Network Tree ------------------------------ */}
             <div className="lg:col-span-7 space-y-3.5 sm:space-y-4">
-              {/* Card A: Earnings Overview Chart */}
               <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-2">
                   <div className="flex flex-wrap items-center gap-4">
@@ -284,8 +267,6 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Filter Tabs (7D, 30D, 3M, 1Y) */}
                   <div className="flex items-center gap-1 self-start sm:self-auto">
                     {['7D', '30D', '3M', '1Y'].map((p) => (
                       <button
@@ -302,8 +283,6 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 </div>
-
-                {/* Dual-Line Area Chart */}
                 <div className="h-56 sm:h-60 w-full mt-2">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
@@ -368,8 +347,6 @@ export default function DashboardPage() {
                   </ResponsiveContainer>
                 </div>
               </div>
-
-              {/* Card B: Your Referral Network */}
               <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
@@ -382,8 +359,6 @@ export default function DashboardPage() {
                     View Tree
                   </Link>
                 </div>
-
-                {/* 3 Mini Metrics Row */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-3.5">
                   <div className="p-2 sm:p-2.5 rounded-xl bg-[#F0F5FF] flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-blue-100 text-[#0066FF] flex items-center justify-center shrink-0">
@@ -427,10 +402,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-
-                {/* Visual Referral Hierarchy Tree */}
                 <div className="p-3 sm:p-4 rounded-xl bg-[#F9FBFC] border border-slate-100 flex flex-col items-center">
-                  {/* Root Node (You) */}
                   <div className="px-4 py-1.5 rounded-2xl bg-[#0066FF] text-white flex items-center gap-2 shadow-xs">
                     <div className="w-5 h-5 rounded-full bg-white/25 flex items-center justify-center text-white">
                       <User className="w-3 h-3" />
@@ -445,17 +417,12 @@ export default function DashboardPage() {
 
                   {topDirects.length > 0 ? (
                     <>
-                      {/* Vertical stem down */}
                       <div className="w-[1.5px] h-3 bg-slate-300" />
-
-                      {/* Horizontal branching bar with tick marks */}
                       <div className="w-48 sm:w-60 h-[1.5px] bg-slate-300 relative">
                         <div className="absolute -left-[1px] top-0 w-[1.5px] h-2.5 bg-slate-300" />
                         <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[1.5px] h-2.5 bg-slate-300" />
                         <div className="absolute -right-[1px] top-0 w-[1.5px] h-2.5 bg-slate-300" />
                       </div>
-
-                      {/* Downline Child Nodes */}
                       <div className="flex items-center justify-between w-56 sm:w-72 pt-2.5">
                         {topDirects.map((child, idx) => (
                           <div key={child._id || idx} className="flex flex-col items-center text-center">
@@ -488,7 +455,6 @@ export default function DashboardPage() {
 
             {/* ------------------------------ Right 5 Cols: Recent Investments & Plans ------------------------------ */}
             <div className="lg:col-span-5 space-y-3.5 sm:space-y-4">
-              {/* Card 1: Recent Investments Table */}
               <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-slate-100 shadow-xs">
                 <div className="flex items-center justify-between mb-2.5">
                   <h4 className="text-sm font-bold text-slate-900">Recent Investments</h4>
@@ -550,8 +516,6 @@ export default function DashboardPage() {
                   </table>
                 </div>
               </div>
-
-              {/* Card 2: Recent Earnings Table */}
               <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-slate-100 shadow-xs">
                 <div className="flex items-center justify-between mb-2.5">
                   <h4 className="text-sm font-bold text-slate-900">Recent Earnings</h4>
@@ -613,8 +577,6 @@ export default function DashboardPage() {
                   </table>
                 </div>
               </div>
-
-              {/* Card 3: Investment Plans Cards */}
               <div className="bg-white rounded-2xl p-4 sm:p-4.5 border border-slate-100 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-sm font-bold text-slate-900">Investment Plans</h4>

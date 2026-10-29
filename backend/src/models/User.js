@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        
+
         'Please enter a valid email address',
       ],
       index: true,
@@ -105,7 +105,7 @@ const userSchema = new mongoose.Schema(
       bankName: { type: String, default: 'HDFC Bank Ltd.' },
       accountNumber: { type: String, default: '•••• •••• •••• 9821' },
       accountNumberMasked: { type: String, default: '•••• 9821' },
-      holderName: { type: String, default: 'John Doe' },
+      holderName: { type: String, default: 'Aman Sagar' },
       ifsc: { type: String, default: 'HDFC0001234' },
       branch: { type: String, default: 'Connaught Place, New Delhi' },
       verified: { type: Boolean, default: true },

@@ -5,9 +5,7 @@ const ROIHistory = require('../models/ROIHistory');
 const { INVESTMENT_STATUS, ROI_STATUS } = require('../constants/businessRules');
 const logger = require('../utils/logger');
 
-/**
- * Helper to get date string in YYYY-MM-DD format
- */
+// ------------------------------ Helper: Format Date String ------------------------------
 const getDateString = (date = new Date()) => {
   const d = new Date(date);
   const year = d.getFullYear();
@@ -16,17 +14,12 @@ const getDateString = (date = new Date()) => {
   return `${year}-${month}-${day}`;
 };
 
-/**
- * Daily ROI Processor - Idempotent, robust, and safe
- * Can be called by node-cron scheduler or manual trigger for testing
- */
+// ------------------------------ Daily ROI Calculation Processor ------------------------------
 const processDailyROI = async (targetDate = new Date()) => {
   const earningDateStr = getDateString(targetDate);
   const now = new Date(targetDate);
 
   logger.info(`Starting Daily ROI processing for date: ${earningDateStr}`);
-
-  // Find all active investments
   const activeInvestments = await Investment.find({
     investmentStatus: INVESTMENT_STATUS.ACTIVE,
   }).populate('user', 'accountStatus');
@@ -42,27 +35,20 @@ const processDailyROI = async (targetDate = new Date()) => {
     processed++;
 
     try {
-      // 1) Verify user exists and is active
       if (!investment.user || investment.user.accountStatus !== 'Active') {
         skipped++;
         continue;
       }
-
-      // 2) Check if investment has reached end date
       if (now > investment.endDate) {
         investment.investmentStatus = INVESTMENT_STATUS.COMPLETED;
         await investment.save();
         completed++;
         continue;
       }
-
-      // 3) Check if investment has already started
       if (now < investment.startDate) {
         skipped++;
         continue;
       }
-
-      // 4) Idempotency check: Has ROI already been generated for this investment on this date?
       const existingROI = await ROIHistory.findOne({
         investment: investment._id,
         earningDateStr,
@@ -72,8 +58,6 @@ const processDailyROI = async (targetDate = new Date()) => {
         skipped++;
         continue;
       }
-
-      // 5) Calculate daily ROI amount: (Principal * dailyRoiPercentage) / 100
       const calculatedRoi =
         Math.round((investment.investmentAmount * investment.dailyRoiPercentage) / 100 * 100) / 100;
 
@@ -81,8 +65,6 @@ const processDailyROI = async (targetDate = new Date()) => {
         skipped++;
         continue;
       }
-
-      // 6) Create ROI history record with unique compound key protection
       try {
         await ROIHistory.create({
           user: investment.user._id,
@@ -96,14 +78,11 @@ const processDailyROI = async (targetDate = new Date()) => {
         });
       } catch (insertErr) {
         if (insertErr.code === 11000) {
-          // E11000 duplicate key error caught - idempotency safely preserved!
           skipped++;
           continue;
         }
         throw insertErr;
       }
-
-      // 7) Atomically update User wallet and Investment cumulative total
       await User.findByIdAndUpdate(investment.user._id, {
         $inc: {
           walletBalance: calculatedRoi,
@@ -137,9 +116,7 @@ const processDailyROI = async (targetDate = new Date()) => {
   };
 };
 
-/**
- * Get paginated ROI history and aggregate analytics for a user
- */
+// ------------------------------ Get Paginated ROI History ------------------------------
 const getUserROIHistory = async (userId, query = {}) => {
   const page = parseInt(query.page, 10) || 1;
   const limit = parseInt(query.limit, 10) || 10;
@@ -173,8 +150,6 @@ const getUserROIHistory = async (userId, query = {}) => {
       .limit(limit),
     ROIHistory.countDocuments(filter),
   ]);
-
-  // Aggregate user statistics
   const allUserRoi = await ROIHistory.find({ user: userId })
     .populate('investment', 'planDetails investmentAmount')
     .sort({ date: 1 });

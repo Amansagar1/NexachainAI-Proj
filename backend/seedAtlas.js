@@ -33,10 +33,10 @@ const seedAtlas = async () => {
 
     console.log('Seeding demo users into naxachain...');
 
-    // 1. Root user: John Doe
-    const john = await User.create({
-      fullName: 'John Doe',
-      email: 'john@nexachain.ai',
+    // 1. Root user: Aman Sagar
+    const Aman = await User.create({
+      fullName: 'Aman Sagar',
+      email: 'Aman@nexachain.ai',
       mobileNumber: '+91 98765 43210',
       password: 'password123',
       referralCode: 'NXA123456',
@@ -61,7 +61,7 @@ const seedAtlas = async () => {
         bankName: 'HDFC Bank Ltd.',
         accountNumber: '•••• •••• •••• 9821',
         accountNumberMasked: '•••• 9821',
-        holderName: 'John Doe',
+        holderName: 'Aman Sagar',
         ifsc: 'HDFC0001234',
         branch: 'Connaught Place, New Delhi',
         verified: true,
@@ -93,7 +93,7 @@ const seedAtlas = async () => {
       mobileNumber: '+919876543211',
       password: 'password123',
       referralCode: 'NXA888123',
-      referredBy: john._id,
+      referredBy: Aman._id,
       walletBalance: 1800,
       totalRoiEarned: 1800,
       totalLevelIncomeEarned: 600,
@@ -107,7 +107,7 @@ const seedAtlas = async () => {
       mobileNumber: '+919876543212',
       password: 'password123',
       referralCode: 'NXA888456',
-      referredBy: john._id,
+      referredBy: Aman._id,
       walletBalance: 1200,
       totalRoiEarned: 1200,
       totalLevelIncomeEarned: 200,
@@ -121,7 +121,7 @@ const seedAtlas = async () => {
       mobileNumber: '+919876543213',
       password: 'password123',
       referralCode: 'NXA888789',
-      referredBy: john._id,
+      referredBy: Aman._id,
       walletBalance: 1000,
       totalRoiEarned: 1000,
       totalLevelIncomeEarned: 0,
@@ -135,7 +135,7 @@ const seedAtlas = async () => {
       mobileNumber: '+919876543214',
       password: 'password123',
       referralCode: 'NXA888321',
-      referredBy: john._id,
+      referredBy: Aman._id,
       walletBalance: 1500,
       totalRoiEarned: 1500,
       totalLevelIncomeEarned: 300,
@@ -149,7 +149,7 @@ const seedAtlas = async () => {
       mobileNumber: '+919876543215',
       password: 'password123',
       referralCode: 'NXA999654',
-      referredBy: john._id,
+      referredBy: Aman._id,
       walletBalance: 500,
       totalRoiEarned: 500,
       totalLevelIncomeEarned: 0,
@@ -335,10 +335,10 @@ const seedAtlas = async () => {
       return d.toISOString().split('T')[0];
     };
 
-    // 5. Investments for John Doe (matching UI Design screenshot #2 & #3)
+    // 5. Investments for Aman Sagar (matching UI Design screenshot #2 & #3)
     console.log('Seeding investments into naxachain...');
     const inv1 = await Investment.create({
-      user: john._id,
+      user: Aman._id,
       investmentAmount: 25000,
       planDetails: {
         planId: INVESTMENT_PLANS.GROWTH_A.id,
@@ -355,7 +355,7 @@ const seedAtlas = async () => {
     });
 
     const inv2 = await Investment.create({
-      user: john._id,
+      user: Aman._id,
       investmentAmount: 25000,
       planDetails: {
         planId: INVESTMENT_PLANS.GROWTH_B.id,
@@ -372,7 +372,7 @@ const seedAtlas = async () => {
     });
 
     const inv3 = await Investment.create({
-      user: john._id,
+      user: Aman._id,
       investmentAmount: 50000,
       planDetails: {
         planId: INVESTMENT_PLANS.WEALTH.id,
@@ -389,7 +389,7 @@ const seedAtlas = async () => {
     });
 
     const inv4 = await Investment.create({
-      user: john._id,
+      user: Aman._id,
       investmentAmount: 10000,
       planDetails: {
         planId: INVESTMENT_PLANS.PREMIUM.id,
@@ -422,7 +422,7 @@ const seedAtlas = async () => {
 
     for (const ref of referralData) {
       await ReferralIncome.create({
-        user: john._id,
+        user: Aman._id,
         fromUser: ref.from._id,
         referralLevel: ref.level,
         incomeAmount: ref.amount,
@@ -455,7 +455,7 @@ const seedAtlas = async () => {
 
     for (const roi of roiData) {
       await ROIHistory.create({
-        user: john._id,
+        user: Aman._id,
         investment: roi.inv._id,
         roiAmount: roi.amount,
         dailyRoiPercentage: roi.pct,
@@ -583,14 +583,14 @@ const seedAtlas = async () => {
 
     for (const txn of walletTxns) {
       await WalletTransaction.create({
-        user: john._id,
+        user: Aman._id,
         ...txn,
       });
     }
 
     console.log('--- SEEDING COMPLETED SUCCESSFULLY ---');
     console.log('Database name: naxachain on MongoDB Atlas');
-    console.log('Demo Login: john@nexachain.ai | password: password123');
+    console.log('Demo Login: Aman@nexachain.ai | password: password123');
     process.exit(0);
   } catch (err) {
     console.error('Seeding error:', err);

@@ -1,6 +1,4 @@
-/**
- * Simple structured logger for Nexachain AI
- */
+// ------------------------------ Logger Utility ------------------------------
 const logger = {
   info: (msg, meta = {}) => {
     console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, Object.keys(meta).length ? JSON.stringify(meta) : '');

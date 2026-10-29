@@ -9,7 +9,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, postman)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {

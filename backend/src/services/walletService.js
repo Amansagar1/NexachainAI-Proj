@@ -4,9 +4,7 @@ const ROIHistory = require('../models/ROIHistory');
 const ReferralIncome = require('../models/ReferralIncome');
 const AppError = require('../utils/AppError');
 
-/**
- * Deposit capital into user wallet
- */
+// ------------------------------ Deposit Capital to Wallet ------------------------------
 const depositFunds = async (userId, { amount, method = 'UPI' }) => {
   const numericAmount = Number(amount);
   if (isNaN(numericAmount) || numericAmount <= 0) {
@@ -37,10 +35,8 @@ const depositFunds = async (userId, { amount, method = 'UPI' }) => {
   return { transaction: txn, walletBalance: updatedUser.walletBalance };
 };
 
-/**
- * Request withdrawal from user wallet
- */
-const withdrawFunds = async (userId, { amount, destination = 'HDFC Bank •••• 9821' }) => {
+// ------------------------------ Request Capital Withdrawal ------------------------------
+const withdrawFunds = async (userId, { amount, destination = 'Verified Bank Payout' }) => {
   const numericAmount = Number(amount);
   if (isNaN(numericAmount) || numericAmount <= 0) {
     throw new AppError('Invalid withdrawal amount', 400);
@@ -79,9 +75,7 @@ const withdrawFunds = async (userId, { amount, destination = 'HDFC Bank ••�
   return { transaction: txn, walletBalance: updatedUser.walletBalance };
 };
 
-/**
- * Get paginated transactions list
- */
+// ------------------------------ Get Paginated Wallet Transactions ------------------------------
 const getTransactions = async (userId, query = {}) => {
   const page = parseInt(query.page, 10) || 1;
   const limit = parseInt(query.limit, 10) || 10;
@@ -115,16 +109,13 @@ const getTransactions = async (userId, query = {}) => {
   };
 };
 
-/**
- * Get cashflow history curve and summary metrics
- */
+// ------------------------------ Get Wallet Overview & Cashflow Metrics ------------------------------
 const getWalletOverview = async (userId) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new AppError('User not found', 404);
   }
 
-  // Calculate total withdrawn
   const withdrawalTxns = await WalletTransaction.find({
     user: userId,
     category: 'withdrawal',
@@ -133,7 +124,6 @@ const getWalletOverview = async (userId) => {
   const pendingWithdrawals = withdrawalTxns.filter((t) => t.status === 'Pending');
   const totalWithdrawn = completedWithdrawals.reduce((sum, t) => sum + t.amount, 0);
 
-  // Fetch all transactions for this user sorted chronologically to build accurate live cashflow
   const allTxns = await WalletTransaction.find({ user: userId }).sort({ date: 1 });
   const cashflowMap = {};
   let runningBalance = 0;

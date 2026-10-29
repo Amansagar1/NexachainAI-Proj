@@ -11,10 +11,7 @@ const getRoiHistory = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * Manual development / testing trigger for Daily ROI calculation
- * Safe and idempotent
- */
+// ------------------------------ Manual Daily ROI Trigger ------------------------------
 const triggerDailyRoi = asyncHandler(async (req, res) => {
   const { date } = req.body;
   const targetDate = date ? new Date(date) : new Date();

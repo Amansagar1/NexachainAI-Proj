@@ -4,10 +4,10 @@ const User = require('../models/User');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
+// ------------------------------ JWT Authentication Middleware ------------------------------
 const authenticate = asyncHandler(async (req, res, next) => {
   let token;
 
-  // 1) Extract token from Authorization header or cookie
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -21,7 +21,6 @@ const authenticate = asyncHandler(async (req, res, next) => {
     return next(new AppError('You are not logged in. Please log in to get access.', 401));
   }
 
-  // 2) Verify token
   let decoded;
   try {
     decoded = jwt.verify(token, env.JWT_SECRET);
@@ -32,7 +31,6 @@ const authenticate = asyncHandler(async (req, res, next) => {
     return next(new AppError('Invalid token. Please log in again.', 401));
   }
 
-  // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
@@ -40,14 +38,12 @@ const authenticate = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // 4) Check if account is active
   if (currentUser.accountStatus !== 'Active') {
     return next(
       new AppError('Your account is currently inactive or suspended. Please contact support.', 403)
     );
   }
 
-  // Grant access to protected route
   req.user = currentUser;
   next();
 });

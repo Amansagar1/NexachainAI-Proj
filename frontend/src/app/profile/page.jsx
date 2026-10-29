@@ -12,7 +12,7 @@ import {
   Award,
   KeyRound,
   Smartphone,
-  
+
   Laptop,
   CheckCircle2,
   Copy,
@@ -41,20 +41,12 @@ import { formatDate } from '../../utils/date';
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
   const [stats, setStats] = useState(null);
-
-  // Active Tab
   const [activeTab, setActiveTab] = useState('personal');
-
-  // Modals
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
-
-  // Copy states
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-
-  // Profile Form state initialized dynamically from authenticated user
   const [profileData, setProfileData] = useState({
     fullName: user?.fullName || '',
     email: user?.email || '',
@@ -65,8 +57,6 @@ export default function ProfilePage() {
     city: user?.city || '',
     address: user?.address || '',
   });
-
-  // Fetch summary stats for live active capital & referrals
   React.useEffect(() => {
     async function fetchStats() {
       try {
@@ -80,8 +70,6 @@ export default function ProfilePage() {
     }
     fetchStats();
   }, []);
-
-  // Sync state whenever user profile is updated or loaded
   React.useEffect(() => {
     if (user) {
       setProfileData({
@@ -96,15 +84,11 @@ export default function ProfilePage() {
       });
     }
   }, [user]);
-
-  // Password state
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
-
-  // 2FA state
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(user?.settings?.twoFactorEnabled ?? true);
 
   React.useEffect(() => {
@@ -176,7 +160,7 @@ export default function ProfilePage() {
   return (
     <AppLayout searchPlaceholder="Search account settings, profile, credentials...">
       <div className="space-y-4">
-        {/* Top Header Row with Breadcrumbs and Quick Action Buttons */}
+        {/* ------------------------------ Header & Navigation ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -212,9 +196,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Top 4 KPI Metrics */}
+        {/* ------------------------------ Profile Metric KPI Cards ------------------------------ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-          {/* Card 1: Account Status */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
               <ShieldCheck className="w-5 h-5 text-white" />
@@ -229,8 +212,6 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-
-          {/* Card 2: Total Active Capital */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <TrendingUp className="w-5 h-5 text-white" />
@@ -245,8 +226,6 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-
-          {/* Card 3: Network Rank */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Award className="w-5 h-5 text-white" />
@@ -261,8 +240,6 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-
-          {/* Card 4: Security Level */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
               <KeyRound className="w-5 h-5 text-white" />
@@ -279,20 +256,16 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Main Profile Grid: 8-col Left Panel + 4-col Right Panel */}
+
         <div className="grid grid-cols-12 gap-3.5 sm:gap-4">
-          {/* Left Column (8 cols) */}
+          {/* ------------------------------ Left Column: Identity Banner & Tabs ------------------------------ */}
           <div className="col-span-12 lg:col-span-8 space-y-3.5 sm:space-y-4">
-            {/* Identity & Profile Overview Banner Card */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
-              {/* Header Gradient Mesh */}
               <div className="h-24 sm:h-28 bg-gradient-to-r from-[#0066FF] via-[#0A4CC0] to-[#00C48C] relative p-4 flex items-end">
                 <div className="absolute right-4 top-4 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] font-bold border border-white/20">
                   Investor ID: #{referralCode || 'NXA-0000'}
                 </div>
               </div>
-
-              {/* User Avatar + Summary Meta */}
               <div className="px-5 pb-5 pt-0 relative">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-10 sm:-mt-12 mb-4">
                   <div className="flex items-end gap-3.5">
@@ -314,8 +287,6 @@ export default function ProfilePage() {
                       </p>
                     </div>
                   </div>
-
-                  {/* Referral Code Pill */}
                   <div className="flex items-center gap-2 bg-blue-50/80 border border-blue-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
                     <div className="text-left">
                       <span className="text-[9px] uppercase tracking-wider font-bold text-blue-600 block">
@@ -334,8 +305,6 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </div>
-
-                {/* Sub Navigation Tabs */}
                 <div className="flex items-center gap-2 border-b border-slate-100 pt-2 text-xs">
                   {[
                     { key: 'personal', label: 'Personal Information' },
@@ -345,18 +314,15 @@ export default function ProfilePage() {
                     <button
                       key={tab.key}
                       onClick={() => setActiveTab(tab.key)}
-                      className={`pb-2.5 px-3 font-semibold transition-all cursor-pointer relative ${
-                        activeTab === tab.key
-                          ? 'text-blue-600 font-bold border-b-2 border-blue-600'
-                          : 'text-slate-500 hover:text-slate-900'
-                      }`}
+                      className={`pb-2.5 px-3 font-semibold transition-all cursor-pointer relative ${activeTab === tab.key
+                        ? 'text-blue-600 font-bold border-b-2 border-blue-600'
+                        : 'text-slate-500 hover:text-slate-900'
+                        }`}
                     >
                       {tab.label}
                     </button>
                   ))}
                 </div>
-
-                {/* Tab 1: Personal Information */}
                 {activeTab === 'personal' && (
                   <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -408,8 +374,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 )}
-
-                {/* Tab 2: KYC & Documentation */}
                 {activeTab === 'kyc' && (
                   <div className="pt-4 space-y-3">
                     <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
@@ -464,8 +428,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 )}
-
-                {/* Tab 3: Security & Access */}
                 {activeTab === 'security' && (
                   <div className="pt-4 space-y-3">
                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -500,11 +462,10 @@ export default function ProfilePage() {
                             toast.error('Failed to update 2FA setting');
                           }
                         }}
-                        className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
-                          twoFactorEnabled
-                            ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                            : 'bg-slate-100 text-slate-600 border-slate-200'
-                        }`}
+                        className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${twoFactorEnabled
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                          }`}
                       >
                         {twoFactorEnabled ? 'Enabled' : 'Disabled'}
                       </button>
@@ -513,8 +474,6 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
-
-            {/* Referral Uplink & Network Matrix Card */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div>
@@ -560,8 +519,6 @@ export default function ProfilePage() {
                   <p className="text-[10px] text-slate-500 mt-0.5">From 3rd-tier members</p>
                 </div>
               </div>
-
-              {/* Shareable Link Box */}
               <div className="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div className="truncate mr-3">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
@@ -582,9 +539,8 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Right Column (4 cols) */}
+          {/* ------------------------------ Right Column: KYC Verification & Sessions ------------------------------ */}
           <div className="col-span-12 lg:col-span-4 space-y-3.5 sm:space-y-4">
-            {/* Card 1: Verified KYC Credentials Summary */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
@@ -629,8 +585,6 @@ export default function ProfilePage() {
                 Your account is fully authorized for unlimited investments, instant daily ROI accrual, and bank settlements.
               </p>
             </div>
-
-            {/* Card 2: Active Devices & Session Log */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
@@ -640,7 +594,6 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-3">
-                {/* Session 1 */}
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -672,7 +625,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* MODAL 1: EDIT PERSONAL INFORMATION */}
+      {/* ------------------------------ Modal: Edit Personal Information ------------------------------ */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -684,7 +637,7 @@ export default function ProfilePage() {
             type="text"
             value={profileData.fullName}
             onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
-            placeholder="John Doe"
+            placeholder="Aman Sagar"
             required
           />
 
@@ -733,7 +686,7 @@ export default function ProfilePage() {
         </form>
       </Modal>
 
-      {/* MODAL 2: CHANGE PASSWORD */}
+      {/* ------------------------------ Modal: Change Password ------------------------------ */}
       <Modal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}

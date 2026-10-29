@@ -1,6 +1,4 @@
-/**
- * Formats a number to Indian Rupee (INR) format (e.g., ₹ 12,750 or ₹ 12,750.50)
- */
+// ------------------------------ Format INR Currency ------------------------------
 export const formatINR = (amount, includeDecimals = false) => {
   if (amount === undefined || amount === null || isNaN(amount)) {
     return '₹ 0';

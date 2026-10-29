@@ -14,7 +14,7 @@ The Nexachain AI platform provides RESTful APIs for authentication, investments,
 - **Request Body**:
 ```json
 {
-  "fullName": "Jane Doe",
+  "fullName": "Jane Sagar",
   "email": "jane@nexachain.ai",
   "mobileNumber": "+919876543210",
   "password": "password123",
@@ -29,7 +29,7 @@ The Nexachain AI platform provides RESTful APIs for authentication, investments,
   "data": {
     "user": {
       "_id": "6ae20...",
-      "fullName": "Jane Doe",
+      "fullName": "Jane Sagar",
       "email": "jane@nexachain.ai",
       "mobileNumber": "+919876543210",
       "referralCode": "NXA998811",
@@ -49,7 +49,7 @@ The Nexachain AI platform provides RESTful APIs for authentication, investments,
 - **Request Body**:
 ```json
 {
-  "email": "john@nexachain.ai",
+  "email": "Aman@nexachain.ai",
   "password": "password123"
 }
 ```

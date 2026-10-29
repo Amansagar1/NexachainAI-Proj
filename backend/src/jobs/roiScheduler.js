@@ -40,6 +40,7 @@ const initRoiScheduler = () => {
 };
 
 // ------------------------------ Stop Daily ROI Scheduler ------------------------------
+const stopRoiScheduler = () => {
   if (cronJob) {
     cronJob.stop();
     logger.info('Daily ROI Scheduler stopped.');

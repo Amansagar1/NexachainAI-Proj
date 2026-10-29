@@ -81,21 +81,15 @@ function CustomCashflowTooltip({ active, payload, label }) {
 
 export default function WalletPage() {
   const { user, updateUserBalance, refreshUser } = useAuth();
-
-  // Live Overview and Transactions State from Backend API
   const [overview, setOverview] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingOverview, setLoadingOverview] = useState(true);
   const [loadingTxns, setLoadingTxns] = useState(true);
-
-  // Modals
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [bankModalOpen, setBankModalOpen] = useState(false);
-
-  // Form states
   const [depositAmount, setDepositAmount] = useState('5000');
   const [depositMethod, setDepositMethod] = useState('UPI');
   const [withdrawAmount, setWithdrawAmount] = useState('2000');
@@ -103,8 +97,6 @@ export default function WalletPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [timeframe, setTimeframe] = useState('30D');
   const [page, setPage] = useState(1);
-
-  // Bank Info state
   const [bankInfo, setBankInfo] = useState({
     bankName: user?.bankDetails?.bankName || '',
     accountNumber: user?.bankDetails?.accountNumber || '',
@@ -124,8 +116,6 @@ export default function WalletPage() {
       });
     }
   }, [user]);
-
-  // Fetch Overview Data (balances, total roi, level income, total withdrawn, cashflow chart points)
   const fetchOverview = useCallback(async () => {
     try {
       const res = await walletApi.getOverview();
@@ -138,8 +128,6 @@ export default function WalletPage() {
       setLoadingOverview(false);
     }
   }, []);
-
-  // Fetch Transactions List from Backend API with Category & Search Filters
   const fetchTransactions = useCallback(async () => {
     setLoadingTxns(true);
     try {
@@ -173,11 +161,7 @@ export default function WalletPage() {
   const totalRoi = overview?.totalRoiEarned ?? user?.totalRoiEarned ?? 0;
   const totalLevel = overview?.totalLevelIncomeEarned ?? user?.totalLevelIncomeEarned ?? 0;
   const totalWithdrawn = overview?.totalWithdrawn ?? 0;
-
-  // Chart data directly from API
   const liveCashflow = overview?.cashflow || [];
-
-  // Handlers
   const handleDepositSubmit = async () => {
     const val = Number(depositAmount);
     if (!val || val <= 0) {
@@ -228,7 +212,7 @@ export default function WalletPage() {
   return (
     <AppLayout searchPlaceholder="Search transactions, deposits, withdrawals...">
       <div className="space-y-4">
-        {/* Top Header Row with Breadcrumbs and Quick Action Buttons */}
+        {/* ------------------------------ Header & Navigation ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -264,9 +248,8 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* Top 4 KPI Cards */}
+        {/* ------------------------------ Core KPI Metric Cards ------------------------------ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-          {/* Card 1: Available Balance */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Wallet className="w-5 h-5 text-white" />
@@ -284,8 +267,6 @@ export default function WalletPage() {
               <p className="text-[10px] text-slate-400 mt-0.5">Withdrawable anytime</p>
             </div>
           </div>
-
-          {/* Card 2: Total ROI Income */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
               <TrendingUp className="w-5 h-5 text-white" />
@@ -303,8 +284,6 @@ export default function WalletPage() {
               <p className="text-[10px] text-slate-400 mt-0.5">From active plans</p>
             </div>
           </div>
-
-          {/* Card 3: Total Level Income */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Network className="w-5 h-5 text-white" />
@@ -322,8 +301,6 @@ export default function WalletPage() {
               <p className="text-[10px] text-slate-400 mt-0.5">From referral network</p>
             </div>
           </div>
-
-          {/* Card 4: Total Withdrawn */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
               <ArrowUpRight className="w-5 h-5 text-white" />
@@ -340,11 +317,10 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* Main Content: 8-col Left Area (Chart + Table) + 4-col Right Area (Card + Payout Method) */}
+        
         <div className="grid grid-cols-12 gap-3.5 sm:gap-4">
-          {/* Left Column (8 cols) */}
+          {/* ------------------------------ Left Column: Cashflow Chart & Transactions ------------------------------ */}
           <div className="col-span-12 lg:col-span-8 space-y-3.5 sm:space-y-4">
-            {/* Cashflow & Balance History Chart */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                 <div>
@@ -357,7 +333,6 @@ export default function WalletPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {/* Legend */}
                   <div className="hidden sm:flex items-center gap-3 text-xs font-semibold text-slate-600">
                     <span className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
@@ -368,8 +343,6 @@ export default function WalletPage() {
                       Balance
                     </span>
                   </div>
-
-                  {/* Timeframe selector */}
                   <div className="flex items-center border border-slate-200 rounded-xl p-0.5 bg-slate-50/50 text-[11px] font-semibold text-slate-600">
                     {['7D', '30D', '90D', 'All'].map((t) => (
                       <button
@@ -387,8 +360,6 @@ export default function WalletPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Chart Canvas */}
               <div className="h-60 sm:h-64 mt-3 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={liveCashflow} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -440,8 +411,6 @@ export default function WalletPage() {
                 </ResponsiveContainer>
               </div>
             </div>
-
-            {/* Transaction History Card */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                 <div>
@@ -452,8 +421,6 @@ export default function WalletPage() {
                     Detailed log of all credits, earnings, deposits, and bank settlements.
                   </p>
                 </div>
-
-                {/* Search Bar */}
                 <div className="relative w-full sm:w-60">
                   <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -465,8 +432,6 @@ export default function WalletPage() {
                   />
                 </div>
               </div>
-
-              {/* Filter Tabs */}
               <div className="flex items-center gap-1.5 overflow-x-auto py-2 border-b border-slate-100 text-xs">
                 {[
                   { key: 'all', label: 'All Transactions' },
@@ -488,8 +453,6 @@ export default function WalletPage() {
                   </button>
                 ))}
               </div>
-
-              {/* Table */}
               <div className="overflow-x-auto mt-2">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -573,8 +536,6 @@ export default function WalletPage() {
                   </tbody>
                 </table>
               </div>
-
-              {/* Pagination */}
               <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-100 text-xs">
                 <p className="text-[11px] text-slate-400">
                   Showing 1 to {transactions.length} of {totalRecords} entries
@@ -602,11 +563,9 @@ export default function WalletPage() {
             </div>
           </div>
 
-          {/* Right Column (4 cols) */}
+          {/* ------------------------------ Right Column: Virtual Card, Limits & Bank Payout ------------------------------ */}
           <div className="col-span-12 lg:col-span-4 space-y-3.5 sm:space-y-4">
-            {/* Card 1: Virtual Nexachain Metallic Fintech Card */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B1528] via-[#102A43] to-[#0D3880] p-5 text-white shadow-md border border-slate-800">
-              {/* Decorative Mesh Background */}
               <div className="absolute -right-12 -top-12 w-44 h-44 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
 
@@ -619,24 +578,17 @@ export default function WalletPage() {
                     Fintech Digital Wallet
                   </p>
                 </div>
-                {/* Contactless Icon */}
                 <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xs">
                   <CreditCard className="w-3.5 h-3.5 text-blue-300" />
                 </div>
               </div>
-
-              {/* Metallic Chip */}
               <div className="relative z-10 w-9 h-6 rounded-md bg-gradient-to-br from-amber-200 via-amber-400 to-amber-500 border border-amber-300/60 shadow-xs mb-4 flex items-center justify-around px-1">
                 <span className="w-px h-3 bg-amber-700/40" />
                 <span className="w-px h-3 bg-amber-700/40" />
               </div>
-
-              {/* Card Number */}
               <div className="relative z-10 font-mono tracking-widest text-sm text-slate-200 font-bold mb-4">
                 •••• &nbsp; •••• &nbsp; •••• &nbsp; {user?._id ? user._id.toString().slice(-4).toUpperCase() : '4289'}
               </div>
-
-              {/* Bottom Card Row */}
               <div className="relative z-10 flex items-end justify-between text-xs pt-1 border-t border-white/10">
                 <div>
                   <p className="text-[9px] text-slate-400 uppercase font-semibold">Card Holder</p>
@@ -655,14 +607,10 @@ export default function WalletPage() {
                 </div>
               </div>
             </div>
-
-            {/* Card 2: Quick Action & Limits Card */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-3">
                 Quick Transfer & Limits
               </h3>
-
-              {/* Progress bar for daily limits */}
               <div className="space-y-1.5 mb-4">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">Daily Limit Used</span>
@@ -680,8 +628,6 @@ export default function WalletPage() {
                   Remaining daily quota: {formatINR(Math.max(0, 50000 - totalWithdrawn))}
                 </p>
               </div>
-
-              {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2.5">
                 <button
                   onClick={() => setDepositModalOpen(true)}
@@ -699,8 +645,6 @@ export default function WalletPage() {
                 </button>
               </div>
             </div>
-
-            {/* Card 3: Verified Payout Bank Account */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
@@ -758,7 +702,7 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* MODAL 1: DEPOSIT CAPITAL */}
+      {/* ------------------------------ Modal: Deposit Capital ------------------------------ */}
       <Modal
         isOpen={depositModalOpen}
         onClose={() => setDepositModalOpen(false)}
@@ -768,8 +712,6 @@ export default function WalletPage() {
           <p className="text-slate-500">
             Select or enter the amount you want to add to your Nexachain AI investment wallet.
           </p>
-
-          {/* Quick preset chips */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
               Quick Select Amount
@@ -799,8 +741,6 @@ export default function WalletPage() {
             onChange={(e) => setDepositAmount(e.target.value)}
             placeholder="e.g. 5000"
           />
-
-          {/* Payment Method Selector */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
               Payment Gateway
@@ -847,7 +787,7 @@ export default function WalletPage() {
         </div>
       </Modal>
 
-      {/* MODAL 2: WITHDRAW CAPITAL */}
+      {/* ------------------------------ Modal: Withdraw Capital ------------------------------ */}
       <Modal
         isOpen={withdrawModalOpen}
         onClose={() => setWithdrawModalOpen(false)}
@@ -860,8 +800,6 @@ export default function WalletPage() {
               {formatINR(availableBalance)}
             </span>
           </div>
-
-          {/* Quick percentage chips */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1.5">
               Select Percentage
@@ -916,7 +854,7 @@ export default function WalletPage() {
         </div>
       </Modal>
 
-      {/* MODAL 3: EDIT BANK ACCOUNT */}
+      {/* ------------------------------ Modal: Edit Bank Account ------------------------------ */}
       <Modal
         isOpen={bankModalOpen}
         onClose={() => setBankModalOpen(false)}

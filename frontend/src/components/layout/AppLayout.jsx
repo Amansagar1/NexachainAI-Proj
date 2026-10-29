@@ -33,12 +33,12 @@ export const AppLayout = ({ children, searchPlaceholder }) => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#F4F7FC]">
-      {/* Desktop Persistent Sidebar */}
+      {/* ------------------------------ Desktop Persistent Sidebar ------------------------------ */}
       <div className="hidden lg:block shrink-0 h-full">
         <Sidebar />
       </div>
 
-      {/* Mobile Drawer Backdrop & Sidebar */}
+      {/* ------------------------------ Mobile Navigation Drawer ------------------------------ */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
@@ -51,7 +51,7 @@ export const AppLayout = ({ children, searchPlaceholder }) => {
         </div>
       )}
 
-      {/* Main App Body */}
+      {/* ------------------------------ Main Application Body ------------------------------ */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <Header
           onOpenMobileMenu={() => setMobileMenuOpen(true)}

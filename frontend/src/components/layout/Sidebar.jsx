@@ -18,7 +18,6 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
 
-// 3D Ribbon Logo Component
 function RibbonLogo({ className = 'w-8 h-8' }) {
   return (
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -78,7 +77,7 @@ export const Sidebar = ({ isMobile = false, onCloseMobile }) => {
 
   return (
     <aside className="w-60 bg-[#051336] text-white flex flex-col h-full shrink-0 select-none z-30">
-      {/* Brand Header */}
+      {/* ------------------------------ Brand Header ------------------------------ */}
       <div className="h-14 px-5 flex items-center justify-between border-b border-white/5">
         <Link href={ROUTES.DASHBOARD} className="flex items-center gap-2.5">
           <RibbonLogo className="w-8 h-8 drop-shadow-md" />
@@ -98,7 +97,7 @@ export const Sidebar = ({ isMobile = false, onCloseMobile }) => {
         )}
       </div>
 
-      {/* Navigation Links */}
+      {/* ------------------------------ Navigation Links ------------------------------ */}
       <nav className="flex-1 px-3.5 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -124,7 +123,7 @@ export const Sidebar = ({ isMobile = false, onCloseMobile }) => {
         })}
       </nav>
 
-      {/* Bottom Pinned Logout Button (Exact Match to Design) */}
+      {/* ------------------------------ User Sign Out ------------------------------ */}
       <div className="p-3.5 border-t border-white/5">
         <button
           onClick={handleLogout}

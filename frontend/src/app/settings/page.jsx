@@ -35,8 +35,6 @@ import { authApi } from '../../features/auth/authApi';
 
 export default function SettingsPage() {
   const { user, refreshUser } = useAuth();
-
-  // Notification states
   const [notifications, setNotifications] = useState({
     roiAlerts: true,
     referralAlerts: true,
@@ -45,19 +43,13 @@ export default function SettingsPage() {
     weeklyDigest: false,
     marketingUpdates: false,
   });
-
-  // Display & Regional states
   const [currency, setCurrency] = useState('INR');
   const [timezone, setTimezone] = useState('Asia/Kolkata');
   const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
   const [theme, setTheme] = useState('light');
-
-  // Security states
   const [twoFactor, setTwoFactor] = useState(true);
   const [sessionTimeout, setSessionTimeout] = useState('30m');
   const [ipRestricted, setIpRestricted] = useState(false);
-
-  // API Key state dynamically derived from user credential
   const [apiKey, setApiKey] = useState(
     user?._id ? `nxa_live_${user._id.toString().slice(-8)}${user.referralCode?.toLowerCase() || '00'}` : 'nxa_live_sec_key'
   );
@@ -65,8 +57,6 @@ export default function SettingsPage() {
   const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
   const [isDangerModalOpen, setIsDangerModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  // Sync with live user settings from API
   React.useEffect(() => {
     if (user?.settings) {
       const s = user.settings;
@@ -186,7 +176,7 @@ export default function SettingsPage() {
   return (
     <AppLayout searchPlaceholder="Search system settings, notifications, security...">
       <div className="space-y-4">
-        {/* Top Header Row with Breadcrumbs and Quick Action Buttons */}
+        {/* ------------------------------ Header & Navigation ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -223,9 +213,8 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Top 4 KPI Metrics */}
+        {/* ------------------------------ Settings Metric KPI Cards ------------------------------ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-          {/* Card 1: Notification Channels */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Bell className="w-5 h-5 text-white" />
@@ -240,8 +229,6 @@ export default function SettingsPage() {
               </p>
             </div>
           </div>
-
-          {/* Card 2: Security Protocols */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
               <ShieldCheck className="w-5 h-5 text-white" />
@@ -256,8 +243,6 @@ export default function SettingsPage() {
               </p>
             </div>
           </div>
-
-          {/* Card 3: Timezone */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Globe className="w-5 h-5 text-white" />
@@ -278,8 +263,6 @@ export default function SettingsPage() {
               </p>
             </div>
           </div>
-
-          {/* Card 4: Data Privacy */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Lock className="w-5 h-5 text-white" />
@@ -294,11 +277,10 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Main Settings Grid: 8-col Left Panel + 4-col Right Panel */}
+        
         <div className="grid grid-cols-12 gap-3.5 sm:gap-4">
-          {/* Left Column (8 cols) */}
+          {/* ------------------------------ Left Column: Notifications & Preferences ------------------------------ */}
           <div className="col-span-12 lg:col-span-8 space-y-3.5 sm:space-y-4">
-            {/* Card 1: Notification Preferences */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div>
@@ -315,7 +297,6 @@ export default function SettingsPage() {
               </div>
 
               <div className="divide-y divide-slate-100 text-xs">
-                {/* Toggle 1: Daily ROI */}
                 <div className="flex items-center justify-between py-3">
                   <div className="pr-4">
                     <p className="font-bold text-slate-900 leading-tight">
@@ -335,8 +316,6 @@ export default function SettingsPage() {
                     <div className="w-10 h-5.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#0066FF]" />
                   </label>
                 </div>
-
-                {/* Toggle 2: Referral Commission */}
                 <div className="flex items-center justify-between py-3">
                   <div className="pr-4">
                     <p className="font-bold text-slate-900 leading-tight">
@@ -356,8 +335,6 @@ export default function SettingsPage() {
                     <div className="w-10 h-5.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#0066FF]" />
                   </label>
                 </div>
-
-                {/* Toggle 3: Wallet Deposits & Settlements */}
                 <div className="flex items-center justify-between py-3">
                   <div className="pr-4">
                     <p className="font-bold text-slate-900 leading-tight">
@@ -377,8 +354,6 @@ export default function SettingsPage() {
                     <div className="w-10 h-5.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#0066FF]" />
                   </label>
                 </div>
-
-                {/* Toggle 4: Security Alerts */}
                 <div className="flex items-center justify-between py-3">
                   <div className="pr-4">
                     <p className="font-bold text-slate-900 leading-tight">
@@ -398,8 +373,6 @@ export default function SettingsPage() {
                     <div className="w-10 h-5.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#0066FF]" />
                   </label>
                 </div>
-
-                {/* Toggle 5: Weekly Digest */}
                 <div className="flex items-center justify-between py-3">
                   <div className="pr-4">
                     <p className="font-bold text-slate-900 leading-tight">
@@ -421,8 +394,6 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Card 2: Regional, Currency & Display Configuration */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
               <div className="pb-3 border-b border-slate-100">
                 <h2 className="text-sm sm:text-base font-bold text-slate-900">
@@ -434,7 +405,6 @@ export default function SettingsPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-3 text-xs">
-                {/* Currency */}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Primary Display Currency
@@ -450,8 +420,6 @@ export default function SettingsPage() {
                     <option value="USDT">₮ USDT (Tether Crypto)</option>
                   </select>
                 </div>
-
-                {/* Timezone */}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Platform Timezone
@@ -467,8 +435,6 @@ export default function SettingsPage() {
                     <option value="Europe/London">Europe/London (GMT/BST)</option>
                   </select>
                 </div>
-
-                {/* Date Format */}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Date Presentation
@@ -483,8 +449,6 @@ export default function SettingsPage() {
                     <option value="YYYY-MM-DD">YYYY-MM-DD (ISO standard)</option>
                   </select>
                 </div>
-
-                {/* Theme Mode */}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 mb-1">
                     Color Theme Mode
@@ -521,8 +485,6 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Card 3: Danger Zone */}
             <div className="bg-red-50/40 rounded-2xl p-4 sm:p-5 border border-red-200/80 shadow-xs">
               <div className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-4 h-4 text-red-600" />
@@ -549,9 +511,8 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Right Column (4 cols) */}
+          {/* ------------------------------ Right Column: API & Access Controls ------------------------------ */}
           <div className="col-span-12 lg:col-span-4 space-y-3.5 sm:space-y-4">
-            {/* Card 1: API & Developer Webhooks */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -568,8 +529,6 @@ export default function SettingsPage() {
               <p className="text-xs text-slate-500 mb-2.5">
                 Use your private read-only API key to pull live balances, ROI histories, and tree hierarchies programmatically.
               </p>
-
-              {/* API Key Box */}
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <span className="font-mono text-[11px] text-slate-800 font-bold truncate mr-2">
                   {apiKey.substring(0, 14)}••••••••
@@ -591,8 +550,6 @@ export default function SettingsPage() {
                 <span>Regenerate Key</span>
               </button>
             </div>
-
-            {/* Card 2: Security & Session Rules */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center gap-2 mb-3">
                 <Shield className="w-4 h-4 text-emerald-600" />
@@ -602,7 +559,6 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-3 text-xs">
-                {/* Session Timeout */}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-600 mb-1">
                     Auto-Logout Inactivity Window
@@ -618,8 +574,6 @@ export default function SettingsPage() {
                     <option value="never">Never (Stay Logged In)</option>
                   </select>
                 </div>
-
-                {/* IP Restriction Toggle */}
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                   <div>
                     <p className="font-bold text-slate-800 text-[11px]">Strict IP Locking</p>
@@ -637,8 +591,6 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Card 3: Data Export & Compliance */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center gap-2 mb-2">
                 <Database className="w-4 h-4 text-purple-600" />
@@ -662,7 +614,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* REGENERATE API KEY MODAL */}
+      {/* ------------------------------ Modal: Regenerate API Key ------------------------------ */}
       <Modal
         isOpen={isRegenerateModalOpen}
         onClose={() => setIsRegenerateModalOpen(false)}
@@ -686,7 +638,7 @@ export default function SettingsPage() {
         </div>
       </Modal>
 
-      {/* DANGER DELETION MODAL */}
+      {/* ------------------------------ Modal: Account Deletion ------------------------------ */}
       <Modal
         isOpen={isDangerModalOpen}
         onClose={() => setIsDangerModalOpen(false)}

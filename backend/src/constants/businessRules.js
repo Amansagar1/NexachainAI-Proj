@@ -1,8 +1,4 @@
-/**
- * Nexachain AI - Business Rules & System Constants
- * Centralized configuration for investment plans, referral multi-level commissions,
- * and ROI calculation policies.
- */
+// ------------------------------ Business Rules & Constants ------------------------------
 
 const INVESTMENT_PLANS = {
   GROWTH_A: {
@@ -13,7 +9,7 @@ const INVESTMENT_PLANS = {
     durationDays: 90,
     minInvestment: 1000,
     popular: false,
-    color: '#10B981', // green
+    color: '#10B981',
   },
   GROWTH_B: {
     id: 'growth-b',
@@ -23,7 +19,7 @@ const INVESTMENT_PLANS = {
     durationDays: 120,
     minInvestment: 5000,
     popular: true,
-    color: '#0066FF', // blue
+    color: '#0066FF',
   },
   WEALTH: {
     id: 'wealth',
@@ -33,7 +29,7 @@ const INVESTMENT_PLANS = {
     durationDays: 180,
     minInvestment: 10000,
     popular: false,
-    color: '#8B5CF6', // purple
+    color: '#8B5CF6',
   },
   PREMIUM: {
     id: 'premium',
@@ -43,14 +39,15 @@ const INVESTMENT_PLANS = {
     durationDays: 365,
     minInvestment: 25000,
     popular: false,
-    color: '#F59E0B', // amber
+    color: '#F59E0B',
   },
 };
 
+// ------------------------------ Referral Commission Rates ------------------------------
 const REFERRAL_COMMISSION_RATES = {
-  1: 0.05, // Level 1 (Direct): 5% of investment
-  2: 0.03, // Level 2: 3% of investment
-  3: 0.02, // Level 3: 2% of investment
+  1: 0.05,
+  2: 0.03,
+  3: 0.02,
 };
 
 const MAX_REFERRAL_DEPTH = 3;

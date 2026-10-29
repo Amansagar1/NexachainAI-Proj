@@ -3,26 +3,20 @@ const env = require('../config/env');
 const User = require('../models/User');
 const AppError = require('../utils/AppError');
 
-/**
- * Generate signed JWT
- */
+// ------------------------------ Generate Signed JWT ------------------------------
 const signToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {
     expiresIn: env.JWT_EXPIRES_IN,
   });
 };
 
-/**
- * Register a new user
- */
+// ------------------------------ Register New User ------------------------------
 const registerUser = async ({ fullName, email, mobileNumber, password, referralCode }) => {
-  // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError('An account with this email address already exists.', 409);
   }
 
-  // Handle referred by parent user
   let parentUser = null;
   if (referralCode) {
     parentUser = await User.findOne({
@@ -34,7 +28,6 @@ const registerUser = async ({ fullName, email, mobileNumber, password, referralC
     }
   }
 
-  // Generate unique referral code for new user
   let newReferralCode;
   let isUnique = false;
   let attempts = 0;
@@ -60,16 +53,13 @@ const registerUser = async ({ fullName, email, mobileNumber, password, referralC
 
   const token = signToken(user._id);
 
-  // Strip password
   const userObj = user.toObject();
   delete userObj.password;
 
   return { user: userObj, token };
 };
 
-/**
- * Authenticate existing user
- */
+// ------------------------------ Authenticate User Login ------------------------------
 const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user) {
@@ -93,9 +83,7 @@ const loginUser = async ({ email, password }) => {
   return { user: userObj, token };
 };
 
-/**
- * Get current user profile by ID
- */
+// ------------------------------ Get Current User Profile ------------------------------
 const getCurrentUser = async (userId) => {
   const user = await User.findById(userId).populate('referredBy', 'fullName email referralCode');
   if (!user) {
@@ -104,9 +92,7 @@ const getCurrentUser = async (userId) => {
   return user;
 };
 
-/**
- * Update user personal information
- */
+// ------------------------------ Update User Profile ------------------------------
 const updateProfile = async (userId, updates) => {
   const allowed = [
     'fullName',
@@ -139,9 +125,7 @@ const updateProfile = async (userId, updates) => {
   return updatedUser;
 };
 
-/**
- * Change user password
- */
+// ------------------------------ Change User Password ------------------------------
 const changePassword = async (userId, { currentPassword, newPassword }) => {
   const user = await User.findById(userId).select('+password');
   if (!user) {

@@ -24,12 +24,26 @@
           "name": "Register User",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"fullName\": \"Jane Smith\",\n  \"email\": \"jane@nexachain.ai\",\n  \"mobileNumber\": \"+919876543220\",\n  \"password\": \"password123\",\n  \"referralCode\": \"NXA123456\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
           }
         },
         {
@@ -49,20 +63,48 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"john@nexachain.ai\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"email\": \"Aman@nexachain.ai\",\n  \"password\": \"password123\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
           }
         },
         {
           "name": "Get Current User (Me)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
           }
         }
       ]
@@ -74,8 +116,22 @@
           "name": "Get Available Plans",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/investments/plans", "host": ["{{baseUrl}}"], "path": ["investments", "plans"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/investments/plans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "investments",
+                "plans"
+              ]
+            }
           }
         },
         {
@@ -83,22 +139,63 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"planId\": \"growth-b\",\n  \"amount\": 25000\n}"
             },
-            "url": { "raw": "{{baseUrl}}/investments", "host": ["{{baseUrl}}"], "path": ["investments"] }
+            "url": {
+              "raw": "{{baseUrl}}/investments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "investments"
+              ]
+            }
           }
         },
         {
           "name": "Get User Investments",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/investments?status=All&page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["investments"], "query": [{ "key": "status", "value": "All" }, { "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/investments?status=All&page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "investments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "All"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
           }
         }
       ]
@@ -110,16 +207,50 @@
           "name": "Get Dashboard Summary",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/dashboard/summary", "host": ["{{baseUrl}}"], "path": ["dashboard", "summary"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "summary"
+              ]
+            }
           }
         },
         {
           "name": "Get Dashboard Earnings Chart",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/dashboard/earnings?period=30d", "host": ["{{baseUrl}}"], "path": ["dashboard", "earnings"], "query": [{ "key": "period", "value": "30d" }] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/earnings?period=30d",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "earnings"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30d"
+                }
+              ]
+            }
           }
         }
       ]
@@ -131,8 +262,31 @@
           "name": "Get ROI History",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/roi-history?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["roi-history"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/roi-history?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roi-history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
           }
         },
         {
@@ -140,14 +294,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"date\": \"2024-10-30\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/roi-history/process-daily", "host": ["{{baseUrl}}"], "path": ["roi-history", "process-daily"] }
+            "url": {
+              "raw": "{{baseUrl}}/roi-history/process-daily",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roi-history",
+                "process-daily"
+              ]
+            }
           }
         }
       ]
@@ -159,24 +328,76 @@
           "name": "Get Direct Referrals",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/referrals/direct", "host": ["{{baseUrl}}"], "path": ["referrals", "direct"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/referrals/direct",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "referrals",
+                "direct"
+              ]
+            }
           }
         },
         {
           "name": "Get Complete Referral Tree",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/referrals/tree", "host": ["{{baseUrl}}"], "path": ["referrals", "tree"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/referrals/tree",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "referrals",
+                "tree"
+              ]
+            }
           }
         },
         {
           "name": "Get Referral Income History",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
-            "url": { "raw": "{{baseUrl}}/referrals/income?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["referrals", "income"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/referrals/income?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "referrals",
+                "income"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
           }
         }
       ]

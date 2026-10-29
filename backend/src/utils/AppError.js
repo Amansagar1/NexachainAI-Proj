@@ -1,6 +1,4 @@
-/**
- * Standard Application Error Class with HTTP status codes and operational flags
- */
+// ------------------------------ Application Error Class ------------------------------
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);

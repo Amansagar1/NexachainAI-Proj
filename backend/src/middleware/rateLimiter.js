@@ -1,9 +1,9 @@
 const rateLimit = require('express-rate-limit');
 
-// Strict rate limit for auth endpoints (prevent brute-force)
+// ------------------------------ Auth Rate Limiter ------------------------------
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // 30 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -12,7 +12,7 @@ const authLimiter = rateLimit({
   },
 });
 
-// General API rate limiter
+// ------------------------------ General API Rate Limiter ------------------------------
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,

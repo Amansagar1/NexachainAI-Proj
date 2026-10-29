@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize from localStorage safely on client
+  // ------------------------------ Client Local Storage Initialization ------------------------------
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedUser = localStorage.getItem('nexachain_user');
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Load current user profile from server
+  // ------------------------------ Load User Profile from Server ------------------------------
   const loadUser = useCallback(async () => {
     if (typeof window === 'undefined') return;
 

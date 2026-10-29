@@ -7,19 +7,16 @@ const User = require('./models/User');
 const Investment = require('./models/Investment');
 const { INVESTMENT_PLANS, INVESTMENT_STATUS } = require('./constants/businessRules');
 
-/**
- * Optional seed helper to ensure reviewers have demo data matching the UI designs
- */
+// ------------------------------ Initial Data Seeder ------------------------------
 const seedDemoData = async () => {
   try {
     const userCount = await User.countDocuments();
     if (userCount === 0) {
       logger.info('Database empty. Seeding initial demo data for evaluation...');
 
-      // 1. Root user: John Doe
-      const john = await User.create({
-        fullName: 'John Doe',
-        email: 'john@nexachain.ai',
+      const Aman = await User.create({
+        fullName: 'Aman Sagar',
+        email: 'Aman@nexachain.ai',
         mobileNumber: '+919876543210',
         password: 'password123',
         referralCode: 'NXA123456',
@@ -29,14 +26,13 @@ const seedDemoData = async () => {
         accountStatus: 'Active',
       });
 
-      // 2. Direct referrals (Level 1)
       const u123 = await User.create({
         fullName: 'User 123',
         email: 'user123@nexachain.ai',
         mobileNumber: '+919876543211',
         password: 'password123',
         referralCode: 'NXA888123',
-        referredBy: john._id,
+        referredBy: Aman._id,
         walletBalance: 1800,
         totalRoiEarned: 1200,
         totalLevelIncomeEarned: 600,
@@ -49,7 +45,7 @@ const seedDemoData = async () => {
         mobileNumber: '+919876543212',
         password: 'password123',
         referralCode: 'NXA888456',
-        referredBy: john._id,
+        referredBy: Aman._id,
         walletBalance: 1200,
         totalRoiEarned: 1000,
         totalLevelIncomeEarned: 200,
@@ -62,7 +58,7 @@ const seedDemoData = async () => {
         mobileNumber: '+919876543213',
         password: 'password123',
         referralCode: 'NXA888789',
-        referredBy: john._id,
+        referredBy: Aman._id,
         walletBalance: 1000,
         totalRoiEarned: 1000,
         totalLevelIncomeEarned: 0,
@@ -75,14 +71,13 @@ const seedDemoData = async () => {
         mobileNumber: '+919876543214',
         password: 'password123',
         referralCode: 'NXA888321',
-        referredBy: john._id,
+        referredBy: Aman._id,
         walletBalance: 1500,
         totalRoiEarned: 1200,
         totalLevelIncomeEarned: 300,
         accountStatus: 'Active',
       });
 
-      // 3. Level 2 referrals (under u123)
       const u654 = await User.create({
         fullName: 'User 654',
         email: 'user654@nexachain.ai',
@@ -109,7 +104,6 @@ const seedDemoData = async () => {
         accountStatus: 'Active',
       });
 
-      // 4. Level 3 referrals (under u654)
       await User.create({
         fullName: 'User 777',
         email: 'user777@nexachain.ai',
@@ -132,13 +126,13 @@ const seedDemoData = async () => {
         accountStatus: 'Active',
       });
 
-      // 5. Active investments for John Doe matching UI designs
+      // ------------------------------ Seed Active Investments ------------------------------
       const now = new Date();
       const planA = INVESTMENT_PLANS.GROWTH_A;
       const planB = INVESTMENT_PLANS.GROWTH_B;
 
       await Investment.create({
-        user: john._id,
+        user: Aman._id,
         investmentAmount: 25000,
         planDetails: {
           planId: planA.id,
@@ -155,7 +149,7 @@ const seedDemoData = async () => {
       });
 
       await Investment.create({
-        user: john._id,
+        user: Aman._id,
         investmentAmount: 25000,
         planDetails: {
           planId: planB.id,
@@ -171,20 +165,18 @@ const seedDemoData = async () => {
         investmentStatus: INVESTMENT_STATUS.ACTIVE,
       });
 
-      logger.info('Demo data seeded successfully. Demo credentials: john@nexachain.ai / password123');
+      logger.info('Demo data seeded successfully. Demo credentials: Aman@nexachain.ai / password123');
     }
   } catch (err) {
     logger.warn('Error during demo data seeding:', err.message);
   }
 };
 
+// ------------------------------ Start Application Server ------------------------------
 const startServer = async () => {
   try {
     await connectDB();
-
     await seedDemoData();
-
-    // Start ROI scheduler
     initRoiScheduler();
 
     const server = app.listen(env.PORT, () => {

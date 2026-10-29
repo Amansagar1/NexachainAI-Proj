@@ -12,7 +12,7 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor: attach JWT token if present
+// ------------------------------ Request Interceptor: Attach JWT Token ------------------------------
 apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handle 401 token expiration gracefully
+// ------------------------------ Response Interceptor: Handle 401 Session Expiry ------------------------------
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

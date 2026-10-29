@@ -50,23 +50,15 @@ export default function InvestmentsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Filters
   const [statusFilter, setStatusFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
-
-  // Investment Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [investAmount, setInvestAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Investment Details Modal
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [viewingInvestment, setViewingInvestment] = useState(null);
-
-  // Add Funds Demo Modal
   const [addFundsOpen, setAddFundsOpen] = useState(false);
   const [fundAmount, setFundAmount] = useState('10000');
 
@@ -145,8 +137,6 @@ export default function InvestmentsPage() {
       setIsSubmitting(false);
     }
   };
-
-  // Helper to render plan icon
   const renderPlanIcon = (type, className = 'w-4 h-4') => {
     switch (type) {
       case 'sprout':
@@ -165,9 +155,7 @@ export default function InvestmentsPage() {
   return (
     <AppLayout searchPlaceholder="Search investments, plans, etc...">
       <div className="space-y-3.5 sm:space-y-4 select-none">
-        {/* ========================================================================= */}
-        {/* Top Header Row: Title & Breadcrumb on Left | Wallet Balance on Right      */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ Header & Wallet Balance ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 tracking-tight leading-tight">
@@ -182,8 +170,6 @@ export default function InvestmentsPage() {
               <span className="text-slate-500">Investments</span>
             </div>
           </div>
-
-          {/* Wallet Balance Card with Add Funds */}
           <div className="flex items-center gap-3 bg-white p-2.5 px-4 rounded-2xl border border-slate-100 shadow-xs self-start sm:self-auto">
             <div className="w-10 h-10 rounded-xl bg-[#FF7A00] text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/20">
               <Wallet className="w-5 h-5 stroke-[2.2]" />
@@ -205,9 +191,7 @@ export default function InvestmentsPage() {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* Section 1: Investment Plans Header & 4-Card Grid                          */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ Investment Plans Grid ------------------------------ */}
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <div>
@@ -226,8 +210,6 @@ export default function InvestmentsPage() {
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-
-          {/* 4 Plans Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
             {plans.map((plan) => {
               const isPopular = plan.popular;
@@ -241,7 +223,6 @@ export default function InvestmentsPage() {
                       : 'border border-slate-100 hover:border-slate-200'
                   }`}
                 >
-                  {/* Popular Badge */}
                   {isPopular && (
                     <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 bg-[#0066FF] text-white rounded-md shadow-xs">
                       <Crown className="w-3 h-3" /> Popular
@@ -249,7 +230,6 @@ export default function InvestmentsPage() {
                   )}
 
                   <div>
-                    {/* Top Row: Icon + Title & Subtitle */}
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -275,8 +255,6 @@ export default function InvestmentsPage() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Daily ROI Display */}
                     <div className="my-2.5">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight leading-none">
@@ -285,8 +263,6 @@ export default function InvestmentsPage() {
                         <span className="text-xs font-semibold text-slate-500">Daily ROI</span>
                       </div>
                     </div>
-
-                    {/* 2 Feature Pills: Duration & Min Investment */}
                     <div className="grid grid-cols-2 gap-2 text-xs py-2.5 border-t border-slate-50">
                       <div className="bg-[#F8FAFC] p-2 rounded-xl flex items-center gap-2">
                         <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -314,8 +290,6 @@ export default function InvestmentsPage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Invest Button */}
                   <button
                     onClick={() => handleOpenInvestModal(plan)}
                     className="w-full mt-2.5 py-2 px-3 rounded-xl text-white text-xs font-bold transition-all shadow-xs active:scale-[0.98] cursor-pointer"
@@ -331,11 +305,8 @@ export default function InvestmentsPage() {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* Section 2: My Investments Table                                          */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ My Investments Table ------------------------------ */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-4 sm:p-5">
-          {/* Header Row: Title & Subtitle on Left | "+ New Investment" on Right */}
           <div className="flex items-center justify-between mb-3.5">
             <div>
               <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
@@ -354,10 +325,7 @@ export default function InvestmentsPage() {
               <span>New Investment</span>
             </button>
           </div>
-
-          {/* Filters & Search Control Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-            {/* Filter Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto">
               {[
                 { label: 'All', count: investmentsData.counts?.all ?? 0 },
@@ -384,17 +352,12 @@ export default function InvestmentsPage() {
                 );
               })}
             </div>
-
-            {/* Right Tools: Date Picker Dropdown & Search Input */}
             <div className="flex items-center gap-2.5">
-              {/* Date Filter Badge */}
               <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F9FAFC] border border-slate-200/70 rounded-xl text-xs text-slate-700 font-medium cursor-pointer hover:bg-slate-50">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 <span>All Time</span>
                 <ChevronDown className="w-3 h-3 text-slate-400" />
               </div>
-
-              {/* Search Box */}
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
@@ -410,8 +373,6 @@ export default function InvestmentsPage() {
               </div>
             </div>
           </div>
-
-          {/* Table Content */}
           {loading ? (
             <div className="py-8">
               <LoadingState message="Loading investments..." />
@@ -544,8 +505,6 @@ export default function InvestmentsPage() {
               </table>
             </div>
           )}
-
-          {/* Pagination Footer */}
           <div className="flex items-center justify-between pt-3.5 mt-2 border-t border-slate-100 text-xs">
             <p className="text-slate-400 font-medium">
               Showing {investmentsData.records?.length > 0 ? (page - 1) * 10 + 1 : 0} to {(page - 1) * 10 + (investmentsData.records?.length || 0)} of {investmentsData.pagination?.total || 0} results
@@ -576,7 +535,7 @@ export default function InvestmentsPage() {
         </div>
       </div>
 
-      {/* Invest Action Modal */}
+      {/* ------------------------------ Modal: Investment Creation ------------------------------ */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -608,8 +567,6 @@ export default function InvestmentsPage() {
             helperText={`Minimum ₹${selectedPlan?.minInvestment?.toLocaleString()}`}
             required
           />
-
-          {/* Quick Returns Calculation Preview */}
           {Number(investAmount) > 0 && selectedPlan && (
             <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 text-xs space-y-1.5">
               <p className="font-bold text-blue-900">Projected Returns:</p>
@@ -642,7 +599,7 @@ export default function InvestmentsPage() {
         </form>
       </Modal>
 
-      {/* View Investment Details Modal */}
+      {/* ------------------------------ Modal: View Investment Details ------------------------------ */}
       <Modal
         isOpen={detailsModalOpen}
         onClose={() => setDetailsModalOpen(false)}
@@ -712,7 +669,7 @@ export default function InvestmentsPage() {
         )}
       </Modal>
 
-      {/* Add Funds Demo Modal */}
+      {/* ------------------------------ Modal: Add Funds ------------------------------ */}
       <Modal
         isOpen={addFundsOpen}
         onClose={() => setAddFundsOpen(false)}

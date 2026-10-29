@@ -37,7 +37,6 @@ import { formatDate } from '../../utils/date';
 
 // ------------------------------ Custom React Flow Node Components ------------------------------
 
-// ROOT NODE (Level 0 - You)
 const RootNodeComponent = ({ data }) => {
   return (
     <div className="w-[290px] bg-white border-2 border-blue-400 rounded-2xl p-3.5 shadow-sm text-center relative select-none">
@@ -73,7 +72,6 @@ const RootNodeComponent = ({ data }) => {
         </div>
       </div>
 
-      {/* Outgoing Edge Anchor */}
       <Handle
         type="source"
         position={Position.Bottom}
@@ -83,11 +81,9 @@ const RootNodeComponent = ({ data }) => {
   );
 };
 
-// LEVEL 1 NODE (Blue)
 const Level1NodeComponent = ({ data }) => {
   return (
     <div className="w-[148px] bg-[#F0F6FF] border border-blue-200 rounded-2xl p-3 text-center shadow-xs select-none hover:border-blue-400 transition-colors">
-      {/* Incoming Edge Anchor */}
       <Handle
         type="target"
         position={Position.Top}
@@ -106,7 +102,6 @@ const Level1NodeComponent = ({ data }) => {
         <p className="font-extrabold text-slate-900">{formatINR(data.earned)} Earned</p>
       </div>
 
-      {/* Outgoing Edge Anchor */}
       <Handle
         type="source"
         position={Position.Bottom}
@@ -116,11 +111,9 @@ const Level1NodeComponent = ({ data }) => {
   );
 };
 
-// LEVEL 2 NODE (Emerald/Green)
 const Level2NodeComponent = ({ data }) => {
   return (
     <div className="w-[100px] bg-[#F0FDF4] border border-emerald-200 rounded-2xl p-2.5 text-center shadow-2xs select-none hover:border-emerald-400 transition-colors">
-      {/* Incoming Edge Anchor */}
       <Handle
         type="target"
         position={Position.Top}
@@ -139,7 +132,6 @@ const Level2NodeComponent = ({ data }) => {
         <p className="font-extrabold text-slate-900 mt-0.5">₹ {data.earned}</p>
       </div>
 
-      {/* Outgoing Edge Anchor */}
       <Handle
         type="source"
         position={Position.Bottom}
@@ -149,11 +141,9 @@ const Level2NodeComponent = ({ data }) => {
   );
 };
 
-// LEVEL 3 NODE (Purple)
 const Level3NodeComponent = ({ data }) => {
   return (
     <div className="w-[92px] bg-[#FAF5FF] border border-purple-200 rounded-2xl p-2 text-center shadow-2xs select-none hover:border-purple-400 transition-colors">
-      {/* Incoming Edge Anchor */}
       <Handle
         type="target"
         position={Position.Top}
@@ -211,7 +201,6 @@ function generateFlowFromTree(treeData, user) {
   const nodes = [];
   const edges = [];
 
-  // Root Node (Level 0 - You)
   nodes.push({
     id: 'root',
     type: 'rootNode',
@@ -374,7 +363,6 @@ function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
 
   return (
     <div className="flex flex-col h-full justify-between">
-      {/* Canvas Top Bar: Title, Legend, React Flow Zoom Pill */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div>
           <h2 className="text-sm sm:text-base font-bold text-slate-900">
@@ -386,7 +374,6 @@ function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Level Badges Legend */}
           <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-600">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
@@ -402,7 +389,6 @@ function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
             </span>
           </div>
 
-          {/* Zoom Box */}
           <div className="flex items-center border border-slate-200 rounded-xl px-2 py-0.5 bg-white text-xs text-slate-600 shadow-2xs">
             <button
               onClick={handleZoomOut}
@@ -432,7 +418,6 @@ function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
         </div>
       </div>
 
-      {/* React Flow Viewport Container */}
       <div
         className="relative w-full rounded-2xl overflow-hidden mt-3 bg-gradient-to-b from-[#F8FAFC] to-white border border-slate-100/90 shadow-2xs"
         style={{ width: '100%', height: 610 }}
@@ -475,7 +460,7 @@ export default function ReferralTreePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [customRefCode, setCustomRefCode] = useState('');
 
-  // Load Tree Data and Direct Referrals from API
+  // ------------------------------ Load Referral Tree Data ------------------------------
   useEffect(() => {
     async function loadData() {
       try {
@@ -501,12 +486,10 @@ export default function ReferralTreePage() {
   const referralCode = user?.referralCode || treeData?.root?.referralCode || customRefCode || '';
   const referralLink = referralCode ? `https://nexachain.ai/register?ref=${referralCode}` : 'https://nexachain.ai/register';
 
-  // Dynamically compute React Flow nodes & edges from backend tree
   const { nodes: flowNodes, edges: flowEdges } = useMemo(() => {
     return generateFlowFromTree(treeData, user);
   }, [treeData, user]);
 
-  // Dynamically compute Direct Referrals list for right panel
   const directList = useMemo(() => {
     if (directReferrals.length > 0) {
       return directReferrals.slice(0, 5).map((u, i) => ({
@@ -519,7 +502,6 @@ export default function ReferralTreePage() {
     return [];
   }, [directReferrals]);
 
-  // Dynamically compute Tree Summary breakdown
   const treeSummaryBreakdown = useMemo(() => {
     const b = treeData?.summary?.levelBreakdown || [];
     return [
@@ -544,7 +526,6 @@ export default function ReferralTreePage() {
     ];
   }, [treeData]);
 
-  // Metrics
   const totalReferrals = treeData?.summary?.totalReferrals ?? 0;
   const totalLevelIncome = treeData?.summary?.totalLevelIncome ?? 0;
   const directReferralsCount = treeData?.summary?.directReferrals ?? 0;
@@ -596,7 +577,7 @@ export default function ReferralTreePage() {
   return (
     <AppLayout searchPlaceholder="Search users, investments, referrals...">
       <div className="space-y-4">
-        {/* Top Header Row with Breadcrumbs and Action Buttons */}
+        {/* ------------------------------ Header & Actions ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -636,9 +617,8 @@ export default function ReferralTreePage() {
           </div>
         </div>
 
-        {/* Top 4 KPI Cards */}
+        {/* ------------------------------ Referral Metrics & KPI Cards ------------------------------ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-          {/* Card 1: Total Referrals */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-[#0066FF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
@@ -652,7 +632,6 @@ export default function ReferralTreePage() {
             </div>
           </div>
 
-          {/* Card 2: Total Level Income */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-[#00C48C] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Network className="w-5 h-5 text-white" />
@@ -671,7 +650,6 @@ export default function ReferralTreePage() {
             </div>
           </div>
 
-          {/* Card 3: Direct Referrals */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-[#7B2CBF] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
@@ -690,7 +668,6 @@ export default function ReferralTreePage() {
             </div>
           </div>
 
-          {/* Card 4: Total Team Size */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-[#FF8A00] flex items-center justify-center text-white shrink-0 shadow-xs">
               <Users className="w-5 h-5 text-white" />
@@ -705,18 +682,15 @@ export default function ReferralTreePage() {
           </div>
         </div>
 
-        {/* Main Content: 8-col Visual Network Tree Canvas with React Flow + 4-col Right Sidebar */}
+        {/* ------------------------------ Interactive Network Tree & Details ------------------------------ */}
         <div className="grid grid-cols-12 gap-3.5 sm:gap-4">
-          {/* Left Canvas: Referral Network Tree (col-span-12 lg:col-span-8) */}
           <div className="col-span-12 lg:col-span-8 bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs">
             <ReactFlowProvider>
               <TreeFlowCanvas dynamicNodes={flowNodes} dynamicEdges={flowEdges} />
             </ReactFlowProvider>
           </div>
 
-          {/* Right Column: 3 Cards Stacked (col-span-12 lg:col-span-4) */}
           <div className="col-span-12 lg:col-span-4 space-y-3.5 sm:space-y-4">
-            {/* Card 1: Your Referral Info */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
@@ -730,7 +704,6 @@ export default function ReferralTreePage() {
                 </button>
               </div>
 
-              {/* Code Box */}
               <div>
                 <p className="text-[10px] font-medium text-slate-500 mb-1">Your Referral Code</p>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-100">
@@ -751,7 +724,6 @@ export default function ReferralTreePage() {
                 </div>
               </div>
 
-              {/* Link Box */}
               <div className="mt-2.5">
                 <p className="text-[10px] font-medium text-slate-500 mb-1">Referral Link</p>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-100">
@@ -773,7 +745,6 @@ export default function ReferralTreePage() {
               </div>
             </div>
 
-            {/* Card 2: Direct Referrals */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
@@ -818,7 +789,6 @@ export default function ReferralTreePage() {
               </div>
             </div>
 
-            {/* Card 3: Tree Summary */}
             <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs">
               <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-3">
                 Tree Summary
@@ -859,7 +829,6 @@ export default function ReferralTreePage() {
         </div>
       </div>
 
-      {/* Edit Referral Code Modal */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

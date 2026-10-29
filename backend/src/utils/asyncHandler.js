@@ -1,6 +1,4 @@
-/**
- * Express async route wrapper to eliminate repetitive try-catch blocks
- */
+// ------------------------------ Async Handler Wrapper ------------------------------
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };

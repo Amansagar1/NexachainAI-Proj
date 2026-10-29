@@ -8,10 +8,7 @@ const {
 } = require('../constants/businessRules');
 const logger = require('../utils/logger');
 
-/**
- * Distribute multi-level referral commissions upon investment creation
- * Uses transactions where supported or atomic operations
- */
+// ------------------------------ Distribute Multi-Level Referral Commissions ------------------------------
 const distributeReferralCommissions = async (investment, session = null) => {
   const investor = await User.findById(investment.user).session(session);
   if (!investor || !investor.referredBy) {
@@ -26,8 +23,6 @@ const distributeReferralCommissions = async (investment, session = null) => {
 
     const parentUser = await User.findById(currentParentId).session(session);
     if (!parentUser) break;
-
-    // Check if parent account is active
     if (parentUser.accountStatus === 'Active') {
       const rate = REFERRAL_COMMISSION_RATES[level] || 0;
       if (rate > 0) {
@@ -39,9 +34,6 @@ const distributeReferralCommissions = async (investment, session = null) => {
               level === 1
                 ? REFERRAL_INCOME_TYPE.DIRECT
                 : REFERRAL_INCOME_TYPE.LEVEL;
-
-            // Idempotent insertion using findOneAndUpdate with upsert or safe create
-            // The unique index on { user, fromUser, investment, referralLevel } prevents duplicates
             const existing = await ReferralIncome.findOne({
               user: parentUser._id,
               fromUser: investor._id,
@@ -65,8 +57,6 @@ const distributeReferralCommissions = async (investment, session = null) => {
                 ],
                 { session }
               );
-
-              // Atomically credit upline user's wallet and total level income
               await User.findByIdAndUpdate(
                 parentUser._id,
                 {
@@ -82,7 +72,6 @@ const distributeReferralCommissions = async (investment, session = null) => {
               logger.info(`Credited Level ${level} referral income of ₹${commissionAmount} to user ${parentUser._id}`);
             }
           } catch (err) {
-            // If duplicate key error (E11000), ignore as it was already credited
             if (err.code === 11000) {
               logger.warn(`Duplicate referral commission attempt blocked for user ${parentUser._id}, level ${level}`);
             } else {
@@ -92,17 +81,13 @@ const distributeReferralCommissions = async (investment, session = null) => {
         }
       }
     }
-
-    // Traverse upwards to next parent
     currentParentId = parentUser.referredBy;
   }
 
   return distributedCommissions;
 };
 
-/**
- * Fetch direct referrals for a user
- */
+// ------------------------------ Fetch Direct Referrals ------------------------------
 const getDirectReferrals = async (userId) => {
   const referrals = await User.find({ referredBy: userId })
     .select('fullName email mobileNumber referralCode walletBalance totalRoiEarned accountStatus createdAt')
@@ -111,9 +96,7 @@ const getDirectReferrals = async (userId) => {
   return referrals;
 };
 
-/**
- * Fetch complete referral tree (Levels 1 to 3) for the current user
- */
+// ------------------------------ Fetch Complete Referral Tree Hierarchy ------------------------------
 const getReferralTree = async (userId) => {
   const rootUser = await User.findById(userId).select(
     'fullName email referralCode walletBalance totalRoiEarned totalLevelIncomeEarned createdAt accountStatus'
@@ -122,8 +105,6 @@ const getReferralTree = async (userId) => {
   if (!rootUser) {
     throw new Error('User not found');
   }
-
-  // Helper recursive builder up to MAX_REFERRAL_DEPTH
   const buildSubtree = async (parentId, currentLevel) => {
     if (currentLevel > MAX_REFERRAL_DEPTH) return [];
 
@@ -133,7 +114,6 @@ const getReferralTree = async (userId) => {
 
     const formattedChildren = [];
     for (const child of children) {
-      // Count direct referrals for this child
       const directCount = await User.countDocuments({ referredBy: child._id });
       const nextChildren = await buildSubtree(child._id, currentLevel + 1);
 
@@ -155,8 +135,6 @@ const getReferralTree = async (userId) => {
   };
 
   const level1Children = await buildSubtree(rootUser._id, 1);
-
-  // Compute aggregate network statistics
   const directReferralsCount = level1Children.length;
 
   let level2Count = 0;
@@ -164,8 +142,6 @@ const getReferralTree = async (userId) => {
   let level1Income = 0;
   let level2Income = 0;
   let level3Income = 0;
-
-  // Aggregate commissions from ReferralIncome
   const commissions = await ReferralIncome.find({ user: userId });
   commissions.forEach((c) => {
     if (c.referralLevel === 1) level1Income += c.incomeAmount;
@@ -208,9 +184,7 @@ const getReferralTree = async (userId) => {
   };
 };
 
-/**
- * Get paginated Referral Income history with filters
- */
+// ------------------------------ Get Paginated Referral Income History ------------------------------
 const getReferralIncomeHistory = async (userId, query = {}) => {
   const page = parseInt(query.page, 10) || 1;
   const limit = parseInt(query.limit, 10) || 10;
@@ -245,8 +219,6 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
       .limit(limit),
     ReferralIncome.countDocuments(filter),
   ]);
-
-  // Aggregate metrics for summary cards & charts
   const allUserCommissions = await ReferralIncome.find({ user: userId });
   let totalLevelIncome = 0;
   let directIncome = 0;
@@ -272,8 +244,6 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
   const l3Users = await User.find({ referredBy: { $in: l2Users.map((u) => u._id) } }).select('_id');
   const indirectReferrals = l2Users.length + l3Users.length;
   const totalReferrals = directReferrals + indirectReferrals;
-
-  // Compute daily bar trend
   const barMap = {};
   allUserCommissions.forEach((c) => {
     const key = new Date(c.date).toISOString().split('T')[0];
@@ -288,8 +258,6 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
     }
   });
   const barData = Object.values(barMap).sort((a, b) => a.date.localeCompare(b.date));
-
-  // Compute level pie data
   const pieData = [
     {
       name: `Level 1 (${totalLevelIncome > 0 ? Math.round((l1Income / totalLevelIncome) * 100) : 0}%)`,

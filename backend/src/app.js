@@ -18,27 +18,17 @@ const referralRoutes = require('./routes/referralRoutes');
 const walletRoutes = require('./routes/walletRoutes');
 
 const app = express();
-
-// Security HTTP headers
 app.use(helmet());
-
-// CORS configuration
 app.use(cors(corsOptions));
-
-// Logging
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
-
-// Rate limiting
 app.use('/api', apiLimiter);
-
-// Body parsers
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
-// Health check endpoint
+// ------------------------------ Health Check ------------------------------
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -48,7 +38,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// ------------------------------ API Routes ------------------------------
 app.use('/api/auth', authRoutes);
 app.use('/api/investments', investmentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -57,10 +47,8 @@ app.use('/api/roi', roiRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/wallet', walletRoutes);
 
-// 404 handler for unknown routes
+// ------------------------------ Error Handling ------------------------------
 app.use(notFound);
-
-// Centralized error handler
 app.use(errorHandler);
 
 module.exports = app;

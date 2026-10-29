@@ -50,8 +50,6 @@ export default function ROIHistoryPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Filters
   const [page, setPage] = useState(1);
   const [chartPeriod, setChartPeriod] = useState('30D');
   const [investmentFilter, setInvestmentFilter] = useState('All');
@@ -114,8 +112,6 @@ export default function ROIHistoryPage() {
 
   const trendData = data.metrics?.trend || [];
   const distributionData = data.metrics?.distribution || [];
-
-  // Filter records locally by investment and search if needed
   const displayRecords = data.records.filter((rec) => {
     const pName = rec.investment?.planDetails?.planName || rec.planName || '';
     if (investmentFilter !== 'All' && !pName.toLowerCase().includes(investmentFilter.toLowerCase())) {
@@ -134,9 +130,7 @@ export default function ROIHistoryPage() {
   return (
     <AppLayout searchPlaceholder="Search investments, users, etc...">
       <div className="space-y-3.5 sm:space-y-4 select-none">
-        {/* ========================================================================= */}
-        {/* Top Header Row: Title & Breadcrumbs on Left | Date Picker on Right         */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ Header & Date Filter ------------------------------ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 tracking-tight leading-tight">
@@ -153,7 +147,6 @@ export default function ROIHistoryPage() {
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto">
-            {/* Discreet Daily ROI Trigger */}
             <button
               onClick={handleTriggerDailyCron}
               disabled={isProcessingCron}
@@ -163,8 +156,6 @@ export default function ROIHistoryPage() {
               <Play className="w-3 h-3 fill-current" />
               <span>{isProcessingCron ? 'Processing...' : 'Run Cron'}</span>
             </button>
-
-            {/* Date Range Picker Pill */}
             <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white border border-slate-200/80 rounded-xl text-xs text-slate-700 font-medium shadow-xs cursor-pointer hover:bg-slate-50 transition-colors">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
               <span>All Time</span>
@@ -173,11 +164,8 @@ export default function ROIHistoryPage() {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* Row 1: 4 Core Metric KPI Stat Cards                                       */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ ROI Metric KPI Cards ------------------------------ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-3.5">
-          {/* Card 1: Total ROI Earned */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/20">
               <Coins className="w-5 h-5 stroke-[2.2]" />
@@ -195,8 +183,6 @@ export default function ROIHistoryPage() {
               </div>
             </div>
           </div>
-
-          {/* Card 2: Total ROI Days */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#00C48C] text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/20">
               <Calendar className="w-5 h-5 stroke-[2.2]" />
@@ -209,8 +195,6 @@ export default function ROIHistoryPage() {
               <p className="text-xs text-slate-400 mt-1">out of 30 days</p>
             </div>
           </div>
-
-          {/* Card 3: Average Daily ROI */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#7B2CBF] text-white flex items-center justify-center shrink-0 shadow-sm shadow-purple-500/20">
               <Coins className="w-5 h-5 stroke-[2.2]" />
@@ -228,8 +212,6 @@ export default function ROIHistoryPage() {
               </div>
             </div>
           </div>
-
-          {/* Card 4: Active Investments */}
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#FF7A00] text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/20">
               <TrendingUp className="w-5 h-5 stroke-[2.2]" />
@@ -244,18 +226,13 @@ export default function ROIHistoryPage() {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* Row 2: Split 2-Column Section (Trend 8 Cols vs Distribution 4 Cols)        */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ ROI Earnings Trend & Distribution Charts ------------------------------ */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-stretch">
-          {/* Card 1: ROI Earnings Trend AreaChart (8 Cols) */}
           <div className="lg:col-span-8 bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs flex flex-col justify-between">
             <div className="flex items-center justify-between gap-3 mb-2">
               <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
                 ROI Earnings Trend
               </h3>
-
-              {/* Timeframe Filter Tabs */}
               <div className="flex items-center gap-1">
                 {['7D', '30D', '3M', '1Y'].map((p) => (
                   <button
@@ -272,8 +249,6 @@ export default function ROIHistoryPage() {
                 ))}
               </div>
             </div>
-
-            {/* Line Chart with Circular Nodes */}
             <div className="h-56 sm:h-60 w-full mt-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
@@ -322,14 +297,10 @@ export default function ROIHistoryPage() {
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Card 2: Earnings Distribution Donut Chart (4 Cols) */}
           <div className="lg:col-span-4 bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs flex flex-col justify-between">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight mb-2">
               Earnings Distribution
             </h3>
-
-            {/* Donut and Center Stat */}
             <div className="relative h-44 flex items-center justify-center my-auto">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -358,8 +329,6 @@ export default function ROIHistoryPage() {
                 <p className="text-[10px] text-slate-400 font-medium">Total Earnings</p>
               </div>
             </div>
-
-            {/* Horizontal Legend with Percentages */}
             <div className="space-y-2 pt-3 border-t border-slate-50 text-xs">
               {distributionData.map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between">
@@ -383,18 +352,14 @@ export default function ROIHistoryPage() {
           </div>
         </div>
 
-        {/* ========================================================================= */}
-        {/* Row 3: ROI History Details Table                                          */}
-        {/* ========================================================================= */}
+        {/* ------------------------------ ROI History Details Table ------------------------------ */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-4 sm:p-5">
-          {/* Header Row: Title on Left | Dropdown Filters and Search on Right */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3 pb-3 border-b border-slate-100">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
               ROI History Details
             </h3>
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-              {/* Dropdown: All Investments */}
               <div className="relative">
                 <select
                   value={investmentFilter}
@@ -408,8 +373,6 @@ export default function ROIHistoryPage() {
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-
-              {/* Dropdown: All Status */}
               <div className="relative">
                 <select
                   value={statusFilter}
@@ -422,8 +385,6 @@ export default function ROIHistoryPage() {
                 </select>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-
-              {/* Search Box */}
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
@@ -436,8 +397,6 @@ export default function ROIHistoryPage() {
               </div>
             </div>
           </div>
-
-          {/* Table Content */}
           {loading ? (
             <div className="py-8">
               <LoadingState message="Loading ROI history records..." />
@@ -530,8 +489,6 @@ export default function ROIHistoryPage() {
               </table>
             </div>
           )}
-
-          {/* Pagination Footer */}
           <div className="flex items-center justify-between pt-3.5 mt-2 border-t border-slate-100 text-xs">
             <p className="text-slate-400 font-medium">
               Showing {displayRecords.length > 0 ? (page - 1) * 10 + 1 : 0} to {(page - 1) * 10 + displayRecords.length} of {data.pagination?.total || 0} results

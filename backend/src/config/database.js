@@ -7,8 +7,6 @@ let mongod = null;
 const connectDB = async () => {
   try {
     mongoose.set('strictQuery', false);
-
-    // Try connecting to configured MONGODB_URI with a 4s timeout
     logger.info(`Attempting to connect to MongoDB at ${env.MONGODB_URI}...`);
     await mongoose.connect(env.MONGODB_URI, {
       serverSelectionTimeoutMS: 4000,

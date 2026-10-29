@@ -156,12 +156,10 @@ function AuthContent() {
     <div className="h-screen w-screen max-h-screen overflow-hidden relative bg-[#020B1E] flex flex-col lg:flex-row select-none">
       {/* ------------------------------ Premium Fintech Ambient Background ------------------------------ */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-[#020B1E]">
-        {/* Radial ambient glow orbs */}
         <div className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-[#0066FF]/25 rounded-full blur-[140px]" />
         <div className="absolute top-1/4 left-1/3 w-[550px] h-[550px] bg-[#0EA5E9]/15 rounded-full blur-[150px]" />
         <div className="absolute -bottom-32 right-0 w-[700px] h-[700px] bg-[#1D4ED8]/20 rounded-full blur-[160px]" />
 
-        {/* High-tech micro-dot matrix pattern */}
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
@@ -170,7 +168,6 @@ function AuthContent() {
           }}
         />
 
-        {/* Silky fluid wave gradients */}
         <svg
           className="absolute inset-0 w-full h-full object-cover opacity-70"
           viewBox="0 0 1440 900"
@@ -208,7 +205,6 @@ function AuthContent() {
 
       {/* ------------------------------ Left Hero Column: Brand & 3D Dashboard ------------------------------ */}
       <div className="hidden lg:flex lg:w-[50%] xl:w-[48%] flex-col justify-between pl-8 sm:pl-12 lg:pl-16 xl:pl-20 pr-4 sm:pr-6 py-6 sm:py-8 lg:py-10 relative z-10 text-white h-full overflow-hidden">
-        {/* Brand Header */}
         <div className="shrink-0">
           <div className="flex items-center gap-3">
             <NexachainRibbonLogo className="w-11 h-11 drop-shadow-md" />
@@ -224,7 +220,6 @@ function AuthContent() {
           </p>
         </div>
 
-        {/* Central Hero Headline & 2x2 Feature Pills */}
         <div className="my-auto py-2 max-w-lg shrink-0">
           <h1 className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-black text-white leading-[1.12] tracking-tight">
             Build Your <br />
@@ -237,7 +232,6 @@ function AuthContent() {
             daily ROI and build your network.
           </p>
 
-          {/* 2x2 Feature Pills */}
           <div className="mt-6 grid grid-cols-2 gap-3 max-w-md">
             <div className="flex items-center gap-3 p-2.5 px-3.5 rounded-2xl bg-[#092254]/75 border border-blue-400/15 backdrop-blur-md shadow-sm">
               <div className="w-9 h-9 rounded-xl bg-[#0C2D6E] text-[#1E74FF] flex items-center justify-center shrink-0 shadow-inner">
@@ -287,7 +281,6 @@ function AuthContent() {
           </div>
         </div>
 
-        {/* Bottom 3D Isometric Dashboard Graphic */}
         <div className="relative pt-2 max-w-lg shrink-0">
           <div className="relative" style={{ perspective: '1000px' }}>
             <div
@@ -383,7 +376,6 @@ function AuthContent() {
 
       {/* ------------------------------ Right Column: Unified Floating Auth Card ------------------------------ */}
       <div className="w-full lg:w-[50%] xl:w-[52%] flex items-center justify-center pl-4 sm:pl-6 lg:pl-8 pr-6 sm:pr-10 lg:pr-16 xl:pr-20 py-4 sm:py-6 lg:py-8 relative z-10 h-full overflow-hidden">
-        {/* Mobile Brand Bar */}
         <div className="lg:hidden absolute top-4 left-6 flex items-center gap-2 z-20">
           <NexachainRibbonLogo className="w-8 h-8" />
           <span className="text-xl font-black text-white">
@@ -391,9 +383,7 @@ function AuthContent() {
           </span>
         </div>
 
-        {/* The Unified Auth Card (Smoothly Toggles between Login and Sign Up in Same Spot) */}
         <div className="w-full max-w-[430px] xl:max-w-[450px] max-h-[94vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-white rounded-[32px] sm:rounded-[36px] p-6 sm:p-7 lg:p-8 shadow-[0_25px_60px_-15px_rgba(2,15,50,0.35)] border border-white/90 my-auto transition-all">
-          {/* Card Top: Logo & Title */}
           <div className="text-center mb-4 sm:mb-5">
             <div className="flex justify-center mb-2">
               <NexachainRibbonLogo className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md" />
@@ -403,27 +393,24 @@ function AuthContent() {
               Nexachain <span className="text-[#0066FF]">AI</span>
             </h2>
 
-            {/* Pill Mode Switcher in Same Place */}
             <div className="mt-3.5 flex items-center bg-slate-100 p-1 rounded-xl max-w-[280px] mx-auto">
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  mode === 'login'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${mode === 'login'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+                  }`}
               >
                 Sign In
               </button>
               <button
                 type="button"
                 onClick={() => setMode('register')}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  mode === 'register'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${mode === 'register'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+                  }`}
               >
                 Create Account
               </button>
@@ -439,18 +426,16 @@ function AuthContent() {
             </p>
           </div>
 
-          {/* ------------------------------ Mode 1: LOGIN FORM ------------------------------ */}
+          {/* ------------------------------ Mode 1: Login Form ------------------------------ */}
           {mode === 'login' ? (
             <form onSubmit={handleLoginSubmit(onLoginSubmit)} className="space-y-3">
-              {/* Email Field */}
               <div>
                 <label className="block text-xs font-semibold text-slate-800 mb-1">Email</label>
                 <div
-                  className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                    loginErrors.email
-                      ? 'border-rose-400 ring-2 ring-rose-100'
-                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                  }`}
+                  className={`relative flex items-center rounded-xl border bg-white transition-all ${loginErrors.email
+                    ? 'border-rose-400 ring-2 ring-rose-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    }`}
                 >
                   <div className="absolute left-3.5 text-slate-400 pointer-events-none">
                     <Mail className="w-4 h-4" />
@@ -467,15 +452,13 @@ function AuthContent() {
                 )}
               </div>
 
-              {/* Password Field */}
               <div>
                 <label className="block text-xs font-semibold text-slate-800 mb-1">Password</label>
                 <div
-                  className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                    loginErrors.password
-                      ? 'border-rose-400 ring-2 ring-rose-100'
-                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                  }`}
+                  className={`relative flex items-center rounded-xl border bg-white transition-all ${loginErrors.password
+                    ? 'border-rose-400 ring-2 ring-rose-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    }`}
                 >
                   <div className="absolute left-3.5 text-slate-400 pointer-events-none">
                     <Lock className="w-4 h-4" />
@@ -515,7 +498,6 @@ function AuthContent() {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -532,24 +514,22 @@ function AuthContent() {
               </button>
             </form>
           ) : (
-            /* ------------------------------ Mode 2: REGISTER FORM ------------------------------ */
             <form onSubmit={handleSignupSubmit(onSignupSubmit)} className="space-y-2.5">
-              {/* Full Name */}
+              {/* ------------------------------ Mode 2: Registration Form ------------------------------ */}
               <div>
                 <label className="block text-xs font-semibold text-slate-800 mb-0.5">Full Name</label>
                 <div
-                  className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                    signupErrors.fullName
-                      ? 'border-rose-400 ring-2 ring-rose-100'
-                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                  }`}
+                  className={`relative flex items-center rounded-xl border bg-white transition-all ${signupErrors.fullName
+                    ? 'border-rose-400 ring-2 ring-rose-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    }`}
                 >
                   <div className="absolute left-3 text-slate-400 pointer-events-none">
                     <User className="w-4 h-4" />
                   </div>
                   <input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Aman Sagar"
                     className="w-full py-2 pl-9 pr-3 text-xs sm:text-sm bg-transparent outline-none text-slate-800 placeholder:text-slate-400 font-medium"
                     {...signupRegister('fullName')}
                   />
@@ -561,16 +541,14 @@ function AuthContent() {
                 )}
               </div>
 
-              {/* Email & Mobile 2-col Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-0.5">Email</label>
                   <div
-                    className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                      signupErrors.email
-                        ? 'border-rose-400 ring-2 ring-rose-100'
-                        : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                    }`}
+                    className={`relative flex items-center rounded-xl border bg-white transition-all ${signupErrors.email
+                      ? 'border-rose-400 ring-2 ring-rose-100'
+                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                      }`}
                   >
                     <div className="absolute left-2.5 text-slate-400 pointer-events-none">
                       <Mail className="w-3.5 h-3.5" />
@@ -592,11 +570,10 @@ function AuthContent() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-0.5">Mobile</label>
                   <div
-                    className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                      signupErrors.mobileNumber
-                        ? 'border-rose-400 ring-2 ring-rose-100'
-                        : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                    }`}
+                    className={`relative flex items-center rounded-xl border bg-white transition-all ${signupErrors.mobileNumber
+                      ? 'border-rose-400 ring-2 ring-rose-100'
+                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                      }`}
                   >
                     <div className="absolute left-2.5 text-slate-400 pointer-events-none">
                       <Phone className="w-3.5 h-3.5" />
@@ -616,15 +593,13 @@ function AuthContent() {
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="block text-xs font-semibold text-slate-800 mb-0.5">Password</label>
                 <div
-                  className={`relative flex items-center rounded-xl border bg-white transition-all ${
-                    signupErrors.password
-                      ? 'border-rose-400 ring-2 ring-rose-100'
-                      : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
-                  }`}
+                  className={`relative flex items-center rounded-xl border bg-white transition-all ${signupErrors.password
+                    ? 'border-rose-400 ring-2 ring-rose-100'
+                    : 'border-slate-200 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-blue-100'
+                    }`}
                 >
                   <div className="absolute left-3 text-slate-400 pointer-events-none">
                     <Lock className="w-4 h-4" />
@@ -650,7 +625,6 @@ function AuthContent() {
                 )}
               </div>
 
-              {/* Referral Code (Optional) */}
               <div>
                 <label className="block text-xs font-semibold text-slate-800 mb-0.5">
                   Referral Code <span className="text-slate-400 font-normal">(Optional)</span>
@@ -668,7 +642,6 @@ function AuthContent() {
                 </div>
               </div>
 
-              {/* Register Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
