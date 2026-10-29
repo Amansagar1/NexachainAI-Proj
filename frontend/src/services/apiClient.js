@@ -1,12 +1,40 @@
 import axios from 'axios';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (typeof window !== 'undefined'
-    ? '/api'
-    : process.env.BACKEND_URL
-    ? `${process.env.BACKEND_URL}/api`
-    : 'http://localhost:5000/api');
+// ------------------------------ API Base URL Resolution ------------------------------
+const getApiBaseUrl = () => {
+  // Client-side execution in the browser
+  if (typeof window !== 'undefined') {
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (envUrl && typeof envUrl === 'string') {
+      const isEnvLocalhost = envUrl.includes('localhost') || envUrl.includes('127.0.0.1');
+      // When deployed (e.g., *.vercel.app), ignore any stray localhost environment variables
+      if (!isLocalhost && isEnvLocalhost) {
+        return '/api';
+      }
+      return envUrl;
+    }
+
+    // Default to relative '/api' on the same domain (routed directly by Vercel rewrites)
+    return '/api';
+  }
+
+  // Server-side execution (SSR)
+  if (process.env.BACKEND_URL) {
+    return `${process.env.BACKEND_URL.replace(/\/api\/?$/, '')}/api`;
+  }
+  if (
+    process.env.NEXT_PUBLIC_API_BASE_URL &&
+    !process.env.NEXT_PUBLIC_API_BASE_URL.includes('localhost')
+  ) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
+  }
+  return 'http://localhost:5000/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

@@ -6,3 +6,4 @@ const { connectDB } = require('./src/config/database');
 connectDB().catch((err) => console.error('MongoDB connection error:', err));
 
 module.exports = app;
+
