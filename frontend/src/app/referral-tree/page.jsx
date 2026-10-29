@@ -179,310 +179,6 @@ const Level3NodeComponent = ({ data }) => {
 };
 
 /* -------------------------------------------------------------------------
-   SYMMETRICAL NODE POSITIONS & EDGES SPECIFICATION
-   Calculated for exact alignment to UiDesign/Nexachain AI Referral Tree Dashboard.png
-------------------------------------------------------------------------- */
-const initialNodes = [
-  // ROOT (Level 0 - You): Center = 516 => Left = 371
-  {
-    id: 'root',
-    type: 'rootNode',
-    position: { x: 371, y: 20 },
-    data: {
-      name: 'John Doe',
-      code: 'NXA123456',
-      totalReferrals: 24,
-      directReferrals: 8,
-      totalIncome: 4500,
-    },
-  },
-
-  // LEVEL 1 NODES (y: 180, w: 148): Centers = [138, 390, 642, 894]
-  {
-    id: 'u123',
-    type: 'level1Node',
-    position: { x: 64, y: 180 },
-    data: { name: 'user123', referrals: 5, earned: 1800 },
-  },
-  {
-    id: 'u456',
-    type: 'level1Node',
-    position: { x: 316, y: 180 },
-    data: { name: 'user456', referrals: 3, earned: 1200 },
-  },
-  {
-    id: 'u789',
-    type: 'level1Node',
-    position: { x: 568, y: 180 },
-    data: { name: 'user789', referrals: 2, earned: 1000 },
-  },
-  {
-    id: 'u321',
-    type: 'level1Node',
-    position: { x: 820, y: 180 },
-    data: { name: 'user321', referrals: 4, earned: 1500 },
-  },
-
-  // LEVEL 2 NODES (y: 340, w: 100): 8 nodes under respective parents
-  // Group 1 under user123:
-  {
-    id: 'u654',
-    type: 'level2Node',
-    position: { x: 30, y: 340 },
-    data: { name: 'user654', referrals: 2, earned: 500 },
-  },
-  {
-    id: 'u987',
-    type: 'level2Node',
-    position: { x: 146, y: 340 },
-    data: { name: 'user987', referrals: 3, earned: 750 },
-  },
-  // Group 2 under user456:
-  {
-    id: 'u111',
-    type: 'level2Node',
-    position: { x: 282, y: 340 },
-    data: { name: 'user111', referrals: 1, earned: 250 },
-  },
-  {
-    id: 'u222',
-    type: 'level2Node',
-    position: { x: 398, y: 340 },
-    data: { name: 'user222', referrals: 2, earned: 500 },
-  },
-  // Group 3 under user789:
-  {
-    id: 'u333',
-    type: 'level2Node',
-    position: { x: 534, y: 340 },
-    data: { name: 'user333', referrals: 1, earned: 250 },
-  },
-  {
-    id: 'u444',
-    type: 'level2Node',
-    position: { x: 650, y: 340 },
-    data: { name: 'user444', referrals: 1, earned: 250 },
-  },
-  // Group 4 under user321:
-  {
-    id: 'u555',
-    type: 'level2Node',
-    position: { x: 786, y: 340 },
-    data: { name: 'user555', referrals: 2, earned: 500 },
-  },
-  {
-    id: 'u666',
-    type: 'level2Node',
-    position: { x: 902, y: 340 },
-    data: { name: 'user666', referrals: 2, earned: 500 },
-  },
-
-  // LEVEL 3 NODES (y: 480, w: 92): 6 leaf nodes under respective parents
-  {
-    id: 'u777',
-    type: 'level3Node',
-    position: { x: 34, y: 480 },
-    data: { name: 'user777', referrals: 0, earned: 0 },
-  },
-  {
-    id: 'u888',
-    type: 'level3Node',
-    position: { x: 150, y: 480 },
-    data: { name: 'user888', referrals: 1, earned: 100 },
-  },
-  {
-    id: 'u999',
-    type: 'level3Node',
-    position: { x: 286, y: 480 },
-    data: { name: 'user999', referrals: 0, earned: 0 },
-  },
-  {
-    id: 'u1000',
-    type: 'level3Node',
-    position: { x: 402, y: 480 },
-    data: { name: 'user1000', referrals: 1, earned: 100 },
-  },
-  {
-    id: 'u1010',
-    type: 'level3Node',
-    position: { x: 654, y: 480 },
-    data: { name: 'user1010', referrals: 0, earned: 0 },
-  },
-  {
-    id: 'u1111',
-    type: 'level3Node',
-    position: { x: 790, y: 480 },
-    data: { name: 'user1111', referrals: 1, earned: 100 },
-  },
-];
-
-const initialEdges = [
-  // Root to Level 1 (Blue dashed smoothstep)
-  {
-    id: 'e-root-u123',
-    source: 'root',
-    target: 'u123',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 16 },
-    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-root-u456',
-    source: 'root',
-    target: 'u456',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 16 },
-    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-root-u789',
-    source: 'root',
-    target: 'u789',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 16 },
-    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-root-u321',
-    source: 'root',
-    target: 'u321',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 16 },
-    style: { stroke: '#0066FF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-
-  // Level 1 to Level 2 (Emerald dashed smoothstep)
-  {
-    id: 'e-u123-u654',
-    source: 'u123',
-    target: 'u654',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u123-u987',
-    source: 'u123',
-    target: 'u987',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u456-u111',
-    source: 'u456',
-    target: 'u111',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u456-u222',
-    source: 'u456',
-    target: 'u222',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u789-u333',
-    source: 'u789',
-    target: 'u333',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u789-u444',
-    source: 'u789',
-    target: 'u444',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u321-u555',
-    source: 'u321',
-    target: 'u555',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u321-u666',
-    source: 'u321',
-    target: 'u666',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#00C48C', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-
-  // Level 2 to Level 3 (Purple dashed smoothstep)
-  {
-    id: 'e-u654-u777',
-    source: 'u654',
-    target: 'u777',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u987-u888',
-    source: 'u987',
-    target: 'u888',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u111-u999',
-    source: 'u111',
-    target: 'u999',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u222-u1000',
-    source: 'u222',
-    target: 'u1000',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u444-u1010',
-    source: 'u444',
-    target: 'u1010',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-  {
-    id: 'e-u555-u1111',
-    source: 'u555',
-    target: 'u1111',
-    type: 'smoothstep',
-    pathOptions: { borderRadius: 12 },
-    style: { stroke: '#7B2CBF', strokeDasharray: '4 4', strokeWidth: 1.5 },
-  },
-];
-
-const directReferralsList = [
-  { name: 'user123', joined: 'Joined Oct 30, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
-  { name: 'user456', joined: 'Joined Oct 28, 2024', status: 'Active', avatarBg: 'bg-[#FF8A00]' },
-  { name: 'user789', joined: 'Joined Oct 25, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
-  { name: 'user321', joined: 'Joined Oct 22, 2024', status: 'Active', avatarBg: 'bg-[#00C48C]' },
-  { name: 'user654', joined: 'Joined Oct 20, 2024', status: 'Active', avatarBg: 'bg-[#0066FF]' },
-];
-
-const summaryMatrix = [
-  { level: 'Level 1 (Direct)', count: '8 Users', amount: 1800, dotColor: 'bg-[#0066FF]' },
-  { level: 'Level 2', count: '12 Users', amount: 1750, dotColor: 'bg-[#00C48C]' },
-  { level: 'Level 3', count: '4 Users', amount: 950, dotColor: 'bg-[#7B2CBF]' },
-];
-
-/* -------------------------------------------------------------------------
    STATIC REACT FLOW NODE TYPES (DEFINED OUTSIDE COMPONENT FOR ZERO WARNINGS)
 ------------------------------------------------------------------------- */
 const nodeTypes = {
@@ -492,9 +188,28 @@ const nodeTypes = {
   level3Node: Level3NodeComponent,
 };
 
-function generateFlowFromTree(treeData) {
+function generateFlowFromTree(treeData, user) {
   if (!treeData || !treeData.root) {
-    return { nodes: initialNodes, edges: initialEdges };
+    if (user) {
+      return {
+        nodes: [
+          {
+            id: 'root',
+            type: 'rootNode',
+            position: { x: 371, y: 20 },
+            data: {
+              name: user.fullName || 'User',
+              code: user.referralCode || '',
+              totalReferrals: 0,
+              directReferrals: 0,
+              totalIncome: 0,
+            },
+          },
+        ],
+        edges: [],
+      };
+    }
+    return { nodes: [], edges: [] };
   }
 
   const { root, summary } = treeData;
@@ -507,8 +222,8 @@ function generateFlowFromTree(treeData) {
     type: 'rootNode',
     position: { x: 371, y: 20 },
     data: {
-      name: root.fullName || 'User',
-      code: root.referralCode || 'NXA123456',
+      name: root.fullName || user?.fullName || 'User',
+      code: root.referralCode || user?.referralCode || '',
       totalReferrals: summary?.totalReferrals ?? root.totalReferrals ?? 0,
       directReferrals: summary?.directReferrals ?? root.directReferralsCount ?? 0,
       totalIncome: summary?.totalLevelIncome ?? root.totalLevelIncome ?? 0,
@@ -552,7 +267,7 @@ function generateFlowFromTree(treeData) {
       type: 'level1Node',
       position: pos1,
       data: {
-        name: l1Child.fullName || `user${i + 1}`,
+        name: l1Child.fullName || l1Child.email?.split('@')[0] || `user${i + 1}`,
         referrals: l1Child.directReferralsCount || 0,
         earned: l1Child.totalEarned || 0,
       },
@@ -578,7 +293,7 @@ function generateFlowFromTree(treeData) {
         type: 'level2Node',
         position: pos2,
         data: {
-          name: l2Child.fullName || `user${l2Index}`,
+          name: l2Child.fullName || l2Child.email?.split('@')[0] || `user${l2Index}`,
           referrals: l2Child.directReferralsCount || 0,
           earned: l2Child.totalEarned || 0,
         },
@@ -604,7 +319,7 @@ function generateFlowFromTree(treeData) {
           type: 'level3Node',
           position: pos3,
           data: {
-            name: l3Child.fullName || `user${l3Index}`,
+            name: l3Child.fullName || l3Child.email?.split('@')[0] || `user${l3Index}`,
             referrals: l3Child.directReferralsCount || 0,
             earned: l3Child.totalEarned || 0,
           },
@@ -629,8 +344,8 @@ function generateFlowFromTree(treeData) {
    INNER FLOW CANVAS COMPONENT (USING useReactFlow)
 ------------------------------------------------------------------------- */
 function TreeFlowCanvas({ dynamicNodes, dynamicEdges }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(dynamicNodes || initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(dynamicEdges || initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(dynamicNodes || []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(dynamicEdges || []);
   const { zoomIn, zoomOut, fitView, getZoom } = useReactFlow();
   const [zoomPercent, setZoomPercent] = useState(100);
 
@@ -767,7 +482,7 @@ export default function ReferralTreePage() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [customRefCode, setCustomRefCode] = useState('NXA123456');
+  const [customRefCode, setCustomRefCode] = useState('');
 
   // Load Tree Data and Direct Referrals from API
   useEffect(() => {
@@ -792,60 +507,57 @@ export default function ReferralTreePage() {
     loadData();
   }, []);
 
-  const referralCode = user?.referralCode || treeData?.root?.referralCode || customRefCode;
-  const referralLink = `https://nexachain.ai/register?ref=${referralCode}`;
+  const referralCode = user?.referralCode || treeData?.root?.referralCode || customRefCode || '';
+  const referralLink = referralCode ? `https://nexachain.ai/register?ref=${referralCode}` : 'https://nexachain.ai/register';
 
   // Dynamically compute React Flow nodes & edges from backend tree
   const { nodes: flowNodes, edges: flowEdges } = useMemo(() => {
-    return generateFlowFromTree(treeData);
-  }, [treeData]);
+    return generateFlowFromTree(treeData, user);
+  }, [treeData, user]);
 
   // Dynamically compute Direct Referrals list for right panel
   const directList = useMemo(() => {
     if (directReferrals.length > 0) {
       return directReferrals.slice(0, 5).map((u, i) => ({
-        name: u.fullName || u.email?.split('@')[0],
+        name: u.fullName || u.email?.split('@')[0] || `User`,
         joined: `Joined ${formatDate(u.createdAt)}`,
         status: u.accountStatus || 'Active',
         avatarBg: i % 3 === 0 ? 'bg-[#0066FF]' : i % 3 === 1 ? 'bg-[#FF8A00]' : 'bg-[#00C48C]',
       }));
     }
-    return directReferralsList;
+    return [];
   }, [directReferrals]);
 
   // Dynamically compute Tree Summary breakdown
   const treeSummaryBreakdown = useMemo(() => {
-    if (treeData?.summary?.levelBreakdown) {
-      const b = treeData.summary.levelBreakdown;
-      return [
-        {
-          level: 'Level 1 (Direct)',
-          count: `${b[0]?.users ?? 8} Users`,
-          amount: b[0]?.income ?? 1800,
-          dotColor: 'bg-[#0066FF]',
-        },
-        {
-          level: 'Level 2',
-          count: `${b[1]?.users ?? 12} Users`,
-          amount: b[1]?.income ?? 1750,
-          dotColor: 'bg-[#00C48C]',
-        },
-        {
-          level: 'Level 3',
-          count: `${b[2]?.users ?? 4} Users`,
-          amount: b[2]?.income ?? 950,
-          dotColor: 'bg-[#7B2CBF]',
-        },
-      ];
-    }
-    return summaryMatrix;
+    const b = treeData?.summary?.levelBreakdown || [];
+    return [
+      {
+        level: 'Level 1 (Direct)',
+        count: `${b[0]?.users ?? 0} Users`,
+        amount: b[0]?.income ?? 0,
+        dotColor: 'bg-[#0066FF]',
+      },
+      {
+        level: 'Level 2',
+        count: `${b[1]?.users ?? 0} Users`,
+        amount: b[1]?.income ?? 0,
+        dotColor: 'bg-[#00C48C]',
+      },
+      {
+        level: 'Level 3',
+        count: `${b[2]?.users ?? 0} Users`,
+        amount: b[2]?.income ?? 0,
+        dotColor: 'bg-[#7B2CBF]',
+      },
+    ];
   }, [treeData]);
 
   // Metrics
-  const totalReferrals = treeData?.summary?.totalReferrals ?? 24;
-  const totalLevelIncome = treeData?.summary?.totalLevelIncome ?? 4500;
-  const directReferralsCount = treeData?.summary?.directReferrals ?? 8;
-  const totalTeamSize = treeData?.summary?.totalTeamSize ?? 25;
+  const totalReferrals = treeData?.summary?.totalReferrals ?? 0;
+  const totalLevelIncome = treeData?.summary?.totalLevelIncome ?? 0;
+  const directReferralsCount = treeData?.summary?.directReferrals ?? 0;
+  const totalTeamSize = treeData?.summary?.totalTeamSize ?? (totalReferrals > 0 ? totalReferrals + 1 : 1);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(referralCode);
@@ -1085,29 +797,33 @@ export default function ReferralTreePage() {
               </div>
 
               <div className="space-y-2.5">
-                {directList.map((item) => (
-                  <div
-                    key={item.name}
-                    className="flex items-center justify-between py-1"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`w-7 h-7 rounded-full ${item.avatarBg} text-white flex items-center justify-center shrink-0 shadow-2xs`}
-                      >
-                        <User className="w-3.5 h-3.5 text-white" />
+                {directList.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-3 text-center">No direct referrals yet.</p>
+                ) : (
+                  directList.map((item) => (
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between py-1"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-7 h-7 rounded-full ${item.avatarBg} text-white flex items-center justify-center shrink-0 shadow-2xs`}
+                        >
+                          <User className="w-3.5 h-3.5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-xs text-slate-900 leading-tight">
+                            {item.name}
+                          </p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{item.joined}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-bold text-xs text-slate-900 leading-tight">
-                          {item.name}
-                        </p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{item.joined}</p>
-                      </div>
+                      <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                        {item.status || 'Active'}
+                      </span>
                     </div>
-                    <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                      Active
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 

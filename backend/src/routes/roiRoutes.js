@@ -8,6 +8,7 @@ const router = express.Router();
 router.use(authenticate, authorizeActive);
 
 router.get('/', roiController.getRoiHistory);
+router.get('/history', roiController.getRoiHistory);
 router.post('/process-daily', roiController.triggerDailyRoi);
 
 module.exports = router;

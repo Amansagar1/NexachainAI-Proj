@@ -68,6 +68,18 @@ const getDashboardSummary = async (userId) => {
   const directReferrals = await User.find({ referredBy: userId }).select('fullName referralCode createdAt');
   const directReferralsCount = directReferrals.length;
 
+  const topDirectReferrals = await Promise.all(
+    directReferrals.slice(0, 3).map(async (d) => {
+      const childCount = await User.countDocuments({ referredBy: d._id });
+      return {
+        _id: d._id,
+        fullName: d.fullName,
+        referralCode: d.referralCode,
+        directReferralsCount: childCount,
+      };
+    })
+  );
+
   // Get total indirect referrals count
   const allSubReferrals = await User.find({
     referredBy: { $in: directReferrals.map((d) => d._id) },
@@ -113,6 +125,7 @@ const getDashboardSummary = async (userId) => {
       totalReferrals,
       totalLevelIncome: user.totalLevelIncomeEarned || 0,
       recentDirectUsers: directReferrals.slice(0, 4),
+      topDirectReferrals,
     },
     recentInvestments,
     recentEarnings,

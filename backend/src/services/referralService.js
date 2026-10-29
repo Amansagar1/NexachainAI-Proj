@@ -266,6 +266,51 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
     }
   });
 
+  const directUsers = await User.find({ referredBy: userId }).select('_id');
+  const directReferrals = directUsers.length;
+  const l2Users = await User.find({ referredBy: { $in: directUsers.map((u) => u._id) } }).select('_id');
+  const l3Users = await User.find({ referredBy: { $in: l2Users.map((u) => u._id) } }).select('_id');
+  const indirectReferrals = l2Users.length + l3Users.length;
+  const totalReferrals = directReferrals + indirectReferrals;
+
+  // Compute daily bar trend
+  const barMap = {};
+  allUserCommissions.forEach((c) => {
+    const key = new Date(c.date).toISOString().split('T')[0];
+    const displayLabel = new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (!barMap[key]) {
+      barMap[key] = { displayDate: displayLabel, date: key, Direct: 0, Level: 0 };
+    }
+    if (c.referralLevel === 1) {
+      barMap[key].Direct += c.incomeAmount;
+    } else {
+      barMap[key].Level += c.incomeAmount;
+    }
+  });
+  const barData = Object.values(barMap).sort((a, b) => a.date.localeCompare(b.date));
+
+  // Compute level pie data
+  const pieData = [
+    {
+      name: `Level 1 (${totalLevelIncome > 0 ? Math.round((l1Income / totalLevelIncome) * 100) : 0}%)`,
+      value: l1Income,
+      percentage: totalLevelIncome > 0 ? Math.round((l1Income / totalLevelIncome) * 100) : 0,
+      color: '#0066FF',
+    },
+    {
+      name: `Level 2 (${totalLevelIncome > 0 ? Math.round((l2Income / totalLevelIncome) * 100) : 0}%)`,
+      value: l2Income,
+      percentage: totalLevelIncome > 0 ? Math.round((l2Income / totalLevelIncome) * 100) : 0,
+      color: '#00C48C',
+    },
+    {
+      name: `Level 3 (${totalLevelIncome > 0 ? Math.round((l3Income / totalLevelIncome) * 100) : 0}%)`,
+      value: l3Income,
+      percentage: totalLevelIncome > 0 ? Math.round((l3Income / totalLevelIncome) * 100) : 0,
+      color: '#7B2CBF',
+    },
+  ];
+
   return {
     records,
     pagination: {
@@ -280,6 +325,11 @@ const getReferralIncomeHistory = async (userId, query = {}) => {
       l1Income,
       l2Income,
       l3Income,
+      totalReferrals,
+      directReferrals,
+      indirectReferrals,
+      barData,
+      pieData,
     },
   };
 };

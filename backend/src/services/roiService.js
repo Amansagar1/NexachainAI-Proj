@@ -1,3 +1,4 @@
+
 const User = require('../models/User');
 const Investment = require('../models/Investment');
 const ROIHistory = require('../models/ROIHistory');
@@ -201,21 +202,30 @@ const getUserROIHistory = async (userId, query = {}) => {
     investmentStatus: INVESTMENT_STATUS.ACTIVE,
   });
 
-  const distribution = Object.keys(planDistributionMap).map((planName) => ({
+  const colors = ['#0066FF', '#00C48C', '#7B2CBF', '#FF7A00'];
+  const distribution = Object.keys(planDistributionMap).map((planName, index) => ({
     name: planName,
     amount: planDistributionMap[planName],
     percentage:
       totalRoiEarned > 0
         ? Math.round((planDistributionMap[planName] / totalRoiEarned) * 100)
         : 0,
+    color: colors[index % colors.length],
   }));
 
   const trend = Object.keys(dailyTrendMap)
     .sort()
-    .map((dateStr) => ({
-      date: dateStr,
-      amount: dailyTrendMap[dateStr],
-    }));
+    .map((dateStr) => {
+      const d = new Date(dateStr);
+      const displayLabel = !isNaN(d.getTime())
+        ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        : dateStr;
+      return {
+        date: dateStr,
+        displayDate: displayLabel,
+        amount: dailyTrendMap[dateStr],
+      };
+    });
 
   return {
     records,

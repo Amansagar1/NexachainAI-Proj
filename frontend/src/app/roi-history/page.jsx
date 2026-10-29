@@ -35,149 +35,17 @@ import { roiApi } from '../../features/roi/roiApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-// 18 data points matching the exact trend line with nodes in UiDesign/Nexachain AI ROI Dashboard.png
-const defaultRoiTrend = [
-  { displayDate: 'Oct 1', amount: 120 },
-  { displayDate: 'Oct 3', amount: 180 },
-  { displayDate: 'Oct 5', amount: 240 },
-  { displayDate: 'Oct 7', amount: 230 },
-  { displayDate: 'Oct 9', amount: 280 },
-  { displayDate: 'Oct 10', amount: 440 },
-  { displayDate: 'Oct 12', amount: 420 },
-  { displayDate: 'Oct 14', amount: 370 },
-  { displayDate: 'Oct 15', amount: 510 },
-  { displayDate: 'Oct 17', amount: 480 },
-  { displayDate: 'Oct 20', amount: 620 },
-  { displayDate: 'Oct 21', amount: 560 },
-  { displayDate: 'Oct 23', amount: 560 },
-  { displayDate: 'Oct 24', amount: 620 },
-  { displayDate: 'Oct 25', amount: 770 },
-  { displayDate: 'Oct 27', amount: 760 },
-  { displayDate: 'Oct 28', amount: 730 },
-  { displayDate: 'Oct 30', amount: 920 },
-];
-
-const defaultDistribution = [
-  { name: 'Growth Plan A', amount: 4500, percentage: 35, color: '#0066FF' },
-  { name: 'Growth Plan B', amount: 5250, percentage: 41, color: '#00C48C' },
-  { name: 'Wealth Plan', amount: 3000, percentage: 24, color: '#7B2CBF' },
-];
-
-// 10 records matching the reference screenshot table
-const defaultRoiRecords = [
-  {
-    _id: '1',
-    date: '2024-10-30',
-    planName: 'Growth Plan A',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1,
-    roiAmount: 250,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '2',
-    date: '2024-10-29',
-    planName: 'Growth Plan B',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1.5,
-    roiAmount: 375,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '3',
-    date: '2024-10-28',
-    planName: 'Wealth Plan',
-    investmentAmount: 50000,
-    dailyRoiPercentage: 2,
-    roiAmount: 1000,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '4',
-    date: '2024-10-27',
-    planName: 'Growth Plan A',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1,
-    roiAmount: 250,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '5',
-    date: '2024-10-26',
-    planName: 'Growth Plan B',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1.5,
-    roiAmount: 375,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '6',
-    date: '2024-10-25',
-    planName: 'Wealth Plan',
-    investmentAmount: 50000,
-    dailyRoiPercentage: 2,
-    roiAmount: 1000,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '7',
-    date: '2024-10-24',
-    planName: 'Growth Plan A',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1,
-    roiAmount: 250,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '8',
-    date: '2024-10-23',
-    planName: 'Growth Plan B',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1.5,
-    roiAmount: 375,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '9',
-    date: '2024-10-22',
-    planName: 'Wealth Plan',
-    investmentAmount: 50000,
-    dailyRoiPercentage: 2,
-    roiAmount: 1000,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-  {
-    _id: '10',
-    date: '2024-10-21',
-    planName: 'Growth Plan A',
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1,
-    roiAmount: 250,
-    status: 'CREDITED',
-    remarks: 'Daily ROI credited successfully',
-  },
-];
-
 export default function ROIHistoryPage() {
   const [data, setData] = useState({
-    records: defaultRoiRecords,
-    pagination: { page: 1, limit: 10, total: 26, totalPages: 3 },
+    records: [],
+    pagination: { page: 1, limit: 10, total: 0, totalPages: 1 },
     metrics: {
-      totalRoiEarned: 12750,
-      totalRoiDays: 26,
-      averageDailyRoi: 490,
-      activeInvestmentsCount: 2,
-      distribution: defaultDistribution,
-      trend: defaultRoiTrend,
+      totalRoiEarned: 0,
+      totalRoiDays: 0,
+      averageDailyRoi: 0,
+      activeInvestmentsCount: 0,
+      distribution: [],
+      trend: [],
     },
   });
   const [loading, setLoading] = useState(true);
@@ -211,8 +79,8 @@ export default function ROIHistoryPage() {
             totalRoiDays: 0,
             averageDailyRoi: 0,
             activeInvestmentsCount: 0,
-            distribution: defaultDistribution,
-            trend: defaultRoiTrend,
+            distribution: [],
+            trend: [],
           },
         });
       }
@@ -244,9 +112,8 @@ export default function ROIHistoryPage() {
     }
   };
 
-  const trendData = data.metrics?.trend?.length > 0 ? data.metrics.trend : defaultRoiTrend;
-  const distributionData =
-    data.metrics?.distribution?.length > 0 ? data.metrics.distribution : defaultDistribution;
+  const trendData = data.metrics?.trend || [];
+  const distributionData = data.metrics?.distribution || [];
 
   // Filter records locally by investment and search if needed
   const displayRecords = data.records.filter((rec) => {
@@ -300,8 +167,8 @@ export default function ROIHistoryPage() {
             {/* Date Range Picker Pill */}
             <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white border border-slate-200/80 rounded-xl text-xs text-slate-700 font-medium shadow-xs cursor-pointer hover:bg-slate-50 transition-colors">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              <span>Oct 1, 2024 - Oct 30, 2024</span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <span>All Time</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </div>
           </div>
         </div>
@@ -318,7 +185,7 @@ export default function ROIHistoryPage() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-slate-500">Total ROI Earned</p>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-                {formatINR(data.metrics?.totalRoiEarned || 12750)}
+                {formatINR(data.metrics?.totalRoiEarned ?? 0)}
               </h3>
               <div className="flex items-center gap-1 mt-1">
                 <span className="text-xs font-semibold text-[#00C48C] flex items-center gap-0.5">
@@ -337,7 +204,7 @@ export default function ROIHistoryPage() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-slate-500">Total ROI Days</p>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-                {data.metrics?.totalRoiDays || 26}
+                {data.metrics?.totalRoiDays ?? 0}
               </h3>
               <p className="text-xs text-slate-400 mt-1">out of 30 days</p>
             </div>
@@ -351,7 +218,7 @@ export default function ROIHistoryPage() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-slate-500">Average Daily ROI</p>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-                {formatINR(data.metrics?.averageDailyRoi || 490)}
+                {formatINR(data.metrics?.averageDailyRoi ?? 0)}
               </h3>
               <div className="flex items-center gap-1 mt-1">
                 <span className="text-xs font-semibold text-[#00C48C] flex items-center gap-0.5">
@@ -370,7 +237,7 @@ export default function ROIHistoryPage() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-slate-500">Active Investments</p>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-                {data.metrics?.activeInvestmentsCount || 2}
+                {data.metrics?.activeInvestmentsCount ?? 0}
               </h3>
               <p className="text-xs text-slate-400 mt-1">generating ROI</p>
             </div>
@@ -486,7 +353,7 @@ export default function ROIHistoryPage() {
 
               <div className="absolute text-center pointer-events-none">
                 <p className="text-base font-black text-slate-900 tracking-tight leading-tight">
-                  {formatINR(data.metrics?.totalRoiEarned || 12750)}
+                  {formatINR(data.metrics?.totalRoiEarned ?? 0)}
                 </p>
                 <p className="text-[10px] text-slate-400 font-medium">Total Earnings</p>
               </div>
@@ -640,13 +507,13 @@ export default function ROIHistoryPage() {
                           </div>
                         </td>
                         <td className="py-2.5 px-3 font-normal text-slate-800">
-                          {formatINR(item.investment?.investmentAmount || item.investmentAmount || 25000)}
+                          {formatINR(item.investment?.investmentAmount || item.investmentAmount || 0)}
                         </td>
                         <td className="py-2.5 px-3 text-slate-600 font-normal">
-                          {item.dailyRoiPercentage || (isGrowthA ? 1 : isGrowthB ? 1.5 : 2)}%
+                          {item.dailyRoiPercentage ?? 0}%
                         </td>
                         <td className="py-2.5 px-3 font-normal text-slate-800">
-                          {formatINR(item.roiAmount || 250)}
+                          {formatINR(item.roiAmount ?? 0)}
                         </td>
                         <td className="py-2.5 px-3">
                           <span className="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-[#E8F8F0] text-[#00B074]">
@@ -667,7 +534,7 @@ export default function ROIHistoryPage() {
           {/* Pagination Footer */}
           <div className="flex items-center justify-between pt-3.5 mt-2 border-t border-slate-100 text-xs">
             <p className="text-slate-400 font-medium">
-              Showing 1 to {displayRecords.length} of {data.pagination?.total || 26} results
+              Showing {displayRecords.length > 0 ? (page - 1) * 10 + 1 : 0} to {(page - 1) * 10 + displayRecords.length} of {data.pagination?.total || 0} results
             </p>
 
             <div className="flex items-center gap-1.5">
@@ -679,7 +546,7 @@ export default function ROIHistoryPage() {
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
 
-              {[1, 2, 3].map((pageNum) => (
+              {Array.from({ length: Math.min(5, data.pagination?.totalPages || 1) }, (_, i) => i + 1).map((pageNum) => (
                 <button
                   key={pageNum}
                   onClick={() => setPage(pageNum)}
@@ -694,7 +561,7 @@ export default function ROIHistoryPage() {
               ))}
 
               <button
-                disabled={page >= (data.pagination?.totalPages || 3)}
+                disabled={page >= (data.pagination?.totalPages || 1)}
                 onClick={() => setPage((p) => p + 1)}
                 className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >

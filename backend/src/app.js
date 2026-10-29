@@ -53,6 +53,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/investments', investmentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/roi-history', roiRoutes);
+app.use('/api/roi', roiRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/wallet', walletRoutes);
 

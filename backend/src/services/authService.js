@@ -108,7 +108,18 @@ const getCurrentUser = async (userId) => {
  * Update user personal information
  */
 const updateProfile = async (userId, updates) => {
-  const allowed = ['fullName', 'mobileNumber', 'city', 'country', 'address', 'dateOfBirth', 'gender'];
+  const allowed = [
+    'fullName',
+    'mobileNumber',
+    'city',
+    'country',
+    'address',
+    'dateOfBirth',
+    'gender',
+    'settings',
+    'bankDetails',
+    'kyc',
+  ];
   const updateData = {};
   allowed.forEach((field) => {
     if (updates[field] !== undefined) {

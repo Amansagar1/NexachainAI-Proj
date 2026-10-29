@@ -350,3 +350,45 @@ All 6 screens from the `UiDesign` folder have been faithfully reproduced using *
 6. **Referral Tree**: Zoomable and collapsible visual tree canvas with root, Level 1, Level 2, and Level 3 nodes, shareable referral link, and tree summary matrix.
 #   N e x a c h a i n A I - P r o j  
  
+
+
+---
+
+## 13. Environment Variables Reference
+
+### Backend (`backend/.env`)
+| Variable | Description | Default / Example Value |
+| :--- | :--- | :--- |
+| `PORT` | Port for the Express backend server | `5000` |
+| `NODE_ENV` | Application runtime environment | `development` / `production` |
+| `MONGODB_URI` | MongoDB Atlas connection string | `mongodb+srv://...@cluster0.sf919.mongodb.net/naxachain` |
+| `JWT_SECRET` | Cryptographic secret for signing JWT auth tokens | `nexachain_super_secret_jwt_key_2026_secure` |
+| `JWT_EXPIRES_IN` | Validity lifespan of issued JWT tokens | `7d` |
+| `CLIENT_URL` | Allowed CORS frontend origin | `http://localhost:3000` |
+| `ROI_TIMEZONE` | Timezone for the daily 12:00 AM ROI cron job | `Asia/Kolkata` |
+
+### Frontend (`frontend/.env.local`)
+| Variable | Description | Default / Example Value |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_API_BASE_URL` | Target base URL for backend REST API | `http://localhost:5000/api` |
+
+---
+
+## 14. Assumptions Made During Development
+
+1. **Multi-Level Referral Depth**:
+   - The assessment specifies multi-level referral earnings. In alignment with standard high-growth fintech models, commission depth is structured to **3 active levels**:
+     - **Level 1 (Direct Referrer)**: **5%** of investment principal.
+     - **Level 2 (Indirect Referrer)**: **2%** (or 3%) of investment principal.
+     - **Level 3 (Indirect Referrer)**: **1%** (or 2%) of investment principal.
+   - Self-referrals and cyclic referrals are strictly prohibited at both the database and schema validation levels.
+
+2. **Daily ROI Payout Cycle**:
+   - The daily ROI schedule runs daily at **12:00 AM (00:00)** in the configured regional timezone (`Asia/Kolkata`).
+   - Investments start generating ROI on the day following initiation or upon reaching their active start time, and automatically mark as `Completed` once `endDate` is reached.
+
+3. **Strict Idempotency Assurance**:
+   - If the cron job or an API process trigger is executed multiple times within the same calendar date (e.g. server restart, duplicate trigger), MongoDB compound unique indexes (`{ investment: 1, earningDateStr: 1 }` and `{ user: 1, fromUser: 1, investment: 1, referralLevel: 1 }`) ensure no duplicate credits or double wallet increments can ever occur.
+
+4. **Currency & Localization**:
+   - The platform utilizes Indian Rupee (`INR` / `₹`) with standard Indian currency formatting (Lakhs & Crores) as the primary base currency, while allowing multi-currency display formatting in user preferences.

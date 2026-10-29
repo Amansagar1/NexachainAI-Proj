@@ -33,106 +33,20 @@ import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 import { extractErrorMessage } from '../../utils/errorHandler';
 
-// Fallback high-fidelity plans matching UiDesign/Modern Fintech Investments Dashboard.png
-const defaultPlans = [
-  {
-    id: 'growth-a',
-    name: 'Growth Plan A',
-    subtitle: 'Best for beginners',
-    dailyRoiPercentage: 1,
-    durationDays: 90,
-    minInvestment: 1000,
-    themeColor: '#00B074',
-    themeBg: '#E8F8F0',
-    iconType: 'sprout',
-  },
-  {
-    id: 'growth-b',
-    name: 'Growth Plan B',
-    subtitle: 'Most Popular',
-    dailyRoiPercentage: 1.5,
-    durationDays: 120,
-    minInvestment: 5000,
-    popular: true,
-    themeColor: '#0066FF',
-    themeBg: '#EBF3FF',
-    iconType: 'trending',
-  },
-  {
-    id: 'wealth',
-    name: 'Wealth Plan',
-    subtitle: 'Higher returns',
-    dailyRoiPercentage: 2,
-    durationDays: 180,
-    minInvestment: 10000,
-    themeColor: '#7B2CBF',
-    themeBg: '#F3E8FF',
-    iconType: 'diamond',
-  },
-  {
-    id: 'premium',
-    name: 'Premium Plan',
-    subtitle: 'For long-term growth',
-    dailyRoiPercentage: 2.5,
-    durationDays: 365,
-    minInvestment: 25000,
-    themeColor: '#FF7A00',
-    themeBg: '#FFF4E6',
-    iconType: 'star',
-  },
-];
-
-// Fallback high-fidelity records matching reference design table
-const defaultInvestmentsList = [
-  {
-    _id: '1',
-    planDetails: { planName: 'Growth Plan A', planId: 'growth-a' },
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1,
-    startDate: '2024-10-01',
-    endDate: '2025-01-01',
-    totalRoiEarned: 2150,
-    investmentStatus: 'ACTIVE',
-  },
-  {
-    _id: '2',
-    planDetails: { planName: 'Growth Plan B', planId: 'growth-b' },
-    investmentAmount: 25000,
-    dailyRoiPercentage: 1.5,
-    startDate: '2024-10-15',
-    endDate: '2025-02-12',
-    totalRoiEarned: 1200,
-    investmentStatus: 'ACTIVE',
-  },
-  {
-    _id: '3',
-    planDetails: { planName: 'Wealth Plan', planId: 'wealth' },
-    investmentAmount: 50000,
-    dailyRoiPercentage: 2,
-    startDate: '2024-09-01',
-    endDate: '2025-02-28',
-    totalRoiEarned: 28500,
-    investmentStatus: 'COMPLETED',
-  },
-  {
-    _id: '4',
-    planDetails: { planName: 'Premium Plan', planId: 'premium' },
-    investmentAmount: 10000,
-    dailyRoiPercentage: 2.5,
-    startDate: '2024-08-01',
-    endDate: 'Cancelled',
-    totalRoiEarned: 500,
-    investmentStatus: 'CANCELLED',
-  },
-];
+const PLAN_STYLES = {
+  'growth-a': { themeColor: '#00B074', themeBg: '#E8F8F0', iconType: 'sprout' },
+  'growth-b': { themeColor: '#0066FF', themeBg: '#EBF3FF', iconType: 'trending' },
+  'wealth': { themeColor: '#7B2CBF', themeBg: '#F3E8FF', iconType: 'diamond' },
+  'premium': { themeColor: '#FF7A00', themeBg: '#FFF4E6', iconType: 'star' },
+};
 
 export default function InvestmentsPage() {
   const { user, refreshUser, updateUserBalance } = useAuth();
-  const [plans, setPlans] = useState(defaultPlans);
+  const [plans, setPlans] = useState([]);
   const [investmentsData, setInvestmentsData] = useState({
-    records: defaultInvestmentsList,
-    counts: { all: 4, active: 2, completed: 1, cancelled: 1 },
-    pagination: { page: 1, limit: 10, total: 4, totalPages: 1 },
+    records: [],
+    counts: { all: 0, active: 0, completed: 0, cancelled: 0 },
+    pagination: { page: 1, limit: 10, total: 0, totalPages: 1 },
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -170,18 +84,17 @@ export default function InvestmentsPage() {
         }),
       ]);
 
-      const apiPlans = plansRes.data.data.plans;
-      if (apiPlans && apiPlans.length > 0) {
-        // Merge theme colors into api plans
-        setPlans(
-          apiPlans.map((p) => {
-            const def = defaultPlans.find((dp) => dp.id === p.id) || {};
-            return { ...p, ...def };
-          })
-        );
-      } else {
-        setPlans(defaultPlans);
-      }
+      const apiPlans = plansRes.data?.data?.plans || [];
+      setPlans(
+        apiPlans.map((p) => {
+          const style = PLAN_STYLES[p.id] || {
+            themeColor: p.color || '#0066FF',
+            themeBg: '#EBF3FF',
+            iconType: 'trending',
+          };
+          return { ...p, ...style };
+        })
+      );
 
       const invData = invRes.data?.data;
       if (invData) {
@@ -280,7 +193,7 @@ export default function InvestmentsPage() {
                 Wallet Balance
               </p>
               <p className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-tight">
-                {formatINR(user?.walletBalance ?? 12750)}
+                {formatINR(user?.walletBalance ?? 0)}
               </p>
             </div>
             <button
@@ -306,7 +219,7 @@ export default function InvestmentsPage() {
               </p>
             </div>
             <button
-              onClick={() => handleOpenInvestModal(plans[0])}
+              onClick={() => plans.length > 0 && handleOpenInvestModal(plans[0])}
               className="text-xs font-semibold text-[#0066FF] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View Plan Details</span>
@@ -447,10 +360,10 @@ export default function InvestmentsPage() {
             {/* Filter Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto">
               {[
-                { label: 'All', count: investmentsData.counts?.all ?? 4 },
-                { label: 'Active', count: investmentsData.counts?.active ?? 2 },
-                { label: 'Completed', count: investmentsData.counts?.completed ?? 1 },
-                { label: 'Cancelled', count: investmentsData.counts?.cancelled ?? 1 },
+                { label: 'All', count: investmentsData.counts?.all ?? 0 },
+                { label: 'Active', count: investmentsData.counts?.active ?? 0 },
+                { label: 'Completed', count: investmentsData.counts?.completed ?? 0 },
+                { label: 'Cancelled', count: investmentsData.counts?.cancelled ?? 0 },
               ].map((tab) => {
                 const isActive = statusFilter.toLowerCase() === tab.label.toLowerCase();
                 return (
@@ -477,7 +390,7 @@ export default function InvestmentsPage() {
               {/* Date Filter Badge */}
               <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F9FAFC] border border-slate-200/70 rounded-xl text-xs text-slate-700 font-medium cursor-pointer hover:bg-slate-50">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                <span>Oct 1, 2024 - Oct 30, 2024</span>
+                <span>All Time</span>
                 <ChevronDown className="w-3 h-3 text-slate-400" />
               </div>
 
@@ -524,101 +437,109 @@ export default function InvestmentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-xs">
-                  {investmentsData.records.map((inv, idx) => {
-                    const rowNum = (page - 1) * 10 + idx + 1;
-                    const planName = inv.planDetails?.planName || 'Growth Plan';
-                    const isGrowthA = planName.includes('Plan A');
-                    const isGrowthB = planName.includes('Plan B');
-                    const isWealth = planName.includes('Wealth');
+                  {investmentsData.records && investmentsData.records.length > 0 ? (
+                    investmentsData.records.map((inv, idx) => {
+                      const rowNum = (page - 1) * 10 + idx + 1;
+                      const planName = inv.planDetails?.planName || 'Growth Plan';
+                      const isGrowthA = planName.includes('Plan A');
+                      const isGrowthB = planName.includes('Plan B');
+                      const isWealth = planName.includes('Wealth');
 
-                    return (
-                      <tr key={inv._id || idx} className="hover:bg-slate-50/60 transition-colors">
-                        <td className="py-2.5 px-3 text-slate-500 font-normal">{rowNum}</td>
-                        <td className="py-2.5 px-3">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                                isGrowthA
+                      const statusUpper = inv.investmentStatus?.toUpperCase();
+                      const isActive = statusUpper === 'ACTIVE';
+                      const isCompleted = statusUpper === 'COMPLETED';
+
+                      return (
+                        <tr key={inv._id || idx} className="hover:bg-slate-50/60 transition-colors">
+                          <td className="py-2.5 px-3 text-slate-500 font-normal">{rowNum}</td>
+                          <td className="py-2.5 px-3">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                                  isGrowthA
+                                    ? 'bg-[#E8F8F0] text-[#00B074]'
+                                    : isGrowthB
+                                    ? 'bg-[#EBF3FF] text-[#0066FF]'
+                                    : isWealth
+                                    ? 'bg-[#F3E8FF] text-[#7B2CBF]'
+                                    : 'bg-[#FFF4E6] text-[#FF8A00]'
+                                }`}
+                              >
+                                {isGrowthA ? (
+                                  <Sprout className="w-3 h-3" />
+                                ) : isGrowthB ? (
+                                  <TrendingUp className="w-3 h-3" />
+                                ) : isWealth ? (
+                                  <Diamond className="w-3 h-3" />
+                                ) : (
+                                  <Star className="w-3 h-3" />
+                                )}
+                              </div>
+                              <span className="font-normal text-slate-800">{planName}</span>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-3 font-normal text-slate-800">
+                            {formatINR(inv.investmentAmount)}
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-600 font-normal">
+                            {inv.dailyRoiPercentage}%
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-600 font-normal">
+                            {formatDate(inv.startDate)}
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-600 font-normal">
+                            {inv.endDate === 'Cancelled' ? 'Cancelled' : formatDate(inv.endDate)}
+                          </td>
+                          <td className="py-2.5 px-3 font-normal text-slate-800">
+                            {formatINR(inv.totalRoiEarned || 0)}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span
+                              className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${
+                                isActive
                                   ? 'bg-[#E8F8F0] text-[#00B074]'
-                                  : isGrowthB
+                                  : isCompleted
                                   ? 'bg-[#EBF3FF] text-[#0066FF]'
-                                  : isWealth
-                                  ? 'bg-[#F3E8FF] text-[#7B2CBF]'
-                                  : 'bg-[#FFF4E6] text-[#FF8A00]'
+                                  : 'bg-[#FEECEC] text-[#FF3B30]'
                               }`}
                             >
-                              {isGrowthA ? (
-                                <Sprout className="w-3 h-3" />
-                              ) : isGrowthB ? (
-                                <TrendingUp className="w-3 h-3" />
-                              ) : isWealth ? (
-                                <Diamond className="w-3 h-3" />
-                              ) : (
-                                <Star className="w-3 h-3" />
-                              )}
+                              {inv.investmentStatus || 'Active'}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <div className="flex items-center justify-end gap-2 text-slate-400">
+                              <button
+                                onClick={() => {
+                                  setViewingInvestment(inv);
+                                  setDetailsModalOpen(true);
+                                }}
+                                className="p-1 hover:text-[#0066FF] hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
+                                title="View Details"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setViewingInvestment(inv);
+                                  setDetailsModalOpen(true);
+                                }}
+                                className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors cursor-pointer"
+                                title="More Options"
+                              >
+                                <MoreHorizontal className="w-3.5 h-3.5" />
+                              </button>
                             </div>
-                            <span className="font-normal text-slate-800">{planName}</span>
-                          </div>
-                        </td>
-                        <td className="py-2.5 px-3 font-normal text-slate-800">
-                          {formatINR(inv.investmentAmount)}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-600 font-normal">
-                          {inv.dailyRoiPercentage}%
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-600 font-normal">
-                          {formatDate(inv.startDate)}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-600 font-normal">
-                          {inv.endDate === 'Cancelled' ? 'Cancelled' : formatDate(inv.endDate)}
-                        </td>
-                        <td className="py-2.5 px-3 font-normal text-slate-800">
-                          {formatINR(inv.totalRoiEarned || 0)}
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <span
-                            className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${
-                              inv.investmentStatus === 'ACTIVE'
-                                ? 'bg-[#E8F8F0] text-[#00B074]'
-                                : inv.investmentStatus === 'COMPLETED'
-                                ? 'bg-[#EBF3FF] text-[#0066FF]'
-                                : 'bg-[#FEECEC] text-[#FF3B30]'
-                            }`}
-                          >
-                            {inv.investmentStatus === 'ACTIVE'
-                              ? 'Active'
-                              : inv.investmentStatus === 'COMPLETED'
-                              ? 'Completed'
-                              : 'Cancelled'}
-                          </span>
-                        </td>
-                        <td className="py-2.5 px-3 text-right">
-                          <div className="flex items-center justify-end gap-2 text-slate-400">
-                            <button
-                              onClick={() => {
-                                setViewingInvestment(inv);
-                                setDetailsModalOpen(true);
-                              }}
-                              className="p-1 hover:text-[#0066FF] hover:bg-blue-50 rounded-md transition-colors cursor-pointer"
-                              title="View Details"
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                setViewingInvestment(inv);
-                                setDetailsModalOpen(true);
-                              }}
-                              className="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors cursor-pointer"
-                              title="More Options"
-                            >
-                              <MoreHorizontal className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={9} className="py-8 text-center text-xs text-slate-400">
+                        No investments found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -627,7 +548,7 @@ export default function InvestmentsPage() {
           {/* Pagination Footer */}
           <div className="flex items-center justify-between pt-3.5 mt-2 border-t border-slate-100 text-xs">
             <p className="text-slate-400 font-medium">
-              Showing 1 to {investmentsData.records.length} of {investmentsData.pagination?.total || 4} results
+              Showing {investmentsData.records?.length > 0 ? (page - 1) * 10 + 1 : 0} to {(page - 1) * 10 + (investmentsData.records?.length || 0)} of {investmentsData.pagination?.total || 0} results
             </p>
 
             <div className="flex items-center gap-1.5">

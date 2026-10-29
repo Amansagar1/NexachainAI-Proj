@@ -30,8 +30,12 @@ import { AppLayout } from '../../components/layout/AppLayout';
 import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { useAuth } from '../../context/AuthContext';
+import { authApi } from '../../features/auth/authApi';
 
 export default function SettingsPage() {
+  const { user, refreshUser } = useAuth();
+
   // Notification states
   const [notifications, setNotifications] = useState({
     roiAlerts: true,
@@ -53,11 +57,32 @@ export default function SettingsPage() {
   const [sessionTimeout, setSessionTimeout] = useState('30m');
   const [ipRestricted, setIpRestricted] = useState(false);
 
-  // API Key state
-  const [apiKey, setApiKey] = useState('nxa_live_88f2190b41c9e831207a');
+  // API Key state dynamically derived from user credential
+  const [apiKey, setApiKey] = useState(
+    user?._id ? `nxa_live_${user._id.toString().slice(-8)}${user.referralCode?.toLowerCase() || '00'}` : 'nxa_live_sec_key'
+  );
   const [copiedKey, setCopiedKey] = useState(false);
   const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
   const [isDangerModalOpen, setIsDangerModalOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Sync with live user settings from API
+  React.useEffect(() => {
+    if (user?.settings) {
+      const s = user.settings;
+      if (s.notifications) setNotifications(s.notifications);
+      if (s.currency) setCurrency(s.currency);
+      if (s.timezone) setTimezone(s.timezone);
+      if (s.dateFormat) setDateFormat(s.dateFormat);
+      if (s.theme) setTheme(s.theme);
+      if (s.sessionTimeout) setSessionTimeout(s.sessionTimeout);
+      if (s.twoFactorEnabled !== undefined) setTwoFactor(s.twoFactorEnabled);
+      if (s.ipRestricted !== undefined) setIpRestricted(s.ipRestricted);
+      if (s.apiKey) setApiKey(s.apiKey);
+    } else if (user?._id) {
+      setApiKey(`nxa_live_${user._id.toString().slice(-8)}${user.referralCode?.toLowerCase() || '00'}`);
+    }
+  }, [user]);
 
   const toggleNotification = (key) => {
     setNotifications((prev) => ({
@@ -73,31 +98,89 @@ export default function SettingsPage() {
     setTimeout(() => setCopiedKey(false), 2000);
   };
 
-  const handleRegenerateKey = () => {
+  const handleRegenerateKey = async () => {
     const newKey = `nxa_live_${Math.random().toString(36).substring(2, 12)}${Math.random().toString(36).substring(2, 12)}`;
     setApiKey(newKey);
-    setIsRegenerateModalOpen(false);
-    toast.success('New API Secret Key generated successfully!');
+    try {
+      await authApi.updateSettings({
+        notifications,
+        currency,
+        timezone,
+        dateFormat,
+        theme,
+        sessionTimeout,
+        twoFactorEnabled: twoFactor,
+        ipRestricted,
+        apiKey: newKey,
+      });
+      await refreshUser();
+      toast.success('New API Secret Key generated and saved!');
+    } catch (err) {
+      toast.error('Failed to save regenerated API key');
+    } finally {
+      setIsRegenerateModalOpen(false);
+    }
   };
 
-  const handleSaveAll = () => {
-    toast.success('All settings and preferences saved successfully!');
+  const handleSaveAll = async () => {
+    setSaving(true);
+    try {
+      await authApi.updateSettings({
+        notifications,
+        currency,
+        timezone,
+        dateFormat,
+        theme,
+        sessionTimeout,
+        twoFactorEnabled: twoFactor,
+        ipRestricted,
+        apiKey,
+      });
+      await refreshUser();
+      toast.success('All settings and preferences saved to your account!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleResetDefaults = () => {
-    setNotifications({
-      roiAlerts: true,
-      referralAlerts: true,
-      walletAlerts: true,
-      securityAlerts: true,
-      weeklyDigest: true,
-      marketingUpdates: false,
-    });
-    setCurrency('INR');
-    setTimezone('Asia/Kolkata');
-    setDateFormat('DD/MM/YYYY');
-    setSessionTimeout('30m');
-    toast.success('Preferences reset to default values.');
+  const handleResetDefaults = async () => {
+    const defaults = {
+      notifications: {
+        roiAlerts: true,
+        referralAlerts: true,
+        walletAlerts: true,
+        securityAlerts: true,
+        weeklyDigest: false,
+        marketingUpdates: false,
+      },
+      currency: 'INR',
+      timezone: 'Asia/Kolkata',
+      dateFormat: 'DD/MM/YYYY',
+      theme: 'light',
+      sessionTimeout: '30m',
+      twoFactorEnabled: true,
+      ipRestricted: false,
+      apiKey,
+    };
+
+    setNotifications(defaults.notifications);
+    setCurrency(defaults.currency);
+    setTimezone(defaults.timezone);
+    setDateFormat(defaults.dateFormat);
+    setTheme(defaults.theme);
+    setSessionTimeout(defaults.sessionTimeout);
+    setTwoFactor(defaults.twoFactorEnabled);
+    setIpRestricted(defaults.ipRestricted);
+
+    try {
+      await authApi.updateSettings(defaults);
+      await refreshUser();
+      toast.success('Preferences reset to default values and saved!');
+    } catch (err) {
+      toast.error('Failed to save reset preferences');
+    }
   };
 
   return (
@@ -131,10 +214,11 @@ export default function SettingsPage() {
             </button>
             <button
               onClick={handleSaveAll}
-              className="inline-flex items-center gap-1.5 bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
+              disabled={saving}
+              className="inline-flex items-center gap-1.5 bg-[#0066FF] hover:bg-blue-600 disabled:opacity-50 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
             >
               <Check className="w-3.5 h-3.5" />
-              <span>Save Changes</span>
+              <span>{saving ? 'Saving...' : 'Save Changes'}</span>
             </button>
           </div>
         </div>
@@ -149,7 +233,7 @@ export default function SettingsPage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Alert Channels</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                4 Active
+                {Object.values(notifications).filter(Boolean).length} Active
               </h3>
               <p className="text-[10px] text-blue-600 font-semibold mt-0.5">
                 Email, SMS & Push Active
@@ -165,10 +249,10 @@ export default function SettingsPage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Security Guard</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                256-Bit TLS
+                {twoFactor ? '2FA Active' : 'Standard'}
               </h3>
               <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">
-                Bank-Grade Encryption
+                256-Bit TLS Encryption
               </p>
             </div>
           </div>
@@ -180,11 +264,17 @@ export default function SettingsPage() {
             </div>
             <div>
               <p className="text-[11px] font-medium text-slate-500">System Timezone</p>
-              <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                Asia/Kolkata
+              <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-tight truncate">
+                {timezone}
               </h3>
               <p className="text-[10px] text-purple-600 font-semibold mt-0.5">
-                GMT+5:30 (Auto-Sync)
+                {timezone === 'Asia/Kolkata'
+                  ? 'GMT+5:30 (Auto-Sync)'
+                  : timezone === 'Asia/Dubai'
+                  ? 'GMT+4:00 (Auto-Sync)'
+                  : timezone === 'Asia/Singapore'
+                  ? 'GMT+8:00 (Auto-Sync)'
+                  : 'Auto-Sync Active'}
               </p>
             </div>
           </div>

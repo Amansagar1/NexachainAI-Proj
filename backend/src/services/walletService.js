@@ -128,30 +128,52 @@ const getWalletOverview = async (userId) => {
   const withdrawalTxns = await WalletTransaction.find({
     user: userId,
     category: 'withdrawal',
-    status: 'Completed',
   });
-  const totalWithdrawn = withdrawalTxns.reduce((sum, t) => sum + t.amount, 0);
+  const completedWithdrawals = withdrawalTxns.filter((t) => t.status === 'Completed');
+  const pendingWithdrawals = withdrawalTxns.filter((t) => t.status === 'Pending');
+  const totalWithdrawn = completedWithdrawals.reduce((sum, t) => sum + t.amount, 0);
 
-  // Generate 11 dates for cashflow trend
-  const cashflow = [
-    { date: 'Oct 01', inflow: 5000, outflow: 0, balance: 5000 },
-    { date: 'Oct 03', inflow: 400, outflow: 0, balance: 5400 },
-    { date: 'Oct 06', inflow: 900, outflow: 0, balance: 6300 },
-    { date: 'Oct 09', inflow: 1400, outflow: 1200, balance: 6500 },
-    { date: 'Oct 12', inflow: 1150, outflow: 0, balance: 7650 },
-    { date: 'Oct 15', inflow: 1600, outflow: 0, balance: 9250 },
-    { date: 'Oct 18', inflow: 1400, outflow: 2000, balance: 8650 },
-    { date: 'Oct 21', inflow: 1850, outflow: 0, balance: 10500 },
-    { date: 'Oct 24', inflow: 1200, outflow: 0, balance: 11700 },
-    { date: 'Oct 27', inflow: 1550, outflow: 0, balance: 13250 },
-    { date: 'Oct 30', inflow: 1500, outflow: 2000, balance: user.walletBalance },
-  ];
+  // Fetch all transactions for this user sorted chronologically to build accurate live cashflow
+  const allTxns = await WalletTransaction.find({ user: userId }).sort({ date: 1 });
+  const cashflowMap = {};
+  let runningBalance = 0;
+
+  allTxns.forEach((txn) => {
+    const d = new Date(txn.date);
+    const key = d.toISOString().split('T')[0];
+    const displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    if (!cashflowMap[key]) {
+      cashflowMap[key] = { date: displayDate, rawDate: key, inflow: 0, outflow: 0, balance: 0 };
+    }
+
+    if (txn.isCredit) {
+      cashflowMap[key].inflow += txn.amount;
+      runningBalance += txn.amount;
+    } else {
+      cashflowMap[key].outflow += txn.amount;
+      runningBalance -= txn.amount;
+    }
+    cashflowMap[key].balance = Math.max(0, runningBalance);
+  });
+
+  const cashflow = Object.values(cashflowMap).sort((a, b) => a.rawDate.localeCompare(b.rawDate));
+  if (cashflow.length === 0) {
+    cashflow.push({
+      date: 'Today',
+      inflow: 0,
+      outflow: 0,
+      balance: user.walletBalance || 0,
+    });
+  }
 
   return {
-    walletBalance: user.walletBalance,
-    totalRoiEarned: user.totalRoiEarned,
-    totalLevelIncomeEarned: user.totalLevelIncomeEarned,
-    totalWithdrawn: totalWithdrawn || 3200,
+    walletBalance: user.walletBalance || 0,
+    totalRoiEarned: user.totalRoiEarned || 0,
+    totalLevelIncomeEarned: user.totalLevelIncomeEarned || 0,
+    totalWithdrawn: totalWithdrawn,
+    completedWithdrawalsCount: completedWithdrawals.length,
+    pendingWithdrawalsCount: pendingWithdrawals.length,
     cashflow,
   };
 };

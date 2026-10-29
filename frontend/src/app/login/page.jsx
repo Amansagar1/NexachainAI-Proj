@@ -94,8 +94,8 @@ export default function LoginPage() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'john@nexachain.ai',
-      password: 'password123',
+      email: '',
+      password: '',
     },
   });
 

@@ -42,135 +42,6 @@ import { ROUTES } from '../../constants/routes';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-// 17 bar items matching the stacked bar distribution in UiDesign/Nexachain AI Referral Dashboard.png
-const defaultBarData = [
-  { displayDate: 'Oct 1', Direct: 50, Level: 30 },
-  { displayDate: 'Oct 3', Direct: 90, Level: 50 },
-  { displayDate: 'Oct 5', Direct: 120, Level: 70 },
-  { displayDate: 'Oct 7', Direct: 110, Level: 60 },
-  { displayDate: 'Oct 9', Direct: 140, Level: 80 },
-  { displayDate: 'Oct 10', Direct: 220, Level: 140 },
-  { displayDate: 'Oct 12', Direct: 210, Level: 130 },
-  { displayDate: 'Oct 14', Direct: 240, Level: 150 },
-  { displayDate: 'Oct 15', Direct: 260, Level: 170 },
-  { displayDate: 'Oct 17', Direct: 230, Level: 150 },
-  { displayDate: 'Oct 20', Direct: 270, Level: 180 },
-  { displayDate: 'Oct 22', Direct: 330, Level: 210 },
-  { displayDate: 'Oct 24', Direct: 300, Level: 200 },
-  { displayDate: 'Oct 25', Direct: 410, Level: 270 },
-  { displayDate: 'Oct 27', Direct: 380, Level: 260 },
-  { displayDate: 'Oct 29', Direct: 420, Level: 280 },
-  { displayDate: 'Oct 30', Direct: 450, Level: 320 },
-];
-
-const defaultPieData = [
-  { name: 'Level 1 (40%)', value: 1800, percentage: 40, color: '#0066FF' },
-  { name: 'Level 2 (35%)', value: 1575, percentage: 35, color: '#00C48C' },
-  { name: 'Level 3 (25%)', value: 1125, percentage: 25, color: '#7B2CBF' },
-];
-
-// 10 records matching the reference screenshot table
-const defaultIncomeRecords = [
-  {
-    _id: '1',
-    date: '2024-10-30',
-    fromUser: 'user123',
-    referralLevel: 1,
-    incomeAmount: 500,
-    incomeType: 'Direct Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '2',
-    date: '2024-10-29',
-    fromUser: 'user456',
-    referralLevel: 2,
-    incomeAmount: 250,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '3',
-    date: '2024-10-28',
-    fromUser: 'user789',
-    referralLevel: 3,
-    incomeAmount: 100,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '4',
-    date: '2024-10-27',
-    fromUser: 'user321',
-    referralLevel: 1,
-    incomeAmount: 500,
-    incomeType: 'Direct Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '5',
-    date: '2024-10-26',
-    fromUser: 'user654',
-    referralLevel: 2,
-    incomeAmount: 250,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '6',
-    date: '2024-10-25',
-    fromUser: 'user987',
-    referralLevel: 3,
-    incomeAmount: 100,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '7',
-    date: '2024-10-24',
-    fromUser: 'user111',
-    referralLevel: 1,
-    incomeAmount: 500,
-    incomeType: 'Direct Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '8',
-    date: '2024-10-23',
-    fromUser: 'user222',
-    referralLevel: 2,
-    incomeAmount: 250,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '9',
-    date: '2024-10-22',
-    fromUser: 'user333',
-    referralLevel: 3,
-    incomeAmount: 100,
-    incomeType: 'Level Income',
-    status: 'CREDITED',
-  },
-  {
-    _id: '10',
-    date: '2024-10-21',
-    fromUser: 'user444',
-    referralLevel: 1,
-    incomeAmount: 500,
-    incomeType: 'Direct Income',
-    status: 'CREDITED',
-  },
-];
-
-const defaultRecentReferrals = [
-  { username: 'user123', date: 'Joined on Oct 30, 2024', level: 'Level 1', color: 'blue' },
-  { username: 'user456', date: 'Joined on Oct 28, 2024', level: 'Level 2', color: 'green' },
-  { username: 'user789', date: 'Joined on Oct 25, 2024', level: 'Level 3', color: 'orange' },
-  { username: 'user321', date: 'Joined on Oct 22, 2024', level: 'Level 1', color: 'blue' },
-  { username: 'user654', date: 'Joined on Oct 20, 2024', level: 'Level 2', color: 'teal' },
-];
-
 export default function ReferralIncomePage() {
   const { user, updateUserBalance } = useAuth();
   const [data, setData] = useState({
@@ -185,9 +56,11 @@ export default function ReferralIncomePage() {
       l1Income: 0,
       l2Income: 0,
       l3Income: 0,
+      barData: [],
+      pieData: [],
     },
   });
-  const [recentReferrals, setRecentReferrals] = useState(defaultRecentReferrals);
+  const [recentReferrals, setRecentReferrals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -199,7 +72,7 @@ export default function ReferralIncomePage() {
 
   // Withdraw Modal Demo
   const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState('5000');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -207,7 +80,7 @@ export default function ReferralIncomePage() {
     try {
       const [incomeRes, directRes] = await Promise.all([
         referralsApi.getReferralIncome({
-          level: levelFilter !== 'All' ? levelFilter : undefined,
+          level: levelFilter !== 'All' ? levelFilter.replace('L', '') : undefined,
           page,
           limit: 10,
         }),
@@ -219,15 +92,17 @@ export default function ReferralIncomePage() {
         setData({
           records: resData.records || [],
           pagination: resData.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 },
-          metrics: resData.metrics || {
-            totalLevelIncome: 4500,
-            directIncome: 2000,
-            totalReferrals: 24,
-            directReferrals: 8,
-            indirectReferrals: 16,
-            l1Income: 1800,
-            l2Income: 1575,
-            l3Income: 1125,
+          metrics: {
+            totalLevelIncome: resData.metrics?.totalLevelIncome || 0,
+            directIncome: resData.metrics?.directIncome || 0,
+            totalReferrals: resData.metrics?.totalReferrals || 0,
+            directReferrals: resData.metrics?.directReferrals || 0,
+            indirectReferrals: resData.metrics?.indirectReferrals || 0,
+            l1Income: resData.metrics?.l1Income || 0,
+            l2Income: resData.metrics?.l2Income || 0,
+            l3Income: resData.metrics?.l3Income || 0,
+            barData: resData.metrics?.barData || [],
+            pieData: resData.metrics?.pieData || [],
           },
         });
       }
@@ -236,12 +111,14 @@ export default function ReferralIncomePage() {
       const directList = directRes.data?.data || [];
       if (directList.length > 0) {
         const mappedRecent = directList.slice(0, 5).map((u, i) => ({
-          username: u.fullName || u.email?.split('@')[0] || `user${i + 1}`,
+          username: u.fullName || u.email?.split('@')[0] || `User`,
           date: `Joined on ${formatDate(u.createdAt)}`,
           level: 'Level 1',
           color: i % 4 === 0 ? 'blue' : i % 4 === 1 ? 'green' : i % 4 === 2 ? 'orange' : 'teal',
         }));
         setRecentReferrals(mappedRecent);
+      } else {
+        setRecentReferrals([]);
       }
     } catch (err) {
       console.error('Fetch referral income error:', err);
@@ -307,7 +184,7 @@ export default function ReferralIncomePage() {
               <p className="text-xs font-medium text-slate-500">Total Level Income</p>
               <div className="flex items-baseline gap-2 mt-0.5">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                  {formatINR(data.metrics?.totalLevelIncome || 4500)}
+                  {formatINR(data.metrics?.totalLevelIncome ?? 0)}
                 </h3>
                 <span className="text-xs font-semibold text-[#00C48C] flex items-center gap-0.5">
                   <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 18%
@@ -326,13 +203,15 @@ export default function ReferralIncomePage() {
               <p className="text-xs font-medium text-slate-500">Direct Referral Income</p>
               <div className="flex items-baseline gap-2 mt-0.5">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                  {formatINR(data.metrics?.directIncome || 2000)}
+                  {formatINR(data.metrics?.directIncome ?? 0)}
                 </h3>
                 <span className="text-xs font-semibold text-[#00C48C] flex items-center gap-0.5">
                   <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 12%
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">From 8 direct referrals</p>
+              <p className="text-xs text-slate-400 mt-1">
+                From {data.metrics?.directReferrals ?? 0} direct referrals
+              </p>
             </div>
           </div>
 
@@ -344,9 +223,11 @@ export default function ReferralIncomePage() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-slate-500">Total Referrals</p>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-0.5">
-                {data.metrics?.totalReferrals || 24}
+                {data.metrics?.totalReferrals ?? 0}
               </h3>
-              <p className="text-xs text-slate-400 mt-1">8 Direct &nbsp;|&nbsp; 16 Indirect</p>
+              <p className="text-xs text-slate-400 mt-1">
+                {data.metrics?.directReferrals ?? 0} Direct &nbsp;|&nbsp; {data.metrics?.indirectReferrals ?? 0} Indirect
+              </p>
             </div>
           </div>
 
@@ -359,7 +240,7 @@ export default function ReferralIncomePage() {
               <p className="text-xs font-medium text-slate-500">Available Balance</p>
               <div className="flex items-center justify-between gap-1 mt-0.5">
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                  {formatINR(user?.walletBalance ?? 12750)}
+                  {formatINR(user?.walletBalance ?? 0)}
                 </h3>
                 <button
                   onClick={() => setWithdrawModalOpen(true)}
@@ -418,7 +299,7 @@ export default function ReferralIncomePage() {
             <div className="h-56 sm:h-60 w-full mt-2">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={defaultBarData}
+                  data={data.metrics?.barData || []}
                   margin={{ top: 12, right: 12, left: -18, bottom: 0 }}
                   barCategoryGap={8}
                 >
@@ -466,13 +347,13 @@ export default function ReferralIncomePage() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={defaultPieData}
+                    data={data.metrics?.pieData || []}
                     innerRadius={50}
                     outerRadius={75}
                     paddingAngle={3}
                     dataKey="value"
                   >
-                    {defaultPieData.map((entry, index) => (
+                    {(data.metrics?.pieData || []).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -482,7 +363,7 @@ export default function ReferralIncomePage() {
 
               <div className="absolute text-center pointer-events-none">
                 <p className="text-base font-black text-slate-900 tracking-tight leading-tight">
-                  {formatINR(data.metrics?.totalLevelIncome || 4500)}
+                  {formatINR(data.metrics?.totalLevelIncome ?? 0)}
                 </p>
                 <p className="text-[10px] text-slate-400 font-medium">Total Income</p>
               </div>
@@ -490,7 +371,7 @@ export default function ReferralIncomePage() {
 
             {/* Legend */}
             <div className="space-y-2 pt-3 border-t border-slate-50 text-xs">
-              {defaultPieData.map((item, idx) => (
+              {(data.metrics?.pieData || []).map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span
@@ -499,7 +380,7 @@ export default function ReferralIncomePage() {
                     />
                     <span className="font-normal text-slate-700">{item.name}</span>
                   </div>
-                  <span className="font-bold text-slate-900">{formatINR(item.value)}</span>
+                  <span className="font-bold text-slate-900">{formatINR(item.value ?? 0)}</span>
                 </div>
               ))}
             </div>
@@ -540,7 +421,7 @@ export default function ReferralIncomePage() {
                 {/* Date Filter Badge */}
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-[#F9FAFC] border border-slate-200/70 rounded-xl text-xs text-slate-700 font-medium">
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Oct 1, 2024 - Oct 30, 2024</span>
+                  <span>All Time</span>
                 </div>
 
                 {/* Search Box */}
@@ -587,7 +468,7 @@ export default function ReferralIncomePage() {
                   <tbody className="divide-y divide-slate-50 text-xs">
                     {displayRecords.map((item, idx) => {
                       const rowNum = (page - 1) * 10 + idx + 1;
-                      const fromUser = item.fromUser?.fullName || item.fromUser || `user${idx + 100}`;
+                      const fromUser = item.fromUser?.fullName || item.fromUser?.email?.split('@')[0] || (typeof item.fromUser === 'string' ? item.fromUser : 'N/A');
                       const lvl = item.level || `L${item.referralLevel || 1}`;
 
                       return (
@@ -599,7 +480,7 @@ export default function ReferralIncomePage() {
                           <td className="py-2.5 px-3 font-normal text-slate-800">{fromUser}</td>
                           <td className="py-2.5 px-3 text-slate-700 font-normal">{lvl}</td>
                           <td className="py-2.5 px-3 font-normal text-slate-800">
-                            {formatINR(item.incomeAmount || 500)}
+                            {formatINR(item.incomeAmount ?? 0)}
                           </td>
                           <td className="py-2.5 px-3 text-slate-600 font-normal">
                             {item.incomeType || (lvl === 'L1' ? 'Direct Income' : 'Level Income')}
@@ -620,7 +501,8 @@ export default function ReferralIncomePage() {
             {/* Pagination */}
             <div className="flex items-center justify-between pt-3.5 mt-2 border-t border-slate-100 text-xs">
               <p className="text-slate-400 font-medium">
-                Showing 1 to {displayRecords.length} of {data.pagination?.total || 24} results
+                Showing {displayRecords.length > 0 ? (page - 1) * 10 + 1 : 0} to{' '}
+                {Math.min(page * 10, data.pagination?.total || 0)} of {data.pagination?.total || 0} results
               </p>
 
               <div className="flex items-center gap-1.5">
@@ -632,7 +514,7 @@ export default function ReferralIncomePage() {
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
 
-                {[1, 2, 3].map((pageNum) => (
+                {Array.from({ length: Math.min(data.pagination?.totalPages || 1, 5) }, (_, i) => i + 1).map((pageNum) => (
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
@@ -647,7 +529,7 @@ export default function ReferralIncomePage() {
                 ))}
 
                 <button
-                  disabled={page >= (data.pagination?.totalPages || 3)}
+                  disabled={page >= (data.pagination?.totalPages || 1)}
                   onClick={() => setPage((p) => p + 1)}
                   className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 >
@@ -672,47 +554,51 @@ export default function ReferralIncomePage() {
                 </Link>
               </div>
 
-              {/* 5 User Feed Items */}
+              {/* User Feed Items */}
               <div className="space-y-3">
-                {recentReferrals.map((userItem, idx) => (
-                  <div key={idx} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                          userItem.color === 'blue'
+                {recentReferrals.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-4 text-center">No recent referrals found.</p>
+                ) : (
+                  recentReferrals.map((userItem, idx) => (
+                    <div key={idx} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                            userItem.color === 'blue'
+                              ? 'bg-[#EBF3FF] text-[#0066FF]'
+                              : userItem.color === 'green'
+                              ? 'bg-[#E8F8F0] text-[#00B074]'
+                              : userItem.color === 'orange'
+                              ? 'bg-[#FFF4E6] text-[#FF8A00]'
+                              : 'bg-[#E6F8F6] text-[#00A389]'
+                          }`}
+                        >
+                          <User className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 leading-tight">
+                            {userItem.username}
+                          </p>
+                          <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">
+                            {userItem.date}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                          userItem.level === 'Level 1'
                             ? 'bg-[#EBF3FF] text-[#0066FF]'
-                            : userItem.color === 'green'
+                            : userItem.level === 'Level 2'
                             ? 'bg-[#E8F8F0] text-[#00B074]'
-                            : userItem.color === 'orange'
-                            ? 'bg-[#FFF4E6] text-[#FF8A00]'
-                            : 'bg-[#E6F8F6] text-[#00A389]'
+                            : 'bg-[#F3E8FF] text-[#7B2CBF]'
                         }`}
                       >
-                        <User className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-900 leading-tight">
-                          {userItem.username}
-                        </p>
-                        <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">
-                          {userItem.date}
-                        </p>
-                      </div>
+                        {userItem.level}
+                      </span>
                     </div>
-
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                        userItem.level === 'Level 1'
-                          ? 'bg-[#EBF3FF] text-[#0066FF]'
-                          : userItem.level === 'Level 2'
-                          ? 'bg-[#E8F8F0] text-[#00B074]'
-                          : 'bg-[#F3E8FF] text-[#7B2CBF]'
-                      }`}
-                    >
-                      {userItem.level}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -737,7 +623,7 @@ export default function ReferralIncomePage() {
           <p className="text-slate-500">
             Available wallet balance:{' '}
             <span className="font-bold text-slate-800">
-              {formatINR(user?.walletBalance ?? 12750)}
+              {formatINR(user?.walletBalance ?? 0)}
             </span>
           </p>
           <Input

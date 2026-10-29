@@ -13,7 +13,7 @@ export const Header = ({ onOpenMobileMenu, searchPlaceholder = 'Search investmen
 
   // Initials (e.g. "John Doe" -> "JD")
   const getInitials = (name) => {
-    if (!name) return 'JD';
+    if (!name) return 'U';
     const parts = name.trim().split(' ');
     if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     return name.slice(0, 2).toUpperCase();
@@ -64,9 +64,11 @@ export const Header = ({ onOpenMobileMenu, searchPlaceholder = 'Search investmen
             </div>
             <div className="hidden sm:block text-left">
               <p className="text-xs font-bold text-slate-900 leading-tight">
-                {user?.fullName || 'John Doe'}
+                {user?.fullName || 'User'}
               </p>
-              <p className="text-[10px] font-medium text-slate-400 leading-tight">User</p>
+              <p className="text-[10px] font-medium text-slate-400 leading-tight">
+                {user?.accountStatus || 'Active Member'}
+              </p>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
           </button>
@@ -75,8 +77,8 @@ export const Header = ({ onOpenMobileMenu, searchPlaceholder = 'Search investmen
           {showProfileMenu && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-50">
               <div className="px-4 py-2 border-b border-slate-100">
-                <p className="text-xs font-bold text-slate-800">{user?.fullName || 'John Doe'}</p>
-                <p className="text-[11px] text-slate-400 truncate">{user?.email || 'john@nexachain.ai'}</p>
+                <p className="text-xs font-bold text-slate-800">{user?.fullName || 'User'}</p>
+                <p className="text-[11px] text-slate-400 truncate">{user?.email || ''}</p>
               </div>
               <button
                 onClick={() => {

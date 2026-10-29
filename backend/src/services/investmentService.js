@@ -79,7 +79,7 @@ const getUserInvestments = async (userId, query = {}) => {
   const filter = { user: userId };
 
   if (query.status && query.status !== 'All') {
-    filter.investmentStatus = query.status;
+    filter.investmentStatus = { $regex: new RegExp(`^${query.status}$`, 'i') };
   }
 
   if (query.search) {

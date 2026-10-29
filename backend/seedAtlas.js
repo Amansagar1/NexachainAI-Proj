@@ -23,6 +23,14 @@ const seedAtlas = async () => {
       WalletTransaction.deleteMany({}),
     ]);
 
+    // Helper to generate dates relative to now
+    const daysAgo = (days, hours = 10, mins = 0) => {
+      const d = new Date();
+      d.setDate(d.getDate() - days);
+      d.setHours(hours, mins, 0, 0);
+      return d;
+    };
+
     console.log('Seeding demo users into naxachain...');
 
     // 1. Root user: John Doe
@@ -41,6 +49,41 @@ const seedAtlas = async () => {
       address: 'Suite 402, Barakhamba Road, Connaught Place',
       dateOfBirth: '1992-05-18',
       gender: 'Male',
+      kyc: {
+        status: 'Approved',
+        tier: 'Tier 2',
+        aadhaarLast4: '5612',
+        pan: 'ABCDE1234F',
+        livenessScore: '99.8%',
+        verifiedAt: daysAgo(14),
+      },
+      bankDetails: {
+        bankName: 'HDFC Bank Ltd.',
+        accountNumber: '•••• •••• •••• 9821',
+        accountNumberMasked: '•••• 9821',
+        holderName: 'John Doe',
+        ifsc: 'HDFC0001234',
+        branch: 'Connaught Place, New Delhi',
+        verified: true,
+      },
+      settings: {
+        notifications: {
+          roiAlerts: true,
+          referralAlerts: true,
+          walletAlerts: true,
+          securityAlerts: true,
+          weeklyDigest: false,
+          marketingUpdates: false,
+        },
+        currency: 'INR',
+        timezone: 'Asia/Kolkata',
+        dateFormat: 'DD/MM/YYYY',
+        theme: 'light',
+        twoFactorEnabled: true,
+        sessionTimeout: '30m',
+        ipRestricted: false,
+        apiKey: 'nxa_live_88f2190b41c9e831207a',
+      },
     });
 
     // 2. Direct referrals (Level 1)
@@ -286,6 +329,12 @@ const seedAtlas = async () => {
       createdAt: new Date('2024-10-07'),
     });
 
+    const daysAgoStr = (days) => {
+      const d = new Date();
+      d.setDate(d.getDate() - days);
+      return d.toISOString().split('T')[0];
+    };
+
     // 5. Investments for John Doe (matching UI Design screenshot #2 & #3)
     console.log('Seeding investments into naxachain...');
     const inv1 = await Investment.create({
@@ -298,8 +347,8 @@ const seedAtlas = async () => {
         subtitle: INVESTMENT_PLANS.GROWTH_A.subtitle,
         color: INVESTMENT_PLANS.GROWTH_A.color,
       },
-      startDate: new Date('2024-10-01'),
-      endDate: new Date('2025-01-01'),
+      startDate: daysAgo(30),
+      endDate: daysAgo(-60),
       dailyRoiPercentage: 1.0,
       totalRoiEarned: 2150,
       investmentStatus: INVESTMENT_STATUS.ACTIVE,
@@ -315,8 +364,8 @@ const seedAtlas = async () => {
         subtitle: INVESTMENT_PLANS.GROWTH_B.subtitle,
         color: INVESTMENT_PLANS.GROWTH_B.color,
       },
-      startDate: new Date('2024-10-15'),
-      endDate: new Date('2025-02-12'),
+      startDate: daysAgo(15),
+      endDate: daysAgo(-105),
       dailyRoiPercentage: 1.5,
       totalRoiEarned: 1200,
       investmentStatus: INVESTMENT_STATUS.ACTIVE,
@@ -332,8 +381,8 @@ const seedAtlas = async () => {
         subtitle: INVESTMENT_PLANS.WEALTH.subtitle,
         color: INVESTMENT_PLANS.WEALTH.color,
       },
-      startDate: new Date('2024-09-01'),
-      endDate: new Date('2025-02-28'),
+      startDate: daysAgo(90),
+      endDate: daysAgo(1),
       dailyRoiPercentage: 2.0,
       totalRoiEarned: 28500,
       investmentStatus: INVESTMENT_STATUS.COMPLETED,
@@ -349,8 +398,8 @@ const seedAtlas = async () => {
         subtitle: INVESTMENT_PLANS.PREMIUM.subtitle,
         color: INVESTMENT_PLANS.PREMIUM.color,
       },
-      startDate: new Date('2024-08-01'),
-      endDate: new Date('2025-08-01'),
+      startDate: daysAgo(120),
+      endDate: daysAgo(30),
       dailyRoiPercentage: 2.5,
       totalRoiEarned: 500,
       investmentStatus: INVESTMENT_STATUS.CANCELLED,
@@ -359,16 +408,16 @@ const seedAtlas = async () => {
     // 6. Referral Income Records (matching UI Design screenshot #5)
     console.log('Seeding referral income records into naxachain...');
     const referralData = [
-      { from: u123, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: '2024-10-30', inv: inv1 },
-      { from: u456, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-29', inv: inv2 },
-      { from: u789, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-28', inv: inv3 },
-      { from: u321, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: '2024-10-27', inv: inv1 },
-      { from: u654, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-26', inv: inv2 },
-      { from: u987, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-25', inv: inv3 },
-      { from: u111, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: '2024-10-24', inv: inv1 },
-      { from: u222, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-23', inv: inv2 },
-      { from: u333, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: '2024-10-22', inv: inv3 },
-      { from: u444, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: '2024-10-21', inv: inv1 },
+      { from: u123, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: daysAgo(0, 8, 45), inv: inv1 },
+      { from: u456, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(1, 14, 10), inv: inv2 },
+      { from: u789, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(2, 11, 20), inv: inv3 },
+      { from: u321, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: daysAgo(4, 9, 15), inv: inv1 },
+      { from: u654, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(6, 16, 0), inv: inv2 },
+      { from: u987, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(9, 10, 30), inv: inv3 },
+      { from: u111, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: daysAgo(12, 12, 0), inv: inv1 },
+      { from: u222, level: 2, amount: 250, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(16, 15, 45), inv: inv2 },
+      { from: u333, level: 3, amount: 100, type: REFERRAL_INCOME_TYPE.LEVEL, date: daysAgo(20, 10, 0), inv: inv3 },
+      { from: u444, level: 1, amount: 500, type: REFERRAL_INCOME_TYPE.DIRECT, date: daysAgo(25, 9, 0), inv: inv1 },
     ];
 
     for (const ref of referralData) {
@@ -379,7 +428,7 @@ const seedAtlas = async () => {
         incomeAmount: ref.amount,
         incomeType: ref.type,
         investment: ref.inv._id,
-        date: new Date(ref.date),
+        date: ref.date,
         status: 'Credited',
       });
     }
@@ -387,16 +436,21 @@ const seedAtlas = async () => {
     // 7. ROI History Records (matching UI Design screenshot #4)
     console.log('Seeding ROI history records into naxachain...');
     const roiData = [
-      { date: '2024-10-30', inv: inv1, amount: 250, pct: 1.0 },
-      { date: '2024-10-29', inv: inv2, amount: 375, pct: 1.5 },
-      { date: '2024-10-28', inv: inv3, amount: 1000, pct: 2.0 },
-      { date: '2024-10-27', inv: inv1, amount: 250, pct: 1.0 },
-      { date: '2024-10-26', inv: inv2, amount: 375, pct: 1.5 },
-      { date: '2024-10-25', inv: inv3, amount: 1000, pct: 2.0 },
-      { date: '2024-10-24', inv: inv1, amount: 250, pct: 1.0 },
-      { date: '2024-10-23', inv: inv2, amount: 375, pct: 1.5 },
-      { date: '2024-10-22', inv: inv3, amount: 1000, pct: 2.0 },
-      { date: '2024-10-21', inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(0), dateStr: daysAgoStr(0), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(1), dateStr: daysAgoStr(1), inv: inv2, amount: 375, pct: 1.5 },
+      { date: daysAgo(2), dateStr: daysAgoStr(2), inv: inv3, amount: 1000, pct: 2.0 },
+      { date: daysAgo(3), dateStr: daysAgoStr(3), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(4), dateStr: daysAgoStr(4), inv: inv2, amount: 375, pct: 1.5 },
+      { date: daysAgo(5), dateStr: daysAgoStr(5), inv: inv3, amount: 1000, pct: 2.0 },
+      { date: daysAgo(6), dateStr: daysAgoStr(6), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(7), dateStr: daysAgoStr(7), inv: inv2, amount: 375, pct: 1.5 },
+      { date: daysAgo(8), dateStr: daysAgoStr(8), inv: inv3, amount: 1000, pct: 2.0 },
+      { date: daysAgo(9), dateStr: daysAgoStr(9), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(12), dateStr: daysAgoStr(12), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(15), dateStr: daysAgoStr(15), inv: inv2, amount: 375, pct: 1.5 },
+      { date: daysAgo(18), dateStr: daysAgoStr(18), inv: inv3, amount: 1000, pct: 2.0 },
+      { date: daysAgo(22), dateStr: daysAgoStr(22), inv: inv1, amount: 250, pct: 1.0 },
+      { date: daysAgo(26), dateStr: daysAgoStr(26), inv: inv2, amount: 375, pct: 1.5 },
     ];
 
     for (const roi of roiData) {
@@ -405,8 +459,8 @@ const seedAtlas = async () => {
         investment: roi.inv._id,
         roiAmount: roi.amount,
         dailyRoiPercentage: roi.pct,
-        date: new Date(roi.date),
-        earningDateStr: roi.date,
+        date: roi.date,
+        earningDateStr: roi.dateStr,
         status: ROI_STATUS.CREDITED,
         remarks: 'Daily ROI credited successfully',
       });
@@ -419,7 +473,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90218',
         type: 'ROI Payout',
         category: 'roi',
-        date: new Date('2024-10-30T10:00:00Z'),
+        date: daysAgo(0, 10, 0),
         description: 'Growth Plan B (2.0% Daily ROI)',
         amount: 400,
         isCredit: true,
@@ -430,7 +484,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90217',
         type: 'Referral Bonus',
         category: 'referral',
-        date: new Date('2024-10-30T08:45:00Z'),
+        date: daysAgo(0, 8, 45),
         description: 'Level 1 Commission from user123',
         amount: 500,
         isCredit: true,
@@ -441,7 +495,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90216',
         type: 'Withdrawal',
         category: 'withdrawal',
-        date: new Date('2024-10-29T15:20:00Z'),
+        date: daysAgo(1, 15, 20),
         description: 'Settlement to HDFC Bank •••• 9821',
         amount: 2000,
         isCredit: false,
@@ -452,7 +506,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90215',
         type: 'ROI Payout',
         category: 'roi',
-        date: new Date('2024-10-29T10:00:00Z'),
+        date: daysAgo(1, 10, 0),
         description: 'Growth Plan B (2.0% Daily ROI)',
         amount: 400,
         isCredit: true,
@@ -463,7 +517,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90214',
         type: 'Referral Bonus',
         category: 'referral',
-        date: new Date('2024-10-28T14:10:00Z'),
+        date: daysAgo(2, 14, 10),
         description: 'Level 2 Commission from user654',
         amount: 250,
         isCredit: true,
@@ -474,7 +528,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90213',
         type: 'ROI Payout',
         category: 'roi',
-        date: new Date('2024-10-28T10:00:00Z'),
+        date: daysAgo(2, 10, 0),
         description: 'Wealth Plan (2.5% Daily ROI)',
         amount: 625,
         isCredit: true,
@@ -485,7 +539,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90212',
         type: 'Deposit',
         category: 'deposit',
-        date: new Date('2024-10-27T18:30:00Z'),
+        date: daysAgo(3, 18, 30),
         description: 'Wallet Top-Up via UPI Instant',
         amount: 5000,
         isCredit: true,
@@ -496,7 +550,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90211',
         type: 'Withdrawal',
         category: 'withdrawal',
-        date: new Date('2024-10-25T11:00:00Z'),
+        date: daysAgo(4, 11, 0),
         description: 'Settlement to HDFC Bank •••• 9821',
         amount: 1200,
         isCredit: false,
@@ -507,7 +561,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90210',
         type: 'Referral Bonus',
         category: 'referral',
-        date: new Date('2024-10-25T09:15:00Z'),
+        date: daysAgo(4, 9, 15),
         description: 'Level 1 Commission from user321',
         amount: 500,
         isCredit: true,
@@ -518,7 +572,7 @@ const seedAtlas = async () => {
         transactionId: 'TXN-90209',
         type: 'ROI Payout',
         category: 'roi',
-        date: new Date('2024-10-24T10:00:00Z'),
+        date: daysAgo(5, 10, 0),
         description: 'Growth Plan A (1.5% Daily ROI)',
         amount: 300,
         isCredit: true,

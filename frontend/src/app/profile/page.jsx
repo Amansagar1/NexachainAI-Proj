@@ -34,11 +34,13 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
 import { authApi } from '../../features/auth/authApi';
+import { dashboardApi } from '../../features/dashboard/dashboardApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
+  const [stats, setStats] = useState(null);
 
   // Active Tab
   const [activeTab, setActiveTab] = useState('personal');
@@ -54,15 +56,30 @@ export default function ProfilePage() {
 
   // Profile Form state initialized dynamically from authenticated user
   const [profileData, setProfileData] = useState({
-    fullName: user?.fullName || 'John Doe',
-    email: user?.email || 'john@nexachain.ai',
-    mobileNumber: user?.mobileNumber || '+91 98765 43210',
-    dateOfBirth: user?.dateOfBirth || '1992-05-18',
-    gender: user?.gender || 'Male',
-    country: user?.country || 'India',
-    city: user?.city || 'New Delhi',
-    address: user?.address || 'Suite 402, Barakhamba Road, Connaught Place',
+    fullName: user?.fullName || '',
+    email: user?.email || '',
+    mobileNumber: user?.mobileNumber || '',
+    dateOfBirth: user?.dateOfBirth || '',
+    gender: user?.gender || '',
+    country: user?.country || '',
+    city: user?.city || '',
+    address: user?.address || '',
   });
+
+  // Fetch summary stats for live active capital & referrals
+  React.useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await dashboardApi.getSummary();
+        if (res.data?.data) {
+          setStats(res.data.data);
+        }
+      } catch (err) {
+        console.error('Profile stats load error:', err);
+      }
+    }
+    fetchStats();
+  }, []);
 
   // Sync state whenever user profile is updated or loaded
   React.useEffect(() => {
@@ -71,11 +88,11 @@ export default function ProfilePage() {
         fullName: user.fullName || '',
         email: user.email || '',
         mobileNumber: user.mobileNumber || '',
-        dateOfBirth: user.dateOfBirth || '1992-05-18',
-        gender: user.gender || 'Male',
-        country: user.country || 'India',
-        city: user.city || 'New Delhi',
-        address: user.address || 'Suite 402, Barakhamba Road, Connaught Place',
+        dateOfBirth: user.dateOfBirth || '',
+        gender: user.gender || '',
+        country: user.country || '',
+        city: user.city || '',
+        address: user.address || '',
       });
     }
   }, [user]);
@@ -88,10 +105,16 @@ export default function ProfilePage() {
   });
 
   // 2FA state
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(user?.settings?.twoFactorEnabled ?? true);
 
-  const referralCode = user?.referralCode || 'NXA123456';
-  const referralLink = `https://nexachain.ai/register?ref=${referralCode}`;
+  React.useEffect(() => {
+    if (user?.settings?.twoFactorEnabled !== undefined) {
+      setTwoFactorEnabled(user.settings.twoFactorEnabled);
+    }
+  }, [user]);
+
+  const referralCode = user?.referralCode || '';
+  const referralLink = referralCode ? `https://nexachain.ai/register?ref=${referralCode}` : 'https://nexachain.ai/register';
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(referralCode);
@@ -199,10 +222,10 @@ export default function ProfilePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Account Status</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                Verified & Active
+                {user?.accountStatus || 'Active'}
               </h3>
               <p className="text-[10px] text-emerald-600 font-semibold mt-0.5">
-                KYC Tier 2 Approved
+                KYC {user?.kyc?.tier || 'Tier 1'} {user?.kyc?.status || 'Active'}
               </p>
             </div>
           </div>
@@ -215,9 +238,11 @@ export default function ProfilePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Active Capital</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                ₹ 35,000
+                {formatINR(stats?.investmentSummary?.totalActiveInvestments ?? 0)}
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">Across 3 investment plans</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                Across {stats?.investmentSummary?.activeInvestmentsCount ?? 0} active plans
+              </p>
             </div>
           </div>
 
@@ -229,10 +254,10 @@ export default function ProfilePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Referral Rank</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                Silver Ambassador
+                {(stats?.referralSummary?.totalReferrals || 0) > 10 ? 'Silver Ambassador' : 'Ambassador'}
               </h3>
               <p className="text-[10px] text-purple-600 font-semibold mt-0.5">
-                24 Total Referrals
+                {stats?.referralSummary?.totalReferrals ?? 0} Total Referrals
               </p>
             </div>
           </div>
@@ -245,9 +270,11 @@ export default function ProfilePage() {
             <div>
               <p className="text-[11px] font-medium text-slate-500">Security Rating</p>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-                High Protection
+                {user?.settings?.twoFactorEnabled ? 'High Protection' : 'Standard'}
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">2FA & Session Guard On</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                {user?.settings?.twoFactorEnabled ? '2FA & Session Guard On' : 'Standard Security'}
+              </p>
             </div>
           </div>
         </div>
@@ -261,7 +288,7 @@ export default function ProfilePage() {
               {/* Header Gradient Mesh */}
               <div className="h-24 sm:h-28 bg-gradient-to-r from-[#0066FF] via-[#0A4CC0] to-[#00C48C] relative p-4 flex items-end">
                 <div className="absolute right-4 top-4 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] font-bold border border-white/20">
-                  Investor ID: #NXA-88210
+                  Investor ID: #{referralCode || 'NXA-0000'}
                 </div>
               </div>
 
@@ -270,7 +297,7 @@ export default function ProfilePage() {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-10 sm:-mt-12 mb-4">
                   <div className="flex items-end gap-3.5">
                     <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-gradient-to-br from-[#0B1528] to-[#1E293B] text-white flex items-center justify-center font-extrabold text-2xl shadow-lg border-4 border-white shrink-0">
-                      {profileData.fullName.slice(0, 2).toUpperCase()}
+                      {(profileData.fullName || user?.fullName || 'U').slice(0, 2).toUpperCase()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
@@ -392,11 +419,13 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <p className="font-bold text-xs text-slate-900">National ID (Aadhaar Card)</p>
-                          <p className="text-[10px] text-slate-400">•••• •••• •••• 5612 · Verified on Oct 16, 2024</p>
+                          <p className="text-[10px] text-slate-400">
+                            {user?.kyc?.aadhaarLast4 ? `•••• •••• •••• ${user.kyc.aadhaarLast4}` : 'Not provided'} {user?.kyc?.verifiedAt ? `· Verified on ${formatDate(user.kyc.verifiedAt)}` : ''}
+                          </p>
                         </div>
                       </div>
                       <span className="bg-white text-emerald-600 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                        Approved
+                        {user?.kyc?.status || 'Pending'}
                       </span>
                     </div>
 
@@ -407,11 +436,13 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <p className="font-bold text-xs text-slate-900">Tax Identification (PAN Card)</p>
-                          <p className="text-[10px] text-slate-400">ABCDE1234F · Verified on Oct 16, 2024</p>
+                          <p className="text-[10px] text-slate-400">
+                            {user?.kyc?.pan || 'Not provided'} {user?.kyc?.verifiedAt ? `· Verified on ${formatDate(user.kyc.verifiedAt)}` : ''}
+                          </p>
                         </div>
                       </div>
                       <span className="bg-white text-emerald-600 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                        Approved
+                        {user?.kyc?.status || 'Pending'}
                       </span>
                     </div>
 
@@ -422,11 +453,13 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <p className="font-bold text-xs text-slate-900">Bank Account Verification</p>
-                          <p className="text-[10px] text-slate-400">HDFC Bank Ltd. · A/C •••• 9821</p>
+                          <p className="text-[10px] text-slate-400">
+                            {user?.bankDetails?.bankName ? `${user.bankDetails.bankName} · A/C ${user.bankDetails.accountNumberMasked || user.bankDetails.accountNumber}` : 'Not linked'}
+                          </p>
                         </div>
                       </div>
                       <span className="bg-white text-emerald-600 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                        Approved
+                        {user?.bankDetails?.verified ? 'Approved' : 'Pending'}
                       </span>
                     </div>
                   </div>
@@ -438,7 +471,7 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                       <div>
                         <p className="font-bold text-xs text-slate-900">Account Password</p>
-                        <p className="text-[10px] text-slate-400">•••••••••••• · Last updated 12 days ago</p>
+                        <p className="text-[10px] text-slate-400">•••••••••••• · Encrypted with bcrypt</p>
                       </div>
                       <button
                         onClick={() => setIsPasswordModalOpen(true)}
@@ -451,12 +484,21 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                       <div>
                         <p className="font-bold text-xs text-slate-900">Two-Factor Authentication (2FA)</p>
-                        <p className="text-[10px] text-slate-400">Google Authenticator Protection Active</p>
+                        <p className="text-[10px] text-slate-400">
+                          {twoFactorEnabled ? 'Google Authenticator Protection Active' : 'Two-factor protection disabled'}
+                        </p>
                       </div>
                       <button
-                        onClick={() => {
-                          setTwoFactorEnabled(!twoFactorEnabled);
-                          toast.success(twoFactorEnabled ? '2FA disabled' : '2FA enabled');
+                        onClick={async () => {
+                          const nextState = !twoFactorEnabled;
+                          setTwoFactorEnabled(nextState);
+                          try {
+                            await authApi.updateSettings({ twoFactorEnabled: nextState });
+                            await refreshUser();
+                            toast.success(nextState ? '2FA enabled' : '2FA disabled');
+                          } catch (err) {
+                            toast.error('Failed to update 2FA setting');
+                          }
                         }}
                         className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
                           twoFactorEnabled
@@ -480,7 +522,9 @@ export default function ProfilePage() {
                     Sponsor & Network Hierarchy
                   </h3>
                   <p className="text-[11px] text-slate-400">
-                    Your upline sponsor link and multi-level commission percentages.
+                    {user?.referredBy?.fullName
+                      ? `Referred by: ${user.referredBy.fullName} (${user.referredBy.referralCode})`
+                      : 'Your upline sponsor link and multi-level commission percentages.'}
                   </p>
                 </div>
                 <Link
@@ -548,26 +592,36 @@ export default function ProfilePage() {
                 </h3>
                 <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" />
-                  Level 2 Verified
+                  {user?.kyc?.tier || 'Tier 1'} {user?.kyc?.status || 'Active'}
                 </span>
               </div>
 
               <div className="space-y-2.5 text-xs">
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 font-medium">Identity Proof:</span>
-                  <span className="font-bold text-slate-900">Aadhaar (•• 5612)</span>
+                  <span className="font-bold text-slate-900">
+                    {user?.kyc?.aadhaarLast4 ? `Aadhaar (•• ${user.kyc.aadhaarLast4})` : 'Not linked'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 font-medium">Tax ID:</span>
-                  <span className="font-bold text-slate-900">PAN (ABCDE1234F)</span>
+                  <span className="font-bold text-slate-900">
+                    {user?.kyc?.pan ? `PAN (${user.kyc.pan})` : 'Not linked'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 font-medium">Bank A/C:</span>
-                  <span className="font-bold text-slate-900">HDFC (•• 9821)</span>
+                  <span className="font-bold text-slate-900">
+                    {user?.bankDetails?.bankName
+                      ? `${user.bankDetails.bankName.split(' ')[0]} (${user.bankDetails.accountNumberMasked || user.bankDetails.accountNumber?.slice(-4) || ''})`
+                      : 'Not linked'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 font-medium">Liveness Photo:</span>
-                  <span className="font-bold text-emerald-600">Passed (99.8%)</span>
+                  <span className="font-bold text-emerald-600">
+                    {user?.kyc?.livenessScore ? `Passed (${user.kyc.livenessScore})` : (user?.kyc?.status === 'Approved' ? 'Passed' : 'Pending')}
+                  </span>
                 </div>
               </div>
 
@@ -582,7 +636,7 @@ export default function ProfilePage() {
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
                   Active Sessions
                 </h3>
-                <span className="text-[10px] font-bold text-slate-400">2 Devices</span>
+                <span className="text-[10px] font-bold text-slate-400">1 Device</span>
               </div>
 
               <div className="space-y-3">
@@ -595,30 +649,14 @@ export default function ProfilePage() {
                       </div>
                       <div>
                         <p className="font-bold text-xs text-slate-900 leading-tight">
-                          Windows 11 · Chrome
+                          Current Web Session
                         </p>
-                        <p className="text-[10px] text-slate-400">Delhi, India · 192.168.29.225</p>
+                        <p className="text-[10px] text-slate-400">
+                          {user?.city ? `${user.city}, ${user.country || ''}` : 'Current Device Session'} · Active now
+                        </p>
                       </div>
                     </div>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Active now" />
-                  </div>
-                </div>
-
-                {/* Session 2 */}
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-purple-100 text-[#7B2CBF] flex items-center justify-center">
-                        <Smartphone className="w-3.5 h-3.5" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-xs text-slate-900 leading-tight">
-                          Android 14 · Mobile App
-                        </p>
-                        <p className="text-[10px] text-slate-400">Oct 27, 2024 · 06:14 PM</p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-slate-400">Offline</span>
                   </div>
                 </div>
               </div>

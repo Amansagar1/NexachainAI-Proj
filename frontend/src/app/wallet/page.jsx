@@ -41,25 +41,9 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
 import { walletApi } from '../../features/wallet/walletApi';
+import { authApi } from '../../features/auth/authApi';
 import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
-
-/* -------------------------------------------------------------------------
-   CASHFLOW DATA FALLBACK (USED WHILE INITIALIZING)
-------------------------------------------------------------------------- */
-const cashflowData = [
-  { date: 'Oct 01', inflow: 5000, outflow: 0, balance: 5000 },
-  { date: 'Oct 03', inflow: 400, outflow: 0, balance: 5400 },
-  { date: 'Oct 06', inflow: 900, outflow: 0, balance: 6300 },
-  { date: 'Oct 09', inflow: 1400, outflow: 1200, balance: 6500 },
-  { date: 'Oct 12', inflow: 1150, outflow: 0, balance: 7650 },
-  { date: 'Oct 15', inflow: 1600, outflow: 0, balance: 9250 },
-  { date: 'Oct 18', inflow: 1400, outflow: 2000, balance: 8650 },
-  { date: 'Oct 21', inflow: 1850, outflow: 0, balance: 10500 },
-  { date: 'Oct 24', inflow: 1200, outflow: 0, balance: 11700 },
-  { date: 'Oct 27', inflow: 1550, outflow: 0, balance: 13250 },
-  { date: 'Oct 30', inflow: 1500, outflow: 2000, balance: 12750 },
-];
 
 /* -------------------------------------------------------------------------
    CUSTOM CHART TOOLTIP
@@ -98,7 +82,7 @@ function CustomCashflowTooltip({ active, payload, label }) {
 }
 
 export default function WalletPage() {
-  const { user, updateUserBalance } = useAuth();
+  const { user, updateUserBalance, refreshUser } = useAuth();
 
   // Live Overview and Transactions State from Backend API
   const [overview, setOverview] = useState(null);
@@ -124,12 +108,24 @@ export default function WalletPage() {
 
   // Bank Info state
   const [bankInfo, setBankInfo] = useState({
-    bankName: 'HDFC Bank Ltd.',
-    accountNumber: '•••• •••• •••• 9821',
-    holderName: user?.fullName || 'John Doe',
-    ifsc: 'HDFC0001234',
-    branch: 'Connaught Place, New Delhi',
+    bankName: user?.bankDetails?.bankName || '',
+    accountNumber: user?.bankDetails?.accountNumber || '',
+    holderName: user?.bankDetails?.holderName || user?.fullName || '',
+    ifsc: user?.bankDetails?.ifsc || '',
+    branch: user?.bankDetails?.branch || '',
   });
+
+  useEffect(() => {
+    if (user?.bankDetails) {
+      setBankInfo({
+        bankName: user.bankDetails.bankName || '',
+        accountNumber: user.bankDetails.accountNumber || '',
+        holderName: user.bankDetails.holderName || user.fullName || '',
+        ifsc: user.bankDetails.ifsc || '',
+        branch: user.bankDetails.branch || '',
+      });
+    }
+  }, [user]);
 
   // Fetch Overview Data (balances, total roi, level income, total withdrawn, cashflow chart points)
   const fetchOverview = useCallback(async () => {
@@ -180,8 +176,8 @@ export default function WalletPage() {
   const totalLevel = overview?.totalLevelIncomeEarned ?? user?.totalLevelIncomeEarned ?? 0;
   const totalWithdrawn = overview?.totalWithdrawn ?? 0;
 
-  // Chart data from API or smooth fallback
-  const liveCashflow = overview?.cashflow?.length ? overview.cashflow : cashflowData;
+  // Chart data directly from API
+  const liveCashflow = overview?.cashflow || [];
 
   // Handlers
   const handleDepositSubmit = async () => {
@@ -325,7 +321,7 @@ export default function WalletPage() {
                   <ArrowUp className="w-3 h-3 stroke-[2.5]" /> 18%
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">From 24 members</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">From referral network</p>
             </div>
           </div>
 
@@ -339,7 +335,9 @@ export default function WalletPage() {
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
                 {formatINR(totalWithdrawn)}
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">2 Completed &nbsp;|&nbsp; 0 Pending</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                {overview?.completedWithdrawalsCount ?? 0} Completed &nbsp;|&nbsp; {overview?.pendingWithdrawalsCount ?? 0} Pending
+              </p>
             </div>
           </div>
         </div>
@@ -637,7 +635,7 @@ export default function WalletPage() {
 
               {/* Card Number */}
               <div className="relative z-10 font-mono tracking-widest text-sm text-slate-200 font-bold mb-4">
-                •••• &nbsp; •••• &nbsp; •••• &nbsp; 4289
+                •••• &nbsp; •••• &nbsp; •••• &nbsp; {user?._id ? user._id.toString().slice(-4).toUpperCase() : '4289'}
               </div>
 
               {/* Bottom Card Row */}
@@ -645,7 +643,7 @@ export default function WalletPage() {
                 <div>
                   <p className="text-[9px] text-slate-400 uppercase font-semibold">Card Holder</p>
                   <p className="font-bold text-white text-xs tracking-wider">
-                    {user?.fullName?.toUpperCase() || 'JOHN DOE'}
+                    {user?.fullName?.toUpperCase() || 'MEMBER'}
                   </p>
                 </div>
                 <div>
@@ -677,11 +675,11 @@ export default function WalletPage() {
                 <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                   <div
                     className="bg-[#0066FF] h-full rounded-full transition-all duration-300"
-                    style={{ width: `${(totalWithdrawn / 50000) * 100}%` }}
+                    style={{ width: `${Math.min(100, (totalWithdrawn / 50000) * 100)}%` }}
                   />
                 </div>
                 <p className="text-[10px] text-slate-400">
-                  Remaining daily quota: {formatINR(50000 - totalWithdrawn)}
+                  Remaining daily quota: {formatINR(Math.max(0, 50000 - totalWithdrawn))}
                 </p>
               </div>
 
@@ -726,10 +724,10 @@ export default function WalletPage() {
                     </div>
                     <div>
                       <p className="font-bold text-xs text-slate-900 leading-tight">
-                        {bankInfo.bankName}
+                        {bankInfo.bankName || 'No bank linked'}
                       </p>
                       <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                        {bankInfo.accountNumber}
+                        {bankInfo.accountNumber || 'Click edit to configure'}
                       </p>
                     </div>
                   </div>
@@ -962,9 +960,23 @@ export default function WalletPage() {
             </Button>
             <Button
               size="sm"
-              onClick={() => {
-                toast.success('Payout bank details updated!');
-                setBankModalOpen(false);
+              onClick={async () => {
+                try {
+                  const rawAcc = String(bankInfo.accountNumber || '').replace(/\s+/g, '');
+                  const masked = rawAcc.length >= 4 ? '•••• ' + rawAcc.slice(-4) : rawAcc;
+                  await authApi.updateProfile({
+                    bankDetails: {
+                      ...bankInfo,
+                      accountNumberMasked: masked,
+                      verified: true,
+                    },
+                  });
+                  if (refreshUser) await refreshUser();
+                  toast.success('Payout bank details updated and saved!');
+                  setBankModalOpen(false);
+                } catch (err) {
+                  toast.error(err.response?.data?.message || 'Failed to update bank details');
+                }
               }}
             >
               Save Bank Details
